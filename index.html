@@ -700,6 +700,15 @@ button.btn.sm{font-size:13px;padding:3px 9px}
     }
     function showSetup(why){opener(()=>card("setup","Connect the app","One-time setup","#ffc94a",[{name:"Setup",render(b){
       b.append(el("p",null,why||"Scan the setup QR code (Desktop › Mr. Mind › app_secrets › phone_setup_QR.png) with this phone's camera. It unlocks your team's data for this app only."));
+      b.append(el("p",null,"Already on your home screen? The app can't see what Safari saw, so paste the link here:"));
+      const ol=el("ol");["Scan the QR with the Camera app.","Press and hold the yellow link → Copy Link.","Come back to this app, paste below, tap Connect."].forEach(t=>ol.append(el("li",null,t)));b.append(ol);
+      const inp=document.createElement("input");inp.type="text";inp.placeholder="Paste the setup link";inp.autocomplete="off";inp.autocapitalize="off";inp.spellcheck=false;
+      inp.style.cssText="width:100%;box-sizing:border-box;padding:12px;margin:6px 0;border-radius:10px;border:2px solid #ffc94a;background:#0e0b22;color:#fff;font-size:16px";
+      const go=el("button","btn go","🔓 Connect");go.type="button";const msg=el("p","note","");
+      go.onclick=()=>{const v=(inp.value||"").trim();const m=v.match(/k=([A-Za-z0-9_-]{20,})/)||v.match(/^([A-Za-z0-9_-]{40,})$/);
+        if(!m){msg.textContent="That doesn't look like the setup link. Copy the whole link from the QR.";return;}
+        try{localStorage.setItem("hqk",m[1]);}catch(e){}msg.textContent="Connected! Loading…";setTimeout(()=>location.reload(),400);};
+      b.append(inp,go,msg);
       b.append(el("p","note","Your data is encrypted. Without the setup link nobody can read it, even with the app's address."));}}]));}
     $("syncBtn").onclick=load;
     document.addEventListener("visibilitychange",()=>{if(!document.hidden)load();});
