@@ -116,6 +116,8 @@ input.search:focus,input.say:focus{outline:none;border-color:var(--gold)}
 .fix{background:var(--panel2);border-radius:6px;padding:10px 12px;display:grid;gap:6px;border-left:3px solid var(--warn)}
 .fix.APPROVED{border-left-color:var(--work)}.fix.DONE{border-left-color:var(--lime)}.fix.DECLINED,.fix.FAILED{border-left-color:var(--idle)}
 .fix .top{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);font-family:var(--f-mono)}
+.fix.HOLD{border-left-color:#a78bfa}.fix.OPEN{border-left-color:var(--bad)}
+.holdin{flex:1 1 140px;min-width:0;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:16px}
 .fix .plan{font-size:13px;color:var(--muted)} .fix .plan b{color:var(--ink);font-weight:500}
 .acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 a.btn,button.btn{display:inline-block;font-family:var(--f-display);font-size:15px;border:var(--b) solid var(--line);background:var(--panel2);color:var(--ink);padding:6px 14px;border-radius:6px;cursor:pointer}
@@ -180,7 +182,7 @@ button.btn.sm{font-size:13px;padding:3px 9px}
 
   <nav class="panel nav" id="dock" aria-label="Quick open">
     <button type="button" id="dNeeds"><span class="px" data-icon="people" aria-hidden="true"></span>Needs you <span class="n" id="dNeedsN">0</span></button>
-    <button type="button" id="dFixes"><span class="px" data-icon="gear" aria-hidden="true"></span>Fixes <span class="n" id="dFixesN">0</span></button>
+    <button type="button" id="dFixes"><span class="px" data-icon="gear" aria-hidden="true"></span>Problems <span class="n" id="dFixesN">0</span></button>
     <button type="button" id="dTeam"><span class="px" data-icon="group" aria-hidden="true"></span>Team</button>
   </nav>
   <nav class="panel nav" id="pal" aria-label="Decorate" hidden>
@@ -205,7 +207,7 @@ button.btn.sm{font-size:13px;padding:3px 9px}
   const C={ok:"#a3e635",warn:"#ffb547",bad:"#ff6b6b",idle:"#7c86b8",work:"#5ec8ff"};
   const LABEL={ok:"All good",warn:"Needs a look",bad:"Problem",idle:"Off shift",work:"Working now"};
   let W=320,H=180,WALL=58,portrait=false;
-  let workers=[],hq=null,fixes=[],drawers={},live={},liveErr=null,canWrite=false,db=null,mcp=null,sample=null,openCard=null,frame=0;
+  let workers=[],hq=null,fixes=[],issues=[],drawers={},live={},liveErr=null,canWrite=false,db=null,mcp=null,sample=null,openCard=null,frame=0;
   let layout={decor:null,desks:{}};
   const chats={};
   const $=id=>document.getElementById(id);
@@ -434,7 +436,7 @@ button.btn.sm{font-size:13px;padding:3px 9px}
       else{if(d.boss)out.push({id:"tray",label:"Check the in-tray",x:d.x+16,y:d.y+26,box:[d.x+6,d.y-12,22,16],open:showNeeds});
         out.push({id:d.w.id,label:`Talk to ${d.w.short||d.w.name}`,x:d.x,y:d.y+26,box:[d.x-(d.boss?23:18),d.y-34,d.boss?46:36,54],open:()=>showWorker(d.w.id,0)});}
     });
-    const wb=board();out.push({id:"board",label:"Read the fix board",x:wb.x,y:floorTop()+10,box:[wb.x-22,wb.y-13,44,30],open:showFixes});
+    const wb=board();out.push({id:"board",label:"Read the fix board",x:wb.x,y:floorTop()+10,box:[wb.x-22,wb.y-13,44,30],open:()=>showProblems(0)});
     const ck=clockPos();out.push({id:"clock",label:"Check the team clock",x:Math.min(ck.x,W-14),y:floorTop()+10,box:[ck.x-11,ck.y-11,22,22],open:showTeam});
     return out;
   }
@@ -477,9 +479,9 @@ button.btn.sm{font-size:13px;padding:3px 9px}
     tagEls.forEach(e=>e.remove());tagEls=[];const narrow=stage.clientWidth<620;
     const add=(x,y,text,color,cls)=>{const t=el("div","tag"+(cls?" "+cls:""));if(color){const i=el("i");i.style.background=color;t.append(i);}t.append(document.createTextNode(text));t.style.left=(x/W*100)+"%";t.style.top=(y/H*100)+"%";stage.append(t);tagEls.push(t);};
     desks().forEach(d=>{if(d.open)add(d.x,d.y+21,"Open",C.idle);else{const st=state(d.w);add(d.x,d.y+21,d.w.short||d.w.name,C[st]);}});
-    const fixN=waiting().length,needN=(hq&&hq.needsYou||[]).length,wb=board(),b=desks().find(d=>d.boss);
+    const fixN=waiting().length+iss("OPEN").length,needN=(hq&&hq.needsYou||[]).length,wb=board(),b=desks().find(d=>d.boss);
     const badge=(x,y,n,open,label)=>{if(!n)return;const e=el("button","badge",String(n));e.type="button";e.setAttribute("aria-label",label);e.onclick=ev=>{ev.stopPropagation();open();};e.style.left=(x/W*100)+"%";e.style.top=(y/H*100)+"%";stage.append(e);tagEls.push(e);};
-    badge(wb.x+22,wb.y-13,fixN,showFixes,fixN+" fixes waiting");if(b)badge(b.x+20,b.y-6,needN,showNeeds,needN+" things need you");
+    badge(wb.x+22,wb.y-13,fixN,()=>showProblems(0),fixN+" problems or fixes");if(b)badge(b.x+20,b.y-6,needN,showNeeds,needN+" things need you");
     $("dNeedsN").textContent=needN;$("dNeedsN").classList.toggle("hot2",needN>0);$("dFixesN").textContent=fixN;$("dFixesN").classList.toggle("hot2",fixN>0);
   }
   let youTag=null;
@@ -561,7 +563,7 @@ button.btn.sm{font-size:13px;padding:3px 9px}
     const strip=o=>{const {schedule,shiftMin,order,look,taskId,...r}=o||{};return r;};
     const f={you:strip(w),status_now:LABEL[state(w)],next:nextText(w),live:liveOf(w)?{enabled:liveOf(w).enabled,last_run:liveOf(w).last_run,next_run_at:liveOf(w).next_run_at}:null,fixes:fixes.filter(x=>(x.worker||"").toLowerCase().includes((w.short||w.name||"").toLowerCase().split(" ")[0])).map(x=>({n:x.n,problem:x.problem,fix:x.fix,status:x.status}))};
     const dr=drawers[w.id];if(dr)f.desk=(dr.sections||[]).map(s=>({title:s.title,items:(s.items||[]).slice(0,60).map(i=>`${i.label} — ${i.detail||""}`)}));
-    if(w.look==="boss"){f.team=workers.filter(x=>x!==w).map(x=>({name:x.name,status:LABEL[state(x)],last:x.lastResult,problems:x.problems||[]}));f.needs_stick=(hq&&hq.needsYou)||[];f.last_report=hq&&hq.lastReport;f.all_fixes=fixes.map(x=>({n:x.n,worker:x.worker,problem:x.problem,status:x.status}));}
+    if(w.look==="boss"){f.team=workers.filter(x=>x!==w).map(x=>({name:x.name,status:LABEL[state(x)],last:x.lastResult,problems:issues.length?ownIssues(x).map(i=>"#"+i.n+" "+i.title):(x.problems||[])}));f.needs_stick=(hq&&hq.needsYou)||[];f.last_report=hq&&hq.lastReport;f.all_fixes=fixes.map(x=>({n:x.n,worker:x.worker,problem:x.problem,status:x.status}));}
     return f;
   }
   function talkTab(w){return{name:"Talk",still:true,render(b){
@@ -605,8 +607,13 @@ button.btn.sm{font-size:13px;padding:3px 9px}
         b.append(kv([["Last run",L&&L.last_run?fmtAt(L.last_run.fired_at)+(L.last_run.status?` · ${L.last_run.status.replace("ROUTINE_RUN_STATUS_","").toLowerCase()}`:""):x.lastRun],["Result",x.lastResult],["Doing",st==="work"?"On shift now":x.doing],[x.look==="boss"?"Next report":"Next run",nextText(x)],["Schedule",x.scheduleText],["Turned on",L?(L.enabled?"Yes":"Paused"):null]]));
         if(x.stats&&x.stats.length){const s=el("div","stats");x.stats.forEach(v=>{const d=el("div","stat");d.append(el("b",null,String(v.value)),document.createTextNode(v.label));s.append(d);});b.append(s);}}},
       deskTab(x),
-      {name:`Problems${x.problems&&x.problems.length?` (${x.problems.length})`:""}`,render(b){const ps=x.problems||[];
-        if(!ps.length)b.append(el("div","empty","No problems right now."));else{const u=el("ul","list");ps.forEach(p=>u.append(el("li",null,p)));b.append(u);}
+      {name:(()=>{const n=issues.length?ownIssues(x).length:(x.problems||[]).length;return `Problems${n?` (${n})`:""}`;})(),render(b){
+        if(issues.length){const own=ownIssues(x),blk=blockedBy(x),hold=issues.filter(i=>i.worker===x.id&&i.status==="HOLD");
+          if(!own.length&&!blk.length)b.append(el("div","empty","No problems right now."));
+          own.forEach(i=>b.append(issueCard(i)));
+          blk.forEach(i=>b.append(el("div","msg","⏳ Held up by problem #"+i.n+" on "+wname(i.worker)+"'s list. Nothing to fix here; it clears when that one is fixed.")));
+          if(hold.length){const l=el("button","btn sm","⏸ "+hold.length+" on hold");l.type="button";l.onclick=()=>showProblems(1);b.append(l);}}
+        else{const ps=x.problems||[];if(!ps.length)b.append(el("div","empty","No problems right now."));else{const u=el("ul","list");ps.forEach(p=>u.append(el("li",null,p)));b.append(u);}}
         const key=(x.short||x.name||"").toLowerCase().split(" ")[0];const mine=fixes.filter(f=>(f.worker||"").toLowerCase().includes(key));
         if(mine.length){b.append(el("p","note","Fixes Mr. Mind proposed for this worker:"));mine.forEach(f=>b.append(fixCard(f)));}}},
       {name:"Actions",render(b){actions(b,x);}}],start);});}
@@ -639,6 +646,41 @@ button.btn.sm{font-size:13px;padding:3px 9px}
     if(c==="server_unavailable"||c==="upstream_error")return"Couldn't reach your scheduled tasks just now. It may still have worked, so check the status in a minute before trying again.";
     return"That didn't work ("+(c||"error")+").";}
 
+
+  // ---------- problems: one owner each, three sections ----------
+  const ISTAT={OPEN:"Needs fixing",HOLD:"On hold",DONE:"Completed"};
+  function iss(st){return issues.filter(i=>(i.status||"OPEN")===st).sort((a,c)=>(c.n||0)-(a.n||0));}
+  function wname(id){const w=workers.find(x=>x.id===id);return w?(w.short||w.name):(id||"");}
+  function today(){return new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",timeZone:"America/Chicago"});}
+  function ownIssues(x){return issues.filter(i=>i.worker===x.id&&(i.status||"OPEN")==="OPEN");}
+  function blockedBy(x){return issues.filter(i=>i.worker!==x.id&&(i.status||"OPEN")==="OPEN"&&(i.affects||[]).includes(x.id));}
+  function issueCard(i){
+    const st=i.status||"OPEN",d=el("div","fix "+st),top=el("div","top");
+    top.append(el("span",null,`#${i.n} · ${wname(i.worker)}`),el("span",null,ISTAT[st]));
+    d.append(top,el("div",null,i.title||""));
+    if(i.detail)d.append(el("div","plan",i.detail));
+    if(st==="HOLD")d.append(el("div","plan","⏸ Waiting on "+(i.waitingOn||"someone")+(i.holdSince?" · since "+i.holdSince:"")));
+    if(st==="DONE")d.append(el("div","plan","✅ Done"+(i.doneAt?" "+i.doneAt:"")+(i.doneNote?" · "+i.doneNote:"")));
+    if((i.affects||[]).length&&st!=="DONE")d.append(el("div","plan","Also holds up: "+i.affects.map(wname).join(", ")+" (shown only here)"));
+    if(st!=="DONE")d.append(issueActions(i,st));
+    return d;}
+  function showProblems(start){opener(()=>card("problems","Problems","Each problem lives with one worker only","#9aa3b5",[
+    {name:`Needs fixing (${iss("OPEN").length})`,render(b){const l=iss("OPEN");if(!l.length)b.append(el("div","empty","Nothing needs fixing. 🎉"));l.forEach(i=>b.append(issueCard(i)));
+      b.append(el("p","note","Waiting on someone (like Wendy)? Put it on hold. Fixed it? Tap Done and it moves to Completed."));}},
+    {name:`On hold (${iss("HOLD").length})`,render(b){const l=iss("HOLD");if(!l.length)b.append(el("div","empty","Nothing on hold."));l.forEach(i=>b.append(issueCard(i)));
+      b.append(el("p","note","Mr. Mind doesn't nag about these. He tells you once if something changes."));}},
+    {name:"Completed",render(b){const l=iss("DONE");if(!l.length)b.append(el("div","empty","Nothing completed yet."));l.forEach(i=>b.append(issueCard(i)));}},
+    {name:`Fix ideas (${waiting().length})`,render(b){const l=waiting();if(!l.length)b.append(el("div","empty","No fixes waiting for your OK."));l.forEach(f=>b.append(fixCard(f)));
+      const h=fixes.filter(f=>(f.status||"WAITING")!=="WAITING").sort((a,c)=>(c.n||0)-(a.n||0));if(h.length){b.append(el("p","note","Decided before:"));h.forEach(f=>b.append(fixCard(f)));}}}],start||0));}
+
+  function issueActions(i,st){const acts=el("div","acts");
+    const mk=(t,cls,sub,body)=>{const a=el("a","btn "+cls,t);a.href=mailto(sub,body);a.style.textDecoration="none";acts.append(a);};
+    if(st==="OPEN")mk("⏸ On hold (Wendy)","",`Mr. Mind: HOLD ${i.n} Wendy`,`HOLD ${i.n} waiting on Wendy\n\n(Change "Wendy" if you're waiting on someone else.)\nProblem #${i.n}: ${i.title||""}`);
+    if(st==="HOLD")mk("↩ Needs fixing again","",`Mr. Mind: OPEN ${i.n}`,`OPEN ${i.n}\n\nProblem #${i.n}: ${i.title||""}`);
+    mk("✅ Done","yes",`Mr. Mind: DONE ${i.n}`,`DONE ${i.n}\n\nProblem #${i.n}: ${i.title||""}`);
+    acts.append(el("span","note","Sends Mr. Mind an email. He moves it on his next report."));
+    return acts;}
+
   function fixCard(f){
     const d=el("div","fix "+(f.status||"WAITING")),top=el("div","top");top.append(el("span",null,`#${f.n} · ${f.worker||""}`),el("span",null,f.status||"WAITING"));
     const plan=el("div","plan");plan.append(el("b",null,"My fix: "),document.createTextNode(f.fix||""));d.append(top,el("div",null,f.problem||""),plan);
@@ -661,7 +703,7 @@ button.btn.sm{font-size:13px;padding:3px 9px}
     b.append(el("p",null,"Want another agent on the team? Tell Claude in a chat what the new worker should do and when. Once it exists as a scheduled task, Mr. Mind adds it to his list, reviews its work in every report, and it gets this desk."));
     b.append(el("p","note","Ideas: a Canvas grade watcher, a Redemptio upload checker, a weekly Liguori recap."));}}]));}
 
-  $("dNeeds").onclick=showNeeds;$("dFixes").onclick=showFixes;$("dTeam").onclick=showTeam;
+  $("dNeeds").onclick=showNeeds;$("dFixes").onclick=()=>showProblems(0);$("dTeam").onclick=showTeam;
   if($("fsBtn"))$("fsBtn").onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.getElementById("app").requestFullscreen();}catch(e){$("fsBtn").textContent="Already full screen";}};
 
   function renderHQ(){const t=chi();$("clock").textContent=fmtHM(t.h,t.m);$("skyIcon").dataset.icon=(t.h<7||t.h>=19)?"moon":"sun";paintIcons();const boss=workers.find(w=>w.look==="boss");
@@ -690,12 +732,12 @@ button.btn.sm{font-size:13px;padding:3px 9px}
         const key=await crypto.subtle.importKey("raw",b64u(KEY),"AES-GCM",false,["decrypt"]);
         const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64u(j.iv)},key,b64u(j.ct));
         const d=JSON.parse(new TextDecoder().decode(pt));
-        workers=d.workers||[];hq=d.hq||null;fixes=d.fixes||[];drawers=d.drawers||{};live={};lastSync=d.generatedAt||null;
+        workers=d.workers||[];hq=d.hq||null;fixes=d.fixes||[];issues=d.issues||[];drawers=d.drawers||{};live={};lastSync=d.generatedAt||null;
         try{localStorage.setItem("hq_cache",JSON.stringify(d));}catch(e){}
         rerender();
         if(navigator.setAppBadge){const n=(hq&&hq.needsYou||[]).length;n?navigator.setAppBadge(n).catch(()=>{}):navigator.clearAppBadge().catch(()=>{});}
       }catch(e){
-        try{const d=JSON.parse(localStorage.getItem("hq_cache")||"null");if(d){workers=d.workers||[];hq=d.hq||null;fixes=d.fixes||[];drawers=d.drawers||{};rerender();}}catch(x){}
+        try{const d=JSON.parse(localStorage.getItem("hq_cache")||"null");if(d){workers=d.workers||[];hq=d.hq||null;fixes=d.fixes||[];issues=d.issues||[];drawers=d.drawers||{};rerender();}}catch(x){}
         if(String(e).includes("OperationError"))showSetup("This phone has an old key. Open your newest setup link.");
       }
     }
