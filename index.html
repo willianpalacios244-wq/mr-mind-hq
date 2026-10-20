@@ -162,6 +162,13 @@ button.btn.sm{font-size:13px;padding:3px 9px}
 .hqtoast{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:4;max-width:92%;font:600 12px/1.35 var(--f-mono);color:#0b0d1f;background:#ffe27a;border:2px solid #fff3b0;border-radius:8px;padding:8px 12px;box-shadow:0 0 18px rgba(255,214,90,.6);cursor:pointer;text-align:left}
 .wxt{margin-left:6px;font-size:11px;opacity:.9}
 @media (prefers-reduced-motion: reduce){.tvtick span{animation:none}}
+
+.worldlayer{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none;z-index:2;will-change:transform}
+.worldlayer .badge,.worldlayer .tvtick,.worldlayer .brainlbl,.worldlayer #prompt{pointer-events:auto}
+.brainlbl{position:absolute;z-index:2;background:transparent;border:0;padding:1px 4px;margin:0;cursor:pointer;display:flex;align-items:flex-start;justify-content:flex-start;color:#c4b5fd;font:600 10px/1.2 var(--f-mono);text-shadow:0 0 4px rgba(167,139,250,.9);overflow:hidden;white-space:nowrap}
+.minihint{position:absolute;z-index:3;font:600 11px/1 var(--f-mono);color:#c4b5fd;background:rgba(11,13,31,.7);border:1px solid #3d3480;border-radius:5px;padding:3px 6px;pointer-events:none;transition:opacity .4s}
+body.bigmode .hdr{display:none}
+body.bigmode #app{gap:5px;padding-block:5px}
 </style>
 </head><body>
 
@@ -212,10 +219,14 @@ button.btn.sm{font-size:13px;padding:3px 9px}
 (() => {
   const TZ="America/Chicago", SERVER="Claude Code Remote";
   const stage=document.getElementById("stage"), cv=document.getElementById("cv"), g=cv.getContext("2d");
+  const worldEl=document.createElement("div");worldEl.className="worldlayer";stage.append(worldEl);window.__worldEl=worldEl;worldEl.append(document.getElementById("prompt"));
+  function worldSize(){worldEl.style.width=(W/VW*100)+"%";worldEl.style.height=(H/VH*100)+"%";}
+  function camStep(){const tx=Math.max(0,Math.min(W-VW,player.x-VW/2)),ty=Math.max(0,Math.min(H-VH,player.y-VH*(portrait?.86:.72)));if(!camInit){camX=tx;camY=ty;camInit=true;}else{camX+=(tx-camX)*.14;camY+=(ty-camY)*.14;}
+    worldEl.style.transform=`translate(${-camX/W*100}%,${-camY/H*100}%)`;}
   const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
   const C={ok:"#a3e635",warn:"#ffb547",bad:"#ff6b6b",idle:"#7c86b8",work:"#5ec8ff"};
   const LABEL={ok:"All good",warn:"Needs a look",bad:"Problem",idle:"Off shift",work:"Working now"};
-  let W=320,H=180,WALL=58,portrait=false;
+  let W=320,H=180,WALL=58,portrait=false,VW=320,VH=180,camX=0,camY=0,camInit=false;
   let workers=[],hq=null,fixes=[],issues=[],drawers={},live={},liveErr=null,canWrite=false,db=null,mcp=null,sample=null,openCard=null,frame=0;
   let layout={decor:null,desks:{}};
   const chats={};
@@ -265,10 +276,11 @@ button.btn.sm{font-size:13px;padding:3px 9px}
   // ---------- size ----------
   function resize(){
     const r=stage.getBoundingClientRect(),a=r.width/Math.max(1,r.height);portrait=a<1;
-    if(!portrait){H=222;W=Math.round(H*a);}else{W=210;H=Math.round(W/a);}
-    W=Math.max(200,Math.min(W,520));H=Math.max(150,Math.min(H,520));
-    cv.width=W;cv.height=H;WALL=!portrait?Math.round(Math.min(64,H*.3)):Math.round(Math.min(118,H*.26));
-    if(player.x==null||player.x>W||player.y>H){player.x=Math.round(W*(portrait?.8:.87));player.y=Math.min(H-8,Math.round(defaultSeats().open.y+12));player.tx=null;}
+    if(!portrait){VH=222;VW=Math.round(VH*a);}else{VW=210;VH=Math.round(VW/a);}
+    VW=Math.max(200,Math.min(VW,520));VH=Math.max(150,Math.min(VH,520));
+    W=portrait?Math.round(VW*1.25):Math.max(560,Math.round(VW*1.6));H=portrait?Math.round(VH*1.3):VH;
+    cv.width=VW;cv.height=VH;camInit=false;worldSize();WALL=!portrait?Math.round(Math.min(64,H*.3)):Math.round(Math.min(118,H*.26));
+    if(player.x==null||player.x>W||player.y>H){player.x=Math.round(W*(portrait?.72:.6));player.y=Math.min(H-8,Math.round(defaultSeats().open.y+12));player.tx=null;}
     clampPlayer();
   }
   const R=(x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(Math.round(x),Math.round(y),w,h);};
@@ -278,11 +290,11 @@ button.btn.sm{font-size:13px;padding:3px 9px}
   function defaultSeats(){
     const boss=workers.find(w=>w.look==="boss")||{id:"mrmind",name:"Mr. Mind",short:"Mr. Mind",look:"boss",role:"Boss",status:"idle"};
     const staff=workers.filter(w=>w!==boss).sort((a,b)=>(a.order??99)-(b.order??99));
-    const by=WALL+30;
+    const by=WALL+(portrait?40:36);
     const cols=Math.max(1,Math.min(staff.length||1,Math.floor((W-10)/58))),rows=Math.max(1,Math.ceil(staff.length/cols));
-    const top=by+56,rowGap=portrait?58:52;
+    const top=by+Math.round(portrait?H*.2:H*.26),rowGap=portrait?Math.round(H*.17):62;
     const items=staff.map((w,i)=>{const r=Math.floor(i/cols),c=i%cols,inRow=Math.min(cols,staff.length-r*cols);return{w,x:Math.round(W*(c+1)/(inRow+1)),y:Math.round(top+r*rowGap)};});
-    const oy=Math.min(H-30,Math.round(top+(rows-1)*rowGap+(portrait?62:50)));
+    const oy=Math.min(H-34,Math.round(top+(rows-1)*rowGap+(portrait?Math.round(H*.17):66)));
     return{boss:{w:boss,x:Math.round(W/2),y:by},staff:items,open:{x:Math.round(W*(portrait?.3:.33)),y:oy}};
   }
   function desks(){ // [{id, w|null, boss, open, x, y}]
@@ -465,6 +477,7 @@ button.btn.sm{font-size:13px;padding:3px 9px}
   // ---------- render ----------
   let tagEls=[];
   function draw(){
+    camStep();g.setTransform(1,0,0,1,-Math.round(camX),-Math.round(camY));
     const t=chi(),night=room(t),ds=desks();
     const boss=ds.find(d=>d.boss);
     if(boss){R(boss.x-54,boss.y-17,108,36,"#3a1430");R(boss.x-52,boss.y-15,104,32,"#5a1d45");R(boss.x-50,boss.y-13,100,1,"#ffc94a");R(boss.x-50,boss.y+16,100,1,"#ffc94a");R(boss.x-50,boss.y-13,1,30,"#ffc94a");R(boss.x+49,boss.y-13,1,30,"#ffc94a");for(let i=0;i<5;i++)R(boss.x-40+i*20,boss.y-6,8,1,"#7a2a5f");
@@ -480,6 +493,7 @@ button.btn.sm{font-size:13px;padding:3px 9px}
     list.sort((a,b)=>a.y-b.y).forEach(o=>o.fn());
     lighting(night,ds);
     fx.overlay(t,night,ds);
+    g.setTransform(1,0,0,1,0,0);
     if(editMode){g.strokeStyle="#ffc94a";g.setLineDash([2,2]);movables().forEach(m=>{const s=m===selected;g.globalAlpha=s?1:.35;g.strokeRect(Math.round(m.bx)+.5,Math.round(m.by)+.5,m.bw,m.bh);});g.globalAlpha=1;g.setLineDash([]);}
   }
   // you, with a glowing gold outline (silhouette drawn 1px around the sprite)
@@ -490,18 +504,18 @@ button.btn.sm{font-size:13px;padding:3px 9px}
     const ox=Math.round(player.x-24),oy=Math.round(player.y-52);g.globalAlpha=reduce?.9:(.75+.25*Math.sin(frame*.6));[[-1,0],[1,0],[0,-1],[0,1]].forEach(([dx,dy])=>g.drawImage(outC,ox+dx,oy+dy));g.globalAlpha=1;g.drawImage(youC,ox,oy);}
   function placeTags(){fx.dom();
     tagEls.forEach(e=>e.remove());tagEls=[];const narrow=stage.clientWidth<620;
-    const add=(x,y,text,color,cls)=>{const t=el("div","tag"+(cls?" "+cls:""));if(color){const i=el("i");i.style.background=color;t.append(i);}t.append(document.createTextNode(text));t.style.left=(x/W*100)+"%";t.style.top=(y/H*100)+"%";stage.append(t);tagEls.push(t);};
+    const add=(x,y,text,color,cls)=>{const t=el("div","tag"+(cls?" "+cls:""));if(color){const i=el("i");i.style.background=color;t.append(i);}t.append(document.createTextNode(text));t.style.left=(x/W*100)+"%";t.style.top=(y/H*100)+"%";worldEl.append(t);tagEls.push(t);};
     desks().forEach(d=>{if(d.open)add(d.x,d.y+21,"Open",C.idle);else{const st=state(d.w);add(d.x,d.y+21,d.w.short||d.w.name,C[st]);}});
     const fixN=waiting().length+iss("OPEN").length,needN=(hq&&hq.needsYou||[]).length,wb=board(),b=desks().find(d=>d.boss);
-    const badge=(x,y,n,open,label)=>{if(!n)return;const e=el("button","badge",String(n));e.type="button";e.setAttribute("aria-label",label);e.onclick=ev=>{ev.stopPropagation();open();};e.style.left=(x/W*100)+"%";e.style.top=(y/H*100)+"%";stage.append(e);tagEls.push(e);};
+    const badge=(x,y,n,open,label)=>{if(!n)return;const e=el("button","badge",String(n));e.type="button";e.setAttribute("aria-label",label);e.onclick=ev=>{ev.stopPropagation();open();};e.style.left=(x/W*100)+"%";e.style.top=(y/H*100)+"%";worldEl.append(e);tagEls.push(e);};
     badge(wb.x+22,wb.y-13,fixN,()=>showProblems(0),fixN+" problems or fixes");if(b)badge(b.x+20,b.y-6,needN,showNeeds,needN+" things need you");
     $("dNeedsN").textContent=needN;$("dNeedsN").classList.toggle("hot2",needN>0);$("dFixesN").textContent=fixN;$("dFixesN").classList.toggle("hot2",fixN>0);
   }
   let youTag=null;
-  function moveYouTag(){if(!youTag){youTag=el("div","tag you","You");stage.append(youTag);}youTag.style.left=(player.x/W*100)+"%";youTag.style.top=((player.y+1)/H*100)+"%";}
+  function moveYouTag(){if(!youTag){youTag=el("div","tag you","You");worldEl.append(youTag);}youTag.style.left=(player.x/W*100)+"%";youTag.style.top=((player.y+1)/H*100)+"%";}
 
   // ---------- pointer: walk / tap / drag ----------
-  const toLogical=e=>{const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H};};
+  const toLogical=e=>{const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*VW+camX,y:(e.clientY-r.top)/r.height*VH+camY};};
   const inBox=(p,[x,y,w,h])=>p.x>=x&&p.x<=x+w&&p.y>=y&&p.y<=y+h;
   let editMode=false,selected=null,drag=null;
   function movables(){
@@ -717,7 +731,7 @@ button.btn.sm{font-size:13px;padding:3px 9px}
     b.append(el("p","note","Ideas: a Canvas grade watcher, a Redemptio upload checker, a weekly Liguori recap."));}}]));}
 
   $("dNeeds").onclick=showNeeds;$("dFixes").onclick=()=>showProblems(0);$("dTeam").onclick=showTeam;
-  if($("fsBtn"))$("fsBtn").onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.getElementById("app").requestFullscreen();}catch(e){$("fsBtn").textContent="Already full screen";}};
+  if($("fsBtn"))$("fsBtn").onclick=async()=>{const on=!document.body.classList.contains("bigmode");document.body.classList.toggle("bigmode",on);try{if(on&&!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else if(!on&&document.fullscreenElement)await document.exitFullscreen();}catch(e){}setTimeout(()=>{resize();placeTags();},60);};
 
   function renderHQ(){const t=chi();$("clock").textContent=fmtHM(t.h,t.m);$("skyIcon").dataset.icon=(t.h<7||t.h>=19)?"moon":"sun";paintIcons();const boss=workers.find(w=>w.look==="boss");
     $("nextRep").textContent=boss?nextText(boss):"7:30 am";
@@ -791,9 +805,37 @@ button.btn.sm{font-size:13px;padding:3px 9px}
       if(hq&&hq.weather&&!wx.kind)loadWx();
     }
     // ----- positions -----
-    function tvRect(){const wy=Math.max(6,WALL-48);if(wy>=30){const w=Math.min(150,W-56),h=Math.min(24,wy-12);return{x:Math.round(W/2-w/2),y:Math.round((wy-h)/2)+1,w,h};}
+    function tvRect(){const wy=Math.max(6,WALL-48);if(wy>=30){const w=Math.round(W*.44),h=Math.min(24,wy-14);return{x:8,y:Math.round((wy-h)/2)+1,w,h};}
       const wb=board(),pp=paintPos(),L=wb.x+24,Rr=pp.x-21;if(Rr-L>=40){const w=Math.min(66,Rr-L-4);return{x:Math.round((L+Rr)/2-w/2),y:wy+3,w,h:Math.min(22,WALL-wy-18)};}return null;}
     function shelfPos(){const pp=paintPos();return{x:pp.x,y:WALL-6};}
+    function brainRect(){const wy=Math.max(6,WALL-48);if(wy>=30){const x=Math.round(W*.44)+16,w=W-x-8,h=wy-10;return{x,y:5,w,h};}
+      const pp=paintPos(),ck=clockPos(),L=pp.x+24,Rr=ck.x-14;if(Rr-L>=70){const w=Math.min(130,Rr-L-8);return{x:Math.round((L+Rr)/2-w/2),y:wy+1,w,h:Math.min(44,WALL-wy-12)};}return null;}
+    // ----- Obsidian brain graph -----
+    let graph=null,seenNodes=null,pops={},pulses=[];
+    function setGraph(gr){if(!gr||!gr.pos)return;const firstTime=!graph;graph=gr;let seen=null;try{seen=JSON.parse(ls.get("hq_brain_seen")||"null");}catch(e){}
+      if(seen){const S=new Set(seen);(gr.names||[]).forEach((nm,i)=>{if(!S.has(nm))pops[i]=performance.now();});if(!firstTime||Object.keys(pops).length)SFX.ding();}
+      ls.set("hq_brain_seen",JSON.stringify(gr.names||[]));setTimeout(()=>{try{placeTags();}catch(e){}},0);}
+    const GC=["#a78bfa","#5ec8ff","#ffc94a","#a3e635","#ff5d8f","#ff9f1c","#5ef2ff","#e8e3ff","#c084fc","#7fdca4"];
+    function drawBrain(){const b=brainRect();if(!b)return;
+      R(b.x-3,b.y-3,b.w+6,b.h+6,"#0b0a16");R(b.x-2,b.y-2,b.w+4,b.h+4,has("neon")?"#5ef2ff":"#2b2448");R(b.x-1,b.y-1,b.w+2,b.h+2,"#1b1830");R(b.x,b.y,b.w,b.h,"#090718");
+      R(b.x+Math.round(b.w/2)-6,b.y+b.h+3,12,2,"#2b2448");
+      if(!graph){for(let i=0;i<8;i++)R(b.x+4+((i*29+frame)%(b.w-8)),b.y+4+((i*17)%(b.h-8)),1,1,"#3d3480");return;}
+      const pad=4,aw=b.w-pad*2,ah=b.h-pad*2-6,sc=Math.min(aw*1.35,ah*1.9)/1000,ox=b.x+pad+(aw-1000*sc)/2,oy=b.y+pad+6+(ah-1000*sc*.72)/2,P=graph.pos,t=performance.now()/1000;
+      const XY=i=>{const f=reduce?0:1;return[ox+P[i][0]*sc+Math.sin(t*.7+i*1.7)*.9*f,oy+P[i][1]*sc*.72+Math.cos(t*.6+i*2.3)*.9*f];};
+      g.save();g.beginPath();g.rect(b.x,b.y,b.w,b.h);g.clip();
+      g.strokeStyle="rgba(167,139,250,.35)";g.lineWidth=.6;g.beginPath();(graph.e||[]).forEach(([a,c])=>{const A=XY(a),C=XY(c);g.moveTo(A[0],A[1]);g.lineTo(C[0],C[1]);});g.stroke();
+      if(!reduce&&(graph.e||[]).length){if(Math.random()<.08)pulses.push({e:graph.e[(Math.random()*graph.e.length)|0],t:0});pulses.forEach(p=>{p.t+=.03;const A=XY(p.e[0]),C=XY(p.e[1]);R(A[0]+(C[0]-A[0])*p.t-.5,A[1]+(C[1]-A[1])*p.t-.5,1.5,1.5,"#fff7c2");});pulses=pulses.filter(p=>p.t<1);}
+      const now=performance.now();P.forEach((_,i)=>{const [x,y]=XY(i),d=(graph.d||[])[i]||0,c=GC[((graph.g||[])[i]||0)%GC.length],r=d>4?2:d>0?1.5:1;
+        if(pops[i]){const a=(now-pops[i])/1000;if(a<6){g.strokeStyle=`rgba(255,201,74,${1-a/6})`;g.lineWidth=.8;g.beginPath();g.arc(x,y,2+((a*6)%6),0,Math.PI*2);g.stroke();}else delete pops[i];}
+        g.fillStyle=c;g.globalAlpha=d?1:.55;g.fillRect(x-r/2,y-r/2,r,r);});g.globalAlpha=1;g.restore();
+      R(b.x,b.y,b.w,6,"rgba(20,16,48,.9)");}
+    // second window on wide walls
+    function extraWindow(t){const wy=Math.max(6,WALL-48);const wb=board();const L=58,Rr=wb.x-24;if(Rr-L<56)return;const x0=Math.round((L+Rr)/2-23),[top,bot]=sky(hh()),ix=x0+2,iy=wy+2;
+      R(x0,wy,46,32,"#0e0b22");const gr=g.createLinearGradient(0,iy,0,iy+28);gr.addColorStop(0,top);gr.addColorStop(1,bot);g.fillStyle=gr;g.fillRect(ix,iy,42,28);
+      if(sky(hh())[2]==="night"||sky(hh())[2]==="dusk")[[5,6],[18,3],[33,11],[9,20]].forEach(([x,y],i)=>R(ix+x,iy+y,1,1,(frame+i*5)%13?"#e8e6ff":"#5a5f8f"));
+      if(wx.kind==="rain"||wx.kind==="storm")for(let i=0;i<10;i++)R(ix+((i*9+frame*2)%42),iy+((i*13+frame*5)%28),1,3,"#a9c7ff");
+      if(wx.kind==="snow")for(let i=0;i<12;i++)R(ix+((i*11)%42),iy+((i*7+frame)%28),1,1,"#fff");
+      R(x0+22,wy+2,2,28,"#0e0b22");R(x0+2,wy+15,42,2,"#0e0b22");R(x0-2,wy+31,50,3,"#3b2f78");}
     // ----- WALL: window sky + weather, TV, string lights, bats, trophy shelf -----
     function wall(t,night,wy){
       const h=hh(),[top,bot,ph]=sky(h),ix=10,iy=wy+2,iw=42,ih=28;
@@ -810,6 +852,7 @@ button.btn.sm{font-size:13px;padding:3px 9px}
       R(30,wy+2,2,28,"#0e0b22");R(10,wy+15,42,2,"#0e0b22");
       // sunset / dawn glow on the wall
       if(ph==="sunset"||ph==="dawn"){g.fillStyle="rgba(255,140,60,.06)";g.fillRect(0,0,W,WALL);}
+      extraWindow(t);drawBrain();
       // TV with ticker frame
       const tv=tvRect();if(tv){if(has("neon")){g.save();g.shadowColor=frame%20<18?"#ff4fd8":"#5ef2ff";g.shadowBlur=reduce?3:6;R(tv.x-3,tv.y-3,tv.w+6,tv.h+6,"#ff4fd8");g.restore();R(tv.x-2,tv.y-2,tv.w+4,tv.h+4,"#5ef2ff");}
         R(tv.x-2,tv.y-2,tv.w+4,tv.h+4,has("neon")?"#3a0d4a":"#0b0a16");R(tv.x-1,tv.y-1,tv.w+2,tv.h+2,"#1b1830");R(tv.x,tv.y,tv.w,tv.h,"#07121f");
@@ -872,10 +915,14 @@ button.btn.sm{font-size:13px;padding:3px 9px}
     // ----- DOM: TV ticker, level badge, sound button, temp -----
     function dom(){
       const tv=tvRect();let tk=$("tvTick");
-      if(!tk){tk=el("button","tvtick");tk.id="tvTick";tk.type="button";tk.setAttribute("aria-label","Mr. Mind's big screen: tap to read the last report");tk.append(el("span"));stage.append(tk);tk.onclick=()=>{showNeeds();if(!walk.on)startWalk();};}
-      if(!tv){tk.hidden=true;}else{tk.hidden=false;const sx=stage.clientWidth/W,sy=stage.clientHeight/H;tk.style.left=(tv.x/W*100)+"%";tk.style.top=(tv.y/H*100)+"%";tk.style.width=(tv.w/W*100)+"%";tk.style.height=(tv.h/H*100)+"%";tk.style.fontSize=Math.max(9,Math.min(15,tv.h*sy*.42))+"px";
+      if(!tk){tk=el("button","tvtick");tk.id="tvTick";tk.type="button";tk.setAttribute("aria-label","Mr. Mind's big screen: tap to read the last report");tk.append(el("span"));(window.__worldEl||stage).append(tk);tk.onclick=()=>{showNeeds();if(!walk.on)startWalk();};}
+      if(!tv){tk.hidden=true;}else{tk.hidden=false;const sy=stage.clientHeight/VH;tk.style.left=(tv.x/W*100)+"%";tk.style.top=(tv.y/H*100)+"%";tk.style.width=(tv.w/W*100)+"%";tk.style.height=(tv.h/H*100)+"%";tk.style.fontSize=Math.max(9,Math.min(15,tv.h*sy*.42))+"px";
         const sp=tk.firstChild,txt="📰 "+((hq&&hq.headline)||"Welcome to Mr. Mind HQ")+"   •   Next report "+($("nextRep")?$("nextRep").textContent:"")+(wx.temp!=null?"   •   Festus "+wx.temp+"°":"")+"   •   Office level "+level()+"   ";
         if(sp.dataset.t!==txt){sp.dataset.t=txt;sp.textContent=txt+txt;sp.style.animationDuration=Math.max(12,txt.length*.28)+"s";}}
+      const br=brainRect();let bl=$("brainLbl");
+      if(!bl){bl=el("button","brainlbl");bl.id="brainLbl";bl.type="button";bl.onclick=showBrain;(window.__worldEl||stage).append(bl);}
+      if(!br){bl.hidden=true;}else{bl.hidden=false;bl.style.left=(br.x/W*100)+"%";bl.style.top=(br.y/H*100)+"%";bl.style.width=(br.w/W*100)+"%";bl.style.height=(br.h/H*100)+"%";
+        bl.setAttribute("aria-label","Obsidian brain graph TV. Tap for details.");const lbl="🧠 Brain · "+(graph?graph.n+" notes · "+graph.links+" links":"waiting for Mr. Mind");if(bl.dataset.t!==lbl){bl.dataset.t=lbl;bl.replaceChildren(el("span",null,lbl));}}
       let lv=$("lvBadge");if(!lv){lv=el("button","lvbadge");lv.id="lvBadge";lv.type="button";lv.onclick=showUpgrades;stage.append(lv);}
       const p=points(),nx=UNL.find(u=>p<u.p);lv.textContent=`🏆 Lv ${level()} · ${p}${nx?"/"+nx.p:""}`;lv.setAttribute("aria-label",`Office level ${level()}, ${p} points. Tap to see upgrades.`);
       if(!$("sndBtn")){const b=el("button","btn-i","🔇");b.id="sndBtn";b.type="button";b.setAttribute("aria-pressed","false");b.onclick=()=>setSound(!snd.on);const e=$("editBtn");e.parentNode.insertBefore(b,e);setSound(snd.on);}
@@ -885,11 +932,17 @@ button.btn.sm{font-size:13px;padding:3px 9px}
       {name:"Upgrades",render(b){const p=points();b.append(el("p",null,`You have ${p} points: finished books in Done + problems the team completed + fixes done.`));
         UNL.forEach(u=>{const d=el("div","fix "+(p>=u.p?"DONE":"WAITING")),top=el("div","top");top.append(el("span",null,(p>=u.p?"✅ ":"🔒 ")+u.name),el("span",null,u.p+" pts"));d.append(top);if(p<u.p)d.append(el("div","plan",`${u.p-p} more to unlock`));b.append(d);});}},
       {name:"Wins wall",render(b){const l=issues.filter(i=>i.status==="DONE");if(!l.length)b.append(el("div","empty","No wins yet."));l.forEach(i=>b.append(issueCard(i)));}}]));}
-    function inter(out){const s=shelfPos();out.push({id:"trophies",label:"Look at the wins wall",x:s.x,y:floorTop()+10,box:[s.x-20,s.y-6,40,9],open:showUpgrades});
+    function showBrain(){opener(()=>card("brain","Brain TV","Your Obsidian graph (Claude AI Brain)","#a78bfa",[{name:"Brain",render(b){
+      if(!graph){b.append(el("div","empty","No graph yet. Mr. Mind builds it from your vault at his next report."));return;}
+      b.append(kv([["Notes",String(graph.n)],["Links",String(graph.links)],["Last change",graph.at||""]]));
+      if((graph.new||[]).length){b.append(el("p","note","New since the last change:"));const u=el("ul","list");graph.new.forEach(n=>u.append(el("li",null,n.replace(/\.md$/,""))));b.append(u);}
+      if((graph.top||[]).length){b.append(el("p","note","Most connected notes:"));const u=el("ul","list");graph.top.slice(0,12).forEach(([i,n,d])=>u.append(el("li",null,`${n} — ${d} links`)));b.append(u);}
+      b.append(el("p","note","The graph changes only when your vault changes. Dots float so it feels alive; gold rings = new notes."));}}]));}
+    function inter(out){const br=brainRect();if(br)out.push({id:"brain",label:"Look at the Brain TV",x:br.x+br.w/2,y:floorTop()+10,box:[br.x,br.y,br.w,br.h],open:showBrain});const s=shelfPos();out.push({id:"trophies",label:"Look at the wins wall",x:s.x,y:floorTop()+10,box:[s.x-20,s.y-6,40,9],open:showUpgrades});
       if(has("arcade"))out.push({id:"arcade",label:"Check the office upgrades",x:24,y:H-8,box:[7,H-30,14,26],open:showUpgrades});}
     function blocks(){const b=[];if(has("arcade"))b.push([7,H-28,14,26]);if(has("aquarium"))b.push([Math.round(W*.5)-14,H-17,28,15]);return b;}
     setTimeout(loadWx,400);setInterval(loadWx,30*60e3);
-    return{wall,desk,floor,overlay,step,dom,data,inter,blocks,away:()=>walk.on,type:()=>SFX.type(),ding:()=>SFX.ding(),walk:startWalk,_burst:burst};
+    return{wall,desk,floor,overlay,step,dom,data,inter,blocks,setGraph,away:()=>walk.on,type:()=>SFX.type(),ding:()=>SFX.ding(),walk:startWalk,_burst:burst};
   })();
 
   // ---------- loop ----------
@@ -897,6 +950,7 @@ button.btn.sm{font-size:13px;padding:3px 9px}
   function tick(ts){const dt=Math.min(.05,(ts-last)/1000);last=ts;step(dt);fx.step(dt);acc+=dt;if(acc>.18){acc=0;frame++;}draw();moveYouTag();updatePrompt();requestAnimationFrame(tick);}
   addEventListener("resize",()=>{clearTimeout(window.__rz);window.__rz=setTimeout(()=>{resize();placeTags();},120);});
   resize();placeTags();renderHQ();requestAnimationFrame(tick);
+  {const h=el("div","minihint","↔ The office is bigger now: walk to explore");h.style.left="50%";h.style.bottom="46px";h.style.transform="translateX(-50%)";stage.append(h);setTimeout(()=>{h.style.opacity=0;},6000);setTimeout(()=>h.remove(),7000);}
   setInterval(()=>{renderHQ();placeTags();},30000);
   const rerender=()=>{fx.data();placeTags();renderHQ();refreshCard();};
 
@@ -914,7 +968,7 @@ button.btn.sm{font-size:13px;padding:3px 9px}
         const key=await crypto.subtle.importKey("raw",b64u(KEY),"AES-GCM",false,["decrypt"]);
         const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64u(j.iv)},key,b64u(j.ct));
         const d=JSON.parse(new TextDecoder().decode(pt));
-        workers=d.workers||[];hq=d.hq||null;fixes=d.fixes||[];issues=d.issues||[];drawers=d.drawers||{};live={};lastSync=d.generatedAt||null;
+        workers=d.workers||[];hq=d.hq||null;fixes=d.fixes||[];issues=d.issues||[];drawers=d.drawers||{};live={};if(d.graph)fx.setGraph(d.graph);lastSync=d.generatedAt||null;
         try{localStorage.setItem("hq_cache",JSON.stringify(d));}catch(e){}
         rerender();
         if(navigator.setAppBadge){const n=(hq&&hq.needsYou||[]).length;n?navigator.setAppBadge(n).catch(()=>{}):navigator.clearAppBadge().catch(()=>{});}
