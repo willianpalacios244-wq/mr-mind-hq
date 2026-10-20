@@ -64,7 +64,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .tag{position:absolute;transform:translate(-50%,0);background:rgba(11,13,31,.88);border:1px solid var(--line);border-radius:4px;padding:1px 7px;color:var(--ink);font-family:var(--f-mono);font-weight:600;font-size:clamp(10px,1.1vw,12px);letter-spacing:.3px;white-space:nowrap;line-height:1.35;z-index:2;pointer-events:none;display:flex;align-items:center;gap:5px}
 .tag i{display:inline-block;width:6px;height:6px}
 .tag.you{border-color:var(--gold);color:var(--gold);box-shadow:0 0 8px rgba(255,201,74,.45)}
-.badge{position:absolute;transform:translate(-50%,-50%);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--bad);color:#fff;font:600 11px/18px var(--f-mono);text-align:center;box-shadow:0 0 0 2px #0b0d1f;z-index:2;pointer-events:none}
+.badge{position:absolute;transform:translate(-50%,-50%);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--bad);color:#fff;font:600 11px/18px var(--f-mono);text-align:center;box-shadow:0 0 0 2px #0b0d1f;z-index:3;pointer-events:auto;cursor:pointer;border:0}
+.badge::after{content:"";position:absolute;inset:-12px}
 #prompt{position:absolute;transform:translate(-50%,-100%);z-index:4;font-family:var(--f-display);font-size:15px;background:var(--gold);color:#1b1405;border:2px solid #1b1405;border-radius:6px;padding:4px 12px;cursor:pointer;box-shadow:3px 3px 0 #05040d;white-space:nowrap}
 #prompt kbd{font-family:var(--f-mono);font-size:11px;background:#1b1405;color:var(--gold);padding:0 5px;border-radius:3px;margin-left:6px}
 .help{position:absolute;left:10px;bottom:10px;z-index:3;font-size:12px;color:var(--muted);background:rgba(11,13,31,.86);border:1px solid var(--line);border-radius:6px;padding:5px 9px;max-width:280px}
@@ -430,8 +431,8 @@ button.btn.sm{font-size:13px;padding:3px 9px}
     const out=[];
     desks().forEach(d=>{
       if(d.open)out.push({id:"open",label:"Look at the open desk",x:d.x,y:d.y+26,box:[d.x-18,d.y-12,36,32],open:showHire});
-      else out.push({id:d.w.id,label:`Talk to ${d.w.short||d.w.name}`,x:d.x,y:d.y+26,box:[d.x-(d.boss?23:18),d.y-34,d.boss?46:36,54],open:()=>showWorker(d.w.id,0)});
-      if(d.boss)out.push({id:"tray",label:"Check the in-tray",x:d.x+16,y:d.y+26,box:[d.x+6,d.y-6,16,10],open:showNeeds});
+      else{if(d.boss)out.push({id:"tray",label:"Check the in-tray",x:d.x+16,y:d.y+26,box:[d.x+6,d.y-12,22,16],open:showNeeds});
+        out.push({id:d.w.id,label:`Talk to ${d.w.short||d.w.name}`,x:d.x,y:d.y+26,box:[d.x-(d.boss?23:18),d.y-34,d.boss?46:36,54],open:()=>showWorker(d.w.id,0)});}
     });
     const wb=board();out.push({id:"board",label:"Read the fix board",x:wb.x,y:floorTop()+10,box:[wb.x-22,wb.y-13,44,30],open:showFixes});
     const ck=clockPos();out.push({id:"clock",label:"Check the team clock",x:Math.min(ck.x,W-14),y:floorTop()+10,box:[ck.x-11,ck.y-11,22,22],open:showTeam});
@@ -477,8 +478,8 @@ button.btn.sm{font-size:13px;padding:3px 9px}
     const add=(x,y,text,color,cls)=>{const t=el("div","tag"+(cls?" "+cls:""));if(color){const i=el("i");i.style.background=color;t.append(i);}t.append(document.createTextNode(text));t.style.left=(x/W*100)+"%";t.style.top=(y/H*100)+"%";stage.append(t);tagEls.push(t);};
     desks().forEach(d=>{if(d.open)add(d.x,d.y+21,"Open",C.idle);else{const st=state(d.w);add(d.x,d.y+21,d.w.short||d.w.name,C[st]);}});
     const fixN=waiting().length,needN=(hq&&hq.needsYou||[]).length,wb=board(),b=desks().find(d=>d.boss);
-    const badge=(x,y,n)=>{if(!n)return;const e=el("div","badge",String(n));e.style.left=(x/W*100)+"%";e.style.top=(y/H*100)+"%";stage.append(e);tagEls.push(e);};
-    badge(wb.x+22,wb.y-13,fixN);if(b)badge(b.x+20,b.y-6,needN);
+    const badge=(x,y,n,open,label)=>{if(!n)return;const e=el("button","badge",String(n));e.type="button";e.setAttribute("aria-label",label);e.onclick=ev=>{ev.stopPropagation();open();};e.style.left=(x/W*100)+"%";e.style.top=(y/H*100)+"%";stage.append(e);tagEls.push(e);};
+    badge(wb.x+22,wb.y-13,fixN,showFixes,fixN+" fixes waiting");if(b)badge(b.x+20,b.y-6,needN,showNeeds,needN+" things need you");
     $("dNeedsN").textContent=needN;$("dNeedsN").classList.toggle("hot2",needN>0);$("dFixesN").textContent=fixN;$("dFixesN").classList.toggle("hot2",fixN>0);
   }
   let youTag=null;
