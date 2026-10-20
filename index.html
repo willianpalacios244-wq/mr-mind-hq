@@ -699,7 +699,7 @@ button.btn.sm{font-size:13px;padding:3px 9px}
       }
     }
     function showSetup(why){opener(()=>card("setup","Connect the app","One-time setup","#ffc94a",[{name:"Setup",render(b){
-      b.append(el("p",null,why||"Open the setup link from Mr. Mind's email on this phone. It unlocks your team's data for this app only."));
+      b.append(el("p",null,why||"Scan the setup QR code (Desktop › Mr. Mind › app_secrets › phone_setup_QR.png) with this phone's camera. It unlocks your team's data for this app only."));
       b.append(el("p","note","Your data is encrypted. Without the setup link nobody can read it, even with the app's address."));}}]));}
     $("syncBtn").onclick=load;
     document.addEventListener("visibilitychange",()=>{if(!document.hidden)load();});
