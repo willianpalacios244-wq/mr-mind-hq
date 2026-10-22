@@ -289,6 +289,41 @@ button.btn.sm{font-size:13px;padding:3px 9px}
   #card{top:auto;bottom:0;transform:translateX(-50%);width:100%;height:86%;border-radius:12px 12px 0 0;padding-bottom:env(safe-area-inset-bottom,0px)}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* v31 phone header: menu circle (left) · centered title · level circle (right); icons in a drop-down */
+.menub,.lvring{display:none}
+@media (max-width:760px){
+  .hdr{display:grid;grid-template-columns:56px minmax(0,1fr) 56px;align-items:center;gap:8px 8px;padding:8px 10px;position:relative}
+  .hdr .logo{display:none}
+  .hdr .ttl{grid-column:2;grid-row:1;justify-self:center;align-items:center;text-align:center}
+  .hdr h1{font-size:24px}
+  .online{font-size:14px}
+  .when{grid-column:1/-1;grid-row:2;justify-content:center}
+  .menub{grid-column:1;grid-row:1;display:grid;place-items:center;position:relative;width:52px;height:52px;border-radius:50%;background:rgba(10,8,30,.75);border:var(--b) solid rgba(124,77,255,.6);cursor:pointer;padding:0;color:#ece7ff}
+  .menub .bars{display:flex;flex-direction:column;gap:5px;align-items:flex-start}
+  .menub .bars i{display:block;height:2.5px;border-radius:2px;background:currentColor;width:20px}.menub .bars i:last-child{width:13px}
+  .hdr.open .menub{border-color:var(--violet);box-shadow:0 0 14px -3px var(--violet)}
+  .menub .cnt{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:var(--bad);color:#fff;font:800 11px/18px var(--f-display);padding:0 5px;box-sizing:border-box;box-shadow:0 0 0 2px var(--bg)}
+  .hdr .acts2{display:none;position:absolute;left:8px;top:66px;z-index:30;flex-direction:column;gap:6px;padding:8px;margin:0;min-width:210px;background:linear-gradient(180deg,#1d1840,#141130);border:var(--b) solid var(--violet);border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.55),0 0 20px -8px var(--violet)}
+  .hdr.open .acts2{display:flex}
+  .hdr .acts2 .ibtn{width:100%;height:46px;display:flex;justify-content:flex-start;gap:12px;padding:0 12px;border-radius:10px;font:800 15px var(--f-display)}
+  .hdr .acts2 .ibtn::after{content:attr(title)}
+  .hdr .acts2 .ibtn .px{width:22px;height:22px}
+  .hdr .acts2 .ibtn .cnt{position:static;margin-left:auto;order:2;box-shadow:none}
+  .lvring{grid-column:3;grid-row:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;width:56px;height:56px;border-radius:50%;padding:0;border:0;cursor:pointer;color:#fff;
+    background:conic-gradient(var(--violet) calc(var(--p,0)*1%),rgba(124,77,255,.18) 0);box-shadow:0 0 14px -4px var(--violet)}
+  .lvring::before{content:"";position:absolute;inset:4px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#231b52,#0e0b24)}
+  .lvring>*{position:relative}
+  .lvring .rc{width:18px;height:11px;margin-bottom:1px}
+  .lvring b{font:900 17px/1 var(--f-display)}
+  .lvring small{font:700 8.5px/1.1 var(--f-display);color:#cfc8f2;margin-top:1px}
+  .bottom .lvl{display:none}
+  /* keep the top clear of the iPhone's blurred status-bar edge */
+  #app{padding-top:max(10px,calc(env(safe-area-inset-top,0px) * .35))}
+}
+@media (max-width:760px) and (display-mode:standalone){
+  body::before{height:calc(env(safe-area-inset-top,0px) + 26px)}
+  #app{padding-top:26px}
+}
 
 .tvtick{position:absolute;z-index:2;overflow:hidden;background:transparent;border:0;padding:0;margin:0;color:#5ef2ff;font-family:var(--f-mono);font-weight:600;white-space:nowrap;display:flex;align-items:center;cursor:pointer;text-shadow:0 0 4px rgba(94,242,255,.8)}
 .tvtick span{display:inline-block;padding-left:4px;animation:tvroll 30s linear infinite}
@@ -326,16 +361,18 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
 </style>
 
 <div id="app">
-  <header class="panel hdr">
+  <header class="panel hdr" id="hdr">
+    <button class="menub" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="acts2"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="cnt" id="menuN" hidden>0</span></button>
     <span class="px logo" data-icon="brain" aria-hidden="true"></span>
     <div class="ttl"><h1>Mr. Mind <span>HQ</span></h1><div class="online off" id="online"><i aria-hidden="true"></i><span id="onlineT">Connecting…</span></div></div>
     <div class="when" role="timer" aria-label="Chicago time"><span class="px cal" data-icon="calendar" aria-hidden="true"></span><div class="wl"><div class="w1"><b>Today</b><span class="t" id="clock">--:--</span><span class="px" id="skyIcon" data-icon="moon" aria-hidden="true"></span><span class="wx" id="wxT"></span></div><small>Next report <span id="nextRep">--</span></small></div></div>
-    <div class="acts2">
+    <div class="acts2" id="acts2">
       <button class="ibtn" id="bellBtn" type="button" aria-label="Things that need you" title="Things that need you"><span class="px" data-icon="bell" aria-hidden="true"></span><span class="cnt" id="bellN" hidden>0</span></button>
       <button class="ibtn home" id="homeBtn" type="button" aria-label="Back to my spot" title="Back to my spot"><span class="px" data-icon="homeG" aria-hidden="true"></span></button>
-      <button class="ibtn" id="appBtn" type="button" aria-label="App: sync, notifications, setup" title="App"><span aria-hidden="true" style="font-size:24px;line-height:1">📱</span></button><button class="ibtn" id="setBtn" type="button" aria-label="Settings: theme, outfits and office" title="Settings"><span class="px" data-icon="sliders" aria-hidden="true"></span></button>
+      <button class="ibtn" id="appBtn" type="button" aria-label="App: sync, notifications, setup" title="App"><span aria-hidden="true" style="font-size:22px;line-height:1">📱</span></button><button class="ibtn" id="setBtn" type="button" aria-label="Settings: theme, outfits and office" title="Settings"><span class="px" data-icon="sliders" aria-hidden="true"></span></button>
       <button class="ibtn" id="fsBtn" type="button" aria-label="Full screen" title="Full screen"><span class="px" data-icon="full" aria-hidden="true"></span></button>
     </div>
+    <button class="lvring" id="lvRing" type="button" aria-label="Level and office upgrades"><span class="px rc" data-icon="crown" aria-hidden="true"></span><b id="lvRingN">1</b><small id="lvRingXP"></small></button>
     <p id="sub"></p>
   </header>
 
@@ -1548,6 +1585,19 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     }
   })();
 })();
+</script>
+<script>
+(()=>{const $=id=>document.getElementById(id),hdr=$("hdr"),mb=$("menuBtn");if(!hdr||!mb)return;
+  const close=()=>{hdr.classList.remove("open");mb.setAttribute("aria-expanded","false");};
+  mb.onclick=e=>{e.stopPropagation();const on=!hdr.classList.contains("open");hdr.classList.toggle("open",on);mb.setAttribute("aria-expanded",String(on));};
+  $("acts2").addEventListener("click",()=>setTimeout(close,0));
+  document.addEventListener("click",e=>{if(!hdr.contains(e.target))close();});
+  addEventListener("keydown",e=>{if(e.key==="Escape")close();});
+  const syncBell=()=>{const b=$("bellN"),m=$("menuN");if(b&&m){m.textContent=b.textContent;m.hidden=b.hidden;}};
+  const syncLv=()=>{const r=$("lvRing");if(!r)return;$("lvRingN").textContent=$("lvN").textContent;const xp=($("lvXP").textContent||"").replace(/^\s*·\s*/,"").replace(/\s*XP.*$/,"");$("lvRingXP").textContent=xp?xp+" XP":"";
+    const w=parseFloat($("lvFill").style.width)||0;r.style.setProperty("--p",w);r.title=$("lvBar").title||"";r.setAttribute("aria-label",`Level ${$("lvN").textContent}, ${xp} XP. Office upgrades`);};
+  const mo=new MutationObserver(()=>{syncBell();syncLv();});["bellN","lvN","lvXP","lvFill"].forEach(id=>{const e=$(id);if(e)mo.observe(e,{attributes:true,childList:true,characterData:true,subtree:true});});
+  $("lvRing").onclick=()=>$("crownBtn").click();syncBell();syncLv();})();
 </script>
 
 </body></html>
