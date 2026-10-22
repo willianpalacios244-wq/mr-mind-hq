@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#07061a"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v35";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#07061a"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v36";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -360,6 +360,8 @@ button.btn.sm{font-size:13px;padding:3px 9px}
   html.pwa #app{padding-top:calc(env(safe-area-inset-top,0px) + 26px)}
   html.pwa body::before{height:calc(env(safe-area-inset-top,0px) + 22px)}
 }
+/* v36: Full screen never hides the panels; no Full screen button on the iPhone app (iOS can't do it) */
+html.pwa #fsBtn{display:none!important}
 /* v35 phone: glass header floating over the office; the office runs up under the status bar */
 @media (max-width:760px){
   #app,html.pwa #app{padding-top:0}
@@ -388,7 +390,7 @@ button.btn.sm{font-size:13px;padding:3px 9px}
 .worldlayer .badge,.worldlayer .tvtick,.worldlayer .brainlbl,.worldlayer #prompt{pointer-events:auto}
 .brainlbl{position:absolute;z-index:2;background:transparent;border:0;padding:1px 4px;margin:0;cursor:pointer;display:flex;align-items:flex-start;justify-content:flex-start;color:#c4b5fd;font:600 10px/1.2 var(--f-mono);text-shadow:0 0 4px rgba(167,139,250,.9);overflow:hidden;white-space:nowrap}
 .minihint{position:absolute;z-index:3;font:700 12px/1 var(--f-display);white-space:nowrap;color:#c4b5fd;background:rgba(11,13,31,.7);border:1px solid #3d3480;border-radius:5px;padding:3px 6px;pointer-events:none;transition:opacity .4s}
-body.bigmode .bottom{display:none}
+
 body.bigmode #app{gap:6px;padding-block:6px}
 
 .tvtick,.brainlbl{transform-origin:0 0}
