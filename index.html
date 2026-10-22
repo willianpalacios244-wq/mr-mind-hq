@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#07061a"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#07061a"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v34";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -57,7 +57,7 @@
   function showApp(force){if(document.getElementById("appM"))return;const m=document.createElement("div");m.id="appM";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");
     const bx=document.createElement("div");bx.className="bx";m.append(bx);const h=(t,x)=>{const e=document.createElement(t);if(x!=null)e.textContent=x;return e;};
     const close=h("button","✕");close.className="x";close.setAttribute("aria-label","Close");close.onclick=()=>m.remove();if(KEY)bx.append(close);
-    bx.append(h("h2","📱 Mr. Mind app"));
+    bx.append(h("h2","📱 Mr. Mind app"));bx.append(Object.assign(h("p","Version "+(window.__HQV||"?")),{style:"font-size:12px;opacity:.7;margin-top:-4px"}));
     bx.append(h("p",KEY?(syncErr?`⚠️ ${syncErr}`:`✅ Synced with Mr. Mind · last report data ${fmt(lastSync)}`):"Not connected yet."));
     if(KEY){const r=h("div");r.className="row";const s=h("button","🔄 Sync now");s.className="g";s.onclick=async()=>{s.disabled=true;await load();m.remove();showApp();};
       const hq=h("a","Open HQ in Claude");hq.className="b";hq.href="https://claude.ai/artifact/5FVAfUVcsxJMcTWzuXWvXi";hq.target="_blank";r.append(s,hq);bx.append(r);
@@ -346,6 +346,15 @@ button.btn.sm{font-size:13px;padding:3px 9px}
   html,body{height:100%;overflow:hidden}
   #app{position:fixed;top:0;right:0;bottom:0;left:0;height:auto;max-width:none;margin:0;padding-top:calc(env(safe-area-inset-top,0px) + 6px);padding-bottom:0}
   body::before{height:0}
+}
+/* v34 phone date bar: Today + time far left · next report in the middle · moon + temperature far right */
+@media (max-width:760px){
+  .when{display:flex;justify-content:space-between;align-items:center;gap:6px}
+  .when .wl,.when .w1{display:contents}
+  .when .cal{order:1} .when .w1>b{order:2} .when .t{order:3}
+  .when small{order:4;flex:1 1 auto;min-width:0;text-align:center;font-size:10.5px}
+  .when #skyIcon{order:5;margin-left:0} .when #wxT{order:6}
+  .when .w1>b,.when .t,.when #wxT{font-size:12.5px;font-weight:800;white-space:nowrap}
 }
 @media (max-width:760px){
   html.pwa #app{padding-top:calc(env(safe-area-inset-top,0px) + 26px)}
