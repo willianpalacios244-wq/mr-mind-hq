@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#07061a"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v34";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#07061a"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v35";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -359,6 +359,21 @@ button.btn.sm{font-size:13px;padding:3px 9px}
 @media (max-width:760px){
   html.pwa #app{padding-top:calc(env(safe-area-inset-top,0px) + 26px)}
   html.pwa body::before{height:calc(env(safe-area-inset-top,0px) + 22px)}
+}
+/* v35 phone: glass header floating over the office; the office runs up under the status bar */
+@media (max-width:760px){
+  #app,html.pwa #app{padding-top:0}
+  body::before,html.pwa body::before{height:0}
+  .hdr{position:absolute;left:max(8px,env(safe-area-inset-left,0px));right:max(8px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 6px);z-index:12;
+    background:linear-gradient(180deg,rgba(40,30,90,.32),rgba(20,15,50,.22))!important;
+    -webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);
+    border:1px solid rgba(255,255,255,.14)!important;box-shadow:0 8px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.12)!important}
+  html.pwa .hdr{top:calc(env(safe-area-inset-top,0px) + 4px)}
+  .when{background:rgba(10,8,30,.28);border-color:rgba(255,255,255,.12);box-shadow:none}
+  .menub{background:rgba(10,8,30,.3);border-color:rgba(255,255,255,.18)}
+  #stage{margin:0 calc(-1 * max(8px,env(safe-area-inset-left,0px)));border-radius:0 0 16px 16px;border-top:0;border-left:0;border-right:0}
+  #stage .floors,#stage .zoombox{top:calc(var(--hdrH,104px) + env(safe-area-inset-top,0px) + 14px)}
+  #stage .floors{left:12px} #stage .zoombox{right:12px}
 }
 
 .tvtick{position:absolute;z-index:2;overflow:hidden;background:transparent;border:0;padding:0;margin:0;color:#5ef2ff;font-family:var(--f-mono);font-weight:600;white-space:nowrap;display:flex;align-items:center;cursor:pointer;text-shadow:0 0 4px rgba(94,242,255,.8)}
@@ -1635,7 +1650,8 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
   const syncLv=()=>{const r=$("lvRing");if(!r)return;$("lvRingN").textContent=$("lvN").textContent;const xp=($("lvXP").textContent||"").replace(/^\s*·\s*/,"").replace(/\s*XP.*$/,"");$("lvRingXP").textContent=xp?xp+" XP":"";
     const w=parseFloat($("lvFill").style.width)||0;r.style.setProperty("--p",w);r.title=$("lvBar").title||"";r.setAttribute("aria-label",`Level ${$("lvN").textContent}, ${xp} XP. Office upgrades`);};
   const mo=new MutationObserver(()=>{syncBell();syncLv();});["bellN","lvN","lvXP","lvFill"].forEach(id=>{const e=$(id);if(e)mo.observe(e,{attributes:true,childList:true,characterData:true,subtree:true});});
-  $("lvRing").onclick=()=>$("crownBtn").click();syncBell();syncLv();})();
+  $("lvRing").onclick=()=>$("crownBtn").click();syncBell();syncLv();
+  const setH=()=>document.documentElement.style.setProperty("--hdrH",hdr.offsetHeight+"px");setH();if(window.ResizeObserver)new ResizeObserver(setH).observe(hdr);})();
 </script>
 
 </body></html>
