@@ -87,7 +87,7 @@
     document.addEventListener("visibilitychange",()=>{if(!document.hidden)load();});setInterval(load,5*60e3);load();});
   if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 })();
-</script><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+</script><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}@media (max-width:760px){:root{padding-bottom:0!important}}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Mr. Mind HQ</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -320,9 +320,28 @@ button.btn.sm{font-size:13px;padding:3px 9px}
   /* keep the top clear of the iPhone's blurred status-bar edge */
   #app{padding-top:max(10px,calc(env(safe-area-inset-top,0px) * .35))}
 }
+/* v32 phone: smaller header, smaller bottom panels, menu bar flush with the bottom edge */
+@media (max-width:760px){
+  .hdr{grid-template-columns:42px minmax(0,1fr) 46px;gap:5px 6px;padding:5px 8px}
+  .hdr h1{font-size:19px} .online{font-size:12px;gap:5px} .online i{width:7px;height:7px}
+  .hdr .ttl{gap:2px}
+  .menub{width:40px;height:40px} .menub .bars{gap:4px} .menub .bars i{width:16px;height:2px} .menub .bars i:last-child{width:10px}
+  .lvring{width:46px;height:46px} .lvring::before{inset:3.5px} .lvring .rc{width:14px;height:9px} .lvring b{font-size:14px} .lvring small{font-size:7.5px}
+  .when{padding:3px 8px;gap:6px;border-radius:9px} .when .w1{font-size:12.5px;gap:6px} .when small{font-size:10.5px} .when .cal{width:15px;height:15px} .when .w1 .px{width:14px;height:14px;margin-left:4px}
+  .hdr .acts2{top:50px}
+  #app{gap:5px;padding-bottom:0}
+  .bottom{gap:5px}
+  .tile{padding:4px 2px;gap:1px;border-radius:10px} .tile .ic{width:20px;height:20px} .tile .ic .px{width:17px;height:15px} .tile .ic.c{font-size:11px}
+  .tile b{font-size:15px} .tile small{font-size:9px}
+  .needs{padding:4px;gap:4px;border-radius:10px} .nrow{padding:4px 7px;font-size:12.5px;gap:6px;border-radius:8px} .nrow .ci{width:18px;height:18px;font-size:11px} .nrow .ci .px{width:11px;height:11px}
+  #dock{margin:0 calc(-1 * max(8px,env(safe-area-inset-left,0px))) 0;border-radius:14px 14px 0 0;border-bottom:0;padding:4px 6px calc(4px + env(safe-area-inset-bottom,0px))}
+  #dock button{height:42px;font-size:12px;gap:1px} #dock button .px{width:18px;height:16px}
+  #dock .n{top:2px;min-width:16px;height:16px;line-height:16px;font-size:10px}
+  #pal{margin-bottom:calc(4px + env(safe-area-inset-bottom,0px))}
+}
 @media (max-width:760px) and (display-mode:standalone){
-  body::before{height:calc(env(safe-area-inset-top,0px) + 26px)}
-  #app{padding-top:26px}
+  body::before{height:calc(env(safe-area-inset-top,0px) + 20px)}
+  #app{padding-top:20px}
 }
 
 .tvtick{position:absolute;z-index:2;overflow:hidden;background:transparent;border:0;padding:0;margin:0;color:#5ef2ff;font-family:var(--f-mono);font-weight:600;white-space:nowrap;display:flex;align-items:center;cursor:pointer;text-shadow:0 0 4px rgba(94,242,255,.8)}
