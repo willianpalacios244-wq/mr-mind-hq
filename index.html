@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#07061a"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v36";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v37";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -370,11 +370,12 @@ html.pwa #fsBtn{display:none!important}
     background:linear-gradient(180deg,rgba(40,30,90,.32),rgba(20,15,50,.22))!important;
     -webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);
     border:1px solid rgba(255,255,255,.14)!important;box-shadow:0 8px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.12)!important}
-  html.pwa .hdr{top:calc(env(safe-area-inset-top,0px) + 4px)}
+  :root{--hdrOff:6px} html.pwa{--hdrOff:36px}
+  .hdr,html.pwa .hdr{top:calc(env(safe-area-inset-top,0px) + var(--hdrOff))}
   .when{background:rgba(10,8,30,.28);border-color:rgba(255,255,255,.12);box-shadow:none}
   .menub{background:rgba(10,8,30,.3);border-color:rgba(255,255,255,.18)}
   #stage{margin:0 calc(-1 * max(8px,env(safe-area-inset-left,0px)));border-radius:0 0 16px 16px;border-top:0;border-left:0;border-right:0}
-  #stage .floors,#stage .zoombox{top:calc(var(--hdrH,104px) + env(safe-area-inset-top,0px) + 14px)}
+  #stage .floors,#stage .zoombox{top:calc(var(--hdrH,104px) + env(safe-area-inset-top,0px) + var(--hdrOff) + 10px)}
   #stage .floors{left:12px} #stage .zoombox{right:12px}
 }
 
