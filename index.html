@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v38";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v39";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -463,7 +463,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
       <button type="button" data-add="plant">Plant</button><button type="button" data-add="planter">Planter</button><button type="button" data-add="rug">Rug</button><button type="button" data-add="sofa">Sofa</button><button type="button" data-add="coffee">Table</button>
       <button type="button" data-add="sidetable">Side table</button><button type="button" data-add="bookshelf">Bookshelf</button><button type="button" data-add="lamp">Lamp</button><button type="button" data-add="foosball">Foosball</button>
       <button type="button" data-add="cooler">Cooler</button><button type="button" data-add="cat">Cat</button><button type="button" data-add="trophy">Trophy</button>
-      <button type="button" id="palRug" hidden>Rug color</button><button type="button" id="palDel" hidden>Remove</button><button type="button" id="palReset">Reset</button><button type="button" id="palDone" class="sel">Done</button>
+      <button type="button" id="palRot" hidden>⟳ Rotate</button><button type="button" id="palRug" hidden>Rug color</button><button type="button" id="palDel" hidden>Remove</button><button type="button" id="palReset">Reset</button><button type="button" id="palDone" class="sel">Done</button>
     </nav>
   </div>
 </div>
@@ -590,13 +590,13 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
 
   // ---------- Stick's desks ----------
   // Floor 2 is Stick's own office; floor 1 is the team, with Stick's desk in the middle on the glowing rug.
-  const HOME={2:{desk:{i:9.6,j:2.6},w:3.4,seat:{i:11.3,j:2.05},stand:[11.3,4.6]},1:{desk:{i:11.0,j:10.8},w:2.8,seat:{i:12.4,j:10.25},stand:[12.4,12.7]}};
-  const DESK=HOME[2].desk,SEAT=HOME[2].seat,STAND=HOME[2].stand,syncHome=()=>{const L2=layout.desks&&layout.desks.stick2;if(L2&&L2.i!=null){DESK.i=L2.i;DESK.j=L2.j;}else{DESK.i=9.6;DESK.j=2.6;}SEAT.i=DESK.i+1.7;SEAT.j=DESK.j-.55;STAND[0]=DESK.i+1.7;STAND[1]=DESK.j+2.0;},ELEV={1:[1.1,12.8],2:[1.1,12.8]};
+  const HOME={2:{desk:{i:9.6,j:2.6},w:4.4,seat:{i:11.8,j:2.05},stand:[11.8,4.6]},1:{desk:{i:11.0,j:10.8},w:2.8,seat:{i:12.4,j:10.25},stand:[12.4,12.7]}};
+  const DESK=HOME[2].desk,SEAT=HOME[2].seat,STAND=HOME[2].stand,syncHome=()=>{const L2=layout.desks&&layout.desks.stick2;if(L2&&L2.i!=null){DESK.i=L2.i;DESK.j=L2.j;}else{DESK.i=9.6;DESK.j=2.6;}SEAT.i=DESK.i+2.2;SEAT.j=DESK.j-.55;STAND[0]=DESK.i+2.2;STAND[1]=DESK.j+2.0;},ELEV={1:[1.1,12.8],2:[1.1,12.8]};
   syncHome();const homeFloor=()=>2; // Stick sits in his Floor 2 office (the Floor 1 middle desk was removed)
   let viewFloor=2;try{const v=+localStorage.getItem("hq_floor");if(v===1||v===2)viewFloor=v;}catch(e){}
   // rooms with walls and a door (din = just inside, dout = just outside)
   const ROOMS1=[{id:"boss",i0:0,i1:6.8,j1:4.8,din:[4.8,4.1],dout:[4.8,5.6],walls:[[0,4.8,4.2,4.8],[5.4,4.8,6.8,4.8],[6.8,0,6.8,4.8]]}];
-  const ROOMS2=[{id:"lobby",i0:0,i1:5.2,j1:17.1,din:[4.4,6.25],dout:[6.0,6.25],walls:[[5.2,0,5.2,5.5],[5.2,7,5.2,17]]}];
+  const ROOMS2=[{id:"lobby",i0:0,i1:5.2,j1:17.1,din:[4.4,6.25],dout:[6.0,6.25],walls:[[5.2,0,5.2,5.5],[5.2,7,5.2,17]]},{id:"bedroom",i0:17,i1:28.1,j1:6,din:[21.1,5.2],dout:[21.1,6.8],walls:[[17,0,17,6],[17,6,20.4,6],[21.8,6,28,6]]}];
   const roomsOf=fl=>fl===2?ROOMS2:ROOMS1;
   const roomAt=(i,j,fl)=>roomsOf(fl||player.floor).find(r=>i>r.i0&&i<r.i1&&j<r.j1)||null;
   const ROOMS=ROOMS1;
@@ -616,9 +616,11 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     bookshelf:{wi:1.8,wj:.45,h:2.3,name:"Bookshelf"},bossshelf:{wi:1.8,wj:.45,h:2.3,name:"Reports shelf"},shelfmini:{wi:1.2,wj:.4,h:1.8,name:"Small shelf"},console:{wi:3.0,wj:.55,h:1.2,name:"Cabinet"},
     sign:{wi:.3,wj:3.6,h:2.2,name:"Stick's office sign"},arcade:{wi:.8,wj:.8,h:2.1,need:"arcade",name:"Arcade"},aquarium:{wi:1.6,wj:.6,h:1.4,need:"aquarium",name:"Aquarium"},
     dining:{wi:3.2,wj:2.8,h:1.2,name:"Dining set"},bench:{wi:.8,wj:2.4,h:.5,name:"Bench"},tv:{wi:2.2,wj:.8,h:1.4,name:"TV"},teddy:{wi:.3,wj:.3,h:.6,block:false,name:"Teddy"},pizza:{wi:.3,wj:.3,h:.5,block:false,name:"Pizza"},
+    bed:{wi:2.2,wj:3.0,h:1.4,name:"Bed"},nightstand:{wi:.6,wj:.6,h:.9,name:"Nightstand"},wardrobe:{wi:1.7,wj:.6,h:2.6,name:"Wardrobe"},dresser:{wi:.55,wj:1.6,h:1.9,name:"Dresser"},beanbag:{wi:.8,wj:.8,h:.7,name:"Bean bag"},
     rug:{wi:3,wj:3,h:.05,rug:true,block:false,name:"Rug"}};
+  const ROT_OK=new Set(["plant","lamp","sofa","sofa2","navysofa","cat","trophy","cooler","fridge","foosball","lockbox","sidetable","coffee","planter","bookshelf","bossshelf","shelfmini","console","dining","bench","tv","teddy","pizza","bed","nightstand","wardrobe","dresser","beanbag"]);
   const RUGC={purple:["#181b46","#a855f7"],red:["#4f1b26","#ff5d6c"],violet:["rgba(60,40,110,.3)","#a855f7"],gold:["#2a2410","#fbbf24"],teal:["#0f2f33","#2dd4bf"]};
-  const sizeOf=d=>{const t=DECOR[d.type]||DECOR.plant;return t.rug?{wi:d.w||3,wj:d.h||3,h:.05}:t;};
+  const sizeOf=d=>{const t=DECOR[d.type]||DECOR.plant;return t.rug?{wi:d.w||3,wj:d.h||3,h:.05}:((d.r||0)&1)&&ROT_OK.has(d.type)?{...t,wi:t.wj,wj:t.wi}:t;};
   function defaultDecor(){const L=[];let n=0;const P=(f,type,i,j,x)=>L.push({id:type+"_"+(n++),type,i,j,f,...(x||{})});
     // Floor 1
     P(1,"rug",10.4,10.0,{w:6,h:4.6,c:"purple"});P(1,"rug",.35,5.3,{w:2.15,h:3,c:"red"});P(1,"rug",.35,8.5,{w:2.25,h:3.3,c:"red"});P(1,"rug",22.2,.35,{w:5.5,h:3.95,c:"red"});
@@ -631,7 +633,12 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     P(2,"bookshelf",13.4,.1);P(2,"shelfmini",15.4,.15);P(2,"planter",9.2,.2);P(2,"sofa",18.0,8.3);P(2,"coffee",19.0,9.8);P(2,"sofa2",18.0,11.4);P(2,"navysofa",22.4,8.6);P(2,"sidetable",22.5,11.4);P(2,"lamp",23.5,7.9);
     P(2,"dining",6.4,8.6);P(2,"bench",.4,3.6);P(2,"cooler",.3,7);P(2,"tv",14.0,13.6);P(2,"teddy",19.6,8.6);P(2,"pizza",19.7,10.1);
     [[5.7,.4],[27.3,.4],[27.3,16.3],[5.7,16.3],[.4,.5],[.4,16.3]].forEach(([i,j])=>P(2,"plant",i,j));
-    return L;}
+    L.push(...BEDROOM());return L;}
+  // Floor 2 bedroom (v39): room i 17-28, j 0-6
+  function BEDROOM(){return[{id:"bedroom_rug",type:"rug",f:2,i:20.2,j:1.4,w:4.8,h:4.0,c:"violet"},{id:"bedroom_bed",type:"bed",f:2,i:21.5,j:.3},
+    {id:"bedroom_ns1",type:"nightstand",f:2,i:20.75,j:.35},{id:"bedroom_ns2",type:"nightstand",f:2,i:23.85,j:.35},{id:"bedroom_wardrobe",type:"wardrobe",f:2,i:17.3,j:.15},
+    {id:"bedroom_dresser",type:"dresser",f:2,i:17.2,j:2.3},{id:"bedroom_beanbag",type:"beanbag",f:2,i:25.4,j:3.3},{id:"bedroom_plant",type:"plant",f:2,i:26.9,j:4.9},{id:"bedroom_lamp",type:"lamp",f:2,i:18.3,j:4.8}];}
+  function ensureBedroom(){if(layout.items&&!layout.bedroomV){const have=new Set(layout.items.map(x=>x.id));BEDROOM().forEach(x=>{if(!have.has(x.id))layout.items.push(x);});layout.bedroomV=1;saveLayout();}else if(!layout.items)layout.bedroomV=1;}
   const allItems=()=>layout.items||defaultDecor();
   const itemsOn=fl=>allItems().filter(d=>(d.f||1)===fl&&(!DECOR[d.type]||!DECOR[d.type].need||has(DECOR[d.type].need)));
   const decor=()=>itemsOn(1);
@@ -835,7 +842,33 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
   function catD(i,j){const [x,y]=pr(i+.3,j+.2,0);const t=reduce?0:((frame>>2)%2);R(x-4,y-5,8,5,"#e3a25a");R(x+2,y-8,5,5,"#e3a25a");R(x+2,y-9,1,1,"#e3a25a");R(x+6,y-9,1,1,"#e3a25a");R(x+3,y-7,1,1,"#222");R(x+5,y-7,1,1,"#222");R(x-6,y-6-t,2,4,"#e3a25a");}
   function trophyD(i,j){box(i,j,0,.5,.5,.5,["#5a3a24","#3a2414","#4a2e1c"]);const [x,y]=pr(i+.25,j+.25,.5);R(x-3,y-8,6,6,"#ffc94a");R(x-5,y-8,2,3,"#ffc94a");R(x+3,y-8,2,3,"#ffc94a");R(x-1,y-2,2,2,"#c9a24a");}
   function coolerD(i,j){if(propPic("cooler_r2",i,j,.5,.5,"wallL",1.25))return;shadowE(i+.25,j+.25,.35);box(i,j,0,.5,.5,1.3,["#f2f6fa","#c9d3de","#dde5ee"]);box(i+.08,j+.08,1.3,.34,.34,.55,["#9fd8ff","#6ab7ec","#86c9f5"]);}
-  function drawDecorItem(d,night){const i=d.i,j=d.j;switch(d.type){
+  const neonHex=()=>{const c=ROOM[themeK()].neon;return(typeof c==="string"&&/^#[0-9a-f]{6}$/i.test(c))?c:"#a855f7";};
+  function bedD(i,j,night){const n=neonHex(),wi=2.2,wj=3.0;shadowE(i+wi/2,j+wj/2,1.6);
+    box(i,j,0,wi,.25,1.4,["#3b2a55","#251a38","#30224a"]);box(i+.1,j+.22,.5,wi-.2,.04,.8,["#4c3870","#2f2248","#3d2d5c"]);
+    {g.save();g.strokeStyle=n;g.lineWidth=2;g.shadowColor=n;g.shadowBlur=12;g.beginPath();g.moveTo(...pr(i,j+.26,1.38));g.lineTo(...pr(i+wi,j+.26,1.38));g.stroke();g.restore();}
+    box(i,j+.25,0,wi,wj-.25,.35,["#5a3b2a","#3e2819","#4c3122"]);
+    box(i+.05,j+.3,.35,wi-.1,wj-.38,.22,["#f3eefc","#c9c1dc","#ddd6ec"]);
+    box(i+.18,j+.42,.57,.82,.5,.17,["#ffffff","#d6d0e6","#ece7f6"]);box(i+1.2,j+.42,.57,.82,.5,.17,["#ffffff","#d6d0e6","#ece7f6"]);
+    box(i,j+1.2,.57,wi,wj-1.2,.09,["#7c3aed","#4c1d95","#6d28d9"]);box(i,j+1.2,.66,wi,.14,.03,["#c4b5fd","#8b5cf6","#a78bfa"]);
+    for(let q=0;q<4;q++){const [x,y]=pr(i+.3+q*.5,j+2.1+(q%2)*.35,.67);R(x-1,y-1,3,2,"#e9d5ff");}
+    if(night){const [x,y]=pr(i+wi/2,j+.3,1.2);glowAt(x,y,40,hexRgb(n),.2);}}
+  function nightstandD(i,j,night){box(i,j,0,.6,.6,.55,["#5a3b2a","#3e2819","#4c3122"]);box(i+.6,j+.1,.28,.01,.4,.04,["#2a1a10","#2a1a10","#2a1a10"]);
+    box(i+.24,j+.24,.55,.12,.12,.25,["#e9d9a8","#b8a46a","#d2c08a"]);box(i+.12,j+.12,.8,.36,.36,.2,["#ffe9b0","#e0c27a","#f1d78f"]);
+    const [x,y]=pr(i+.3,j+.3,.95);glowAt(x,y,night?40:18,"255,214,140",night?.42:.18);}
+  function wardrobeD(i,j){box(i,j,0,1.7,.6,2.6,["#4a3560","#2e2140","#3c2b50"]);box(i+.84,j+.6,.08,.02,.01,2.45,["#1f1630","#1f1630","#1f1630"]);
+    box(i+.68,j+.6,1.15,.06,.02,.28,GOLD);box(i+.96,j+.6,1.15,.06,.02,.28,GOLD);box(i,j,2.6,1.7,.6,.05,["#5d4378","#3a2a52","#4a3566"]);}
+  function dresserD(i,j){box(i,j,0,.55,1.6,1.0,["#5a3b2a","#3e2819","#4c3122"]);for(let k=0;k<3;k++){box(i+.55,j+.12,.18+k*.28,.01,1.36,.03,["#2a1a10","#2a1a10","#2a1a10"]);box(i+.55,j+.74,.25+k*.28,.02,.12,.04,GOLD);}
+    box(i+.06,j+.22,1.0,.06,1.16,.9,["#3a2a55","#251a38","#30224a"]);box(i+.12,j+.3,1.06,.01,1.0,.78,["#cfe8ff","#8fb5d6","#b0d0ec"]);
+    box(i+.2,j+1.3,1.0,.12,.12,.14,["#f9a8d4","#db2777","#ec4899"]);}
+  function beanbagD(i,j){shadowE(i+.4,j+.4,.5);const [x,y]=pr(i+.4,j+.4,0);g.fillStyle="#5b21b6";g.beginPath();g.ellipse(x,y-6,14,9,0,0,Math.PI*2);g.fill();
+    g.fillStyle="#7c3aed";g.beginPath();g.ellipse(x-1,y-9,11,6,0,0,Math.PI*2);g.fill();g.fillStyle="#a78bfa";g.beginPath();g.ellipse(x-4,y-11,4,2,0,0,Math.PI*2);g.fill();}
+  const ROT180={sofa:"sofa2",sofa2:"sofa"};
+  function drawDecorItem(d,night){const r=(d.r||0)&3;if(!r||!ROT_OK.has(d.type))return drawDecorItem0(d,night);
+    const type=r>=2&&ROT180[d.type]?ROT180[d.type]:d.type;
+    if(!(r&1))return drawDecorItem0({...d,type},night);
+    const t=DECOR[d.type]||DECOR.plant,ci=d.i+t.wj/2,cj=d.j+t.wi/2,[cx]=pr(ci,cj,0);
+    g.save();g.translate(2*cx,0);g.scale(-1,1);try{drawDecorItem0({...d,type,i:ci-t.wi/2,j:cj-t.wj/2},night);}finally{g.restore();}}
+  function drawDecorItem0(d,night){const i=d.i,j=d.j;switch(d.type){
     case"lamp":return lampD(i,j,night);case"sofa":return sofaD(i,j);case"sofa2":return sofaFacing(i,j);case"navysofa":return navySofa(i,j);case"cat":return catD(i,j);case"trophy":return trophyD(i,j);case"cooler":return coolerD(i,j);
     case"vending":return vending(i,j);case"fridge":return fridge(i,j);case"foosball":return foosball(i,j);case"lockbox":return lockBox(i,j);case"sidetable":return sideTable(i,j,true);case"coffee":return coffeeTable(i,j);
     case"planter":{const [x,y]=pr(i+.5,j+.25,0);shadowE(i+.5,j+.25,.6);return plantPic("planter",x,y+6,.27);}
@@ -845,6 +878,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     case"dining":if(propPic("dining_i1",i,j,3.2,2.8,"front",.92))return;box(i+.2,j+.6,0,2.8,1.4,.8,DESKC);return;
     case"bench":return box(i,j,0,.8,2.4,.45,["#4a4f7a","#33375a","#3e426a"]);case"tv":return propPic("tv_i1",i,j,2.2,.8,"front",1.0);
     case"teddy":{const [x,y]=pr(i+.15,j+.15,.45);return saAt("09_14",x,y+1,9);}case"pizza":{const [x,y]=pr(i+.15,j+.15,.42);return saAt("09_15",x,y+1,5);}
+    case"bed":return bedD(i,j,night);case"nightstand":return nightstandD(i,j,night);case"wardrobe":return wardrobeD(i,j);case"dresser":return dresserD(i,j);case"beanbag":return beanbagD(i,j);
     case"rug":return;default:return plantD(i,j);}}
   function drawRugs(fl){itemsOn(fl).filter(d=>d.type==="rug").forEach(d=>{const c=RUGC[d.c]||RUGC.purple;rugGlow(d.i,d.j,d.i+(d.w||3),d.j+(d.h||3),c[0],c[1]);});}
   function vending(i,j){if(propPic("vending_r2",i,j,.9,1.1,"wallL",1.05)){const [gx,gy]=pr(i+1.1,j+.45,1.6);glowAt(gx,gy,26,"170,110,255",.25);return;}box(i,j,0,.9,1.1,2.4,["#3a2f5c","#241c40","#2f2650"]);const q=[pr(i+.9,j+.12,.9),pr(i+.9,j+.78,.9),pr(i+.9,j+.78,2.2),pr(i+.9,j+.12,2.2)];poly(q,"#9fd8ff");
@@ -1024,7 +1058,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
   const WIN2=[[6.0,8.2],[16.8,19.0],[19.4,21.4],[24.4,26.6]];
   function drawRoom2(ph){const tk=themeK(),RM=ROOM[tk];slabAndShadow(RM);
     const lob=["#2f3046","#2b2c41"];
-    for(let i=0;i<GI;i++)for(let j=0;j<GJ;j++){let f=(i+j)%2?RM.fa:RM.fb;if(i<5.2)f=lob[(i+j)%2];poly([pr(i,j),pr(i+1,j),pr(i+1,j+1),pr(i,j+1)],f,"rgba(130,110,200,.16)");}
+    for(let i=0;i<GI;i++)for(let j=0;j<GJ;j++){let f=(i+j)%2?RM.fa:RM.fb;if(i<5.2)f=lob[(i+j)%2];else if(i>=17&&j<6)f=(i+j)%2?"#3d2f4f":"#372a48";poly([pr(i,j),pr(i+1,j),pr(i+1,j+1),pr(i,j+1)],f,"rgba(130,110,200,.16)");}
     drawRugs(2);
     if(tk==="christmas")snowEdge();
     wallsAndBrick(RM);WIN2.forEach(([a,b])=>winFrame(a,b,ph));
@@ -1034,7 +1068,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     if(lc){for(let u=.3;u<GI;u+=.5){const [x,y]=pr(u,0,WH-.15-Math.abs(Math.sin(u*1.6))*.12);R(x,y,2,2,((u*2|0)+(frame>>1))%3?lc[(u*2|0)%lc.length]:"#3a3456");}}}
   
   function floor2Items(add,night){const tk=themeK();
-    ROOMS2.forEach(r=>(r.walls||[]).forEach(([a,b,c,d])=>{for(let u=b;u<d-.01;u+=1){const w=Math.min(1,d-u);add(a+u+.9,()=>partitionSeg(a,u,.15,w));}}));
+    ROOMS2.forEach(r=>(r.walls||[]).forEach(([a,b,c,d])=>{if(b===d){for(let u=a;u<c-.01;u+=1){const w=Math.min(1,c-u);add(u+b+w,()=>partitionSeg(u,b,w,.15));}}else{for(let u=b;u<d-.01;u+=1){const w=Math.min(1,d-u);add(a+u+.9,()=>partitionSeg(a,u,.15,w));}}}));
     add(DESK.i+DESK.j+.6,()=>{youGlow(2);chairFull(SEAT.i-.35,DESK.j-1.05);if(player.sit&&player.floor===2){const [x,y]=pr(SEAT.i,SEAT.j,.35);drawYouAt(x,y+8,false,true);}deskYou(2);});
     itemsOn(2).forEach(d=>{if(d.type==="rug")return;const s2=sizeOf(d);add(d.i+d.j+(s2.wi+s2.wj)/2,()=>drawDecorItem(d,night));});
     add(-1,()=>{if(tk==="halloween"){saWall("04_02","R",.5,1.7,1.3,3.1);saWall("04_03","R",2.0,3.2,1.3,3.1);saWall("04_04","R",3.5,4.7,1.3,3.1);saWall("04_10","R",23.9,23.95,0,0);}
@@ -1100,7 +1134,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     
     if(seasonNow().k==="christmas"||(seasonNow().k==="advent"&&seasonNow().dec))b.push([26.5,15.3,27.5,16.3],[2.9,16.1,3.9,17]);
     return b;}
-  function blockers2(){const b=[];ROOMS2.forEach(r=>(r.walls||[]).forEach(([a,b2,c,d])=>b.push([a-.05,b2,a+.2,d])));b.push([DESK.i-.1,DESK.j-1.3,DESK.i+3.5,DESK.j+1.2]);
+  function blockers2(){const b=[];ROOMS2.forEach(r=>(r.walls||[]).forEach(([a,b2,c,d])=>b.push(b2===d?[a,b2-.05,c,b2+.2]:[a-.05,b2,a+.2,d])));b.push([DESK.i-.1,DESK.j-1.3,DESK.i+HOME[2].w+.1,DESK.j+1.2],[DESK.i+HOME[2].w-1.05,DESK.j+1.1,DESK.i+HOME[2].w,DESK.j+2.1]);
     itemsOn(2).forEach(d=>{const t=DECOR[d.type]||{},s=sizeOf(d);if(t.block===false||t.rug)return;b.push([d.i,d.j,d.i+s.wi,d.j+s.wj]);});if(themeK()==="christmas")b.push([24.9,14.1,25.9,15.1]);return b;}
   const hit=(i,j,bl)=>bl.some(([a,b,c,d])=>i>a-.22&&i<c+.22&&j>b-.22&&j<d+.22);
   function step(dt){let di=0,dj=0;const sp=3.2*dt;
@@ -1136,7 +1170,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
       if(d.type==="cat")out.push({id:"cat_"+d.id,label:"Pet the cat",at:[d.i+.3,d.j+.9],hit:[d.i,d.j,.6,.4,.6],open:()=>{beep(988,.08,"triangle",.04);beep(784,.12,"triangle",.035,.08);const [x,y]=pr(d.i+.3,d.j+.2,.6);for(let k=0;k<6;k++)parts.push({x:x+(k-3)*2,y,vx:(k-3)*4,vy:-30,g:10,life:1.2,c:"#ff5d8f",w:2,h:2});toastMsg("🐱 Purr…");}});});
     return out;}
   function interactables2(){return[
-    {id:"mydesk",label:"Sit at my desk",at:STAND,hit:[DESK.i,DESK.j-1.2,3.4,2.3,2.3],open:()=>{if(player.sit&&player.floor===2)showTasks(0);else sitDown(2);}},
+    {id:"mydesk",label:"Sit at my desk",at:STAND,hit:[DESK.i,DESK.j-1.2,4.4,2.3,2.3],open:()=>{if(player.sit&&player.floor===2)showTasks(0);else sitDown(2);}},
     {id:"elev2",label:"Take the elevator down to the team",at:ELEV[2],wall:["L",11.8,13.8,0,3.12],open:()=>goTo(10.5,8.4,null,1)},
     ...(B=>B?[{id:"shelf2",label:"Browse my reports shelf",at:[B.i+.8,B.j+1.1],hit:[B.i,B.j,1.8,.45,2.3],open:()=>showWorker("mrmind",2)}]:[])(itemOf(2,"bookshelf")),
     ...itemsOn(2).filter(d=>d.type==="sofa"||d.type==="sofa2"||d.type==="navysofa").map(d=>({id:"sofa2_"+d.id,label:"Sit on my couch",at:[d.i+1.2,d.j+1.4],hit:[d.i,d.j,sizeOf(d).wi,sizeOf(d).wj,1],open:()=>toastMsg("🛋️ Break in your office. Next report "+($("nextRep").textContent||"soon")+".")})),
@@ -1199,7 +1233,28 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
   function youGlow(fl){const H=HOME[fl],[gx,gy]=pr(H.desk.i+H.w/2,H.desk.j+.4,.6);glowAt(gx,gy,78,"251,191,36",.15+(reduce?0:.05*Math.sin(performance.now()/600)));}
   function bookshelfMini(i,j){box(i,j,0,1.2,.4,1.8,["#6b4527","#4a2f1a","#5a3a20"]);for(let r=0;r<2;r++)for(let k=0;k<3;k++){const [x,y]=pr(i+.2+k*.32,j+.4,.4+r*.65);R(x-2,y-8,3,8,["#5ec8ff","#ffc94a","#a3e635"][(k+r)%3]);}}
   // Stick's desk (both floors): navy with gold trim, two monitors either side of you, gold name plate
-  function deskYou(fl){const H=HOME[fl],D=H.desk,w=H.w,i=D.i,j=D.j,h=.95,here=player.sit&&player.floor===fl;shadowE(i+w/2,j+.6,w/2);
+  function deskBig(fl){const H=HOME[fl],D=H.desk,w=H.w,i=D.i,j=D.j,h=.95,here=player.sit&&player.floor===fl,NC=ROOM[themeK()].neon,n=(typeof NC==="string"&&/^#[0-9a-f]{6}$/i.test(NC))?NC:"#a855f7";
+    const BODY=["#33406e","#212a52","#2a3562"],TOP=["#5d6fb8","#34407a","#45559a"],RET=1.05;
+    shadowE(i+w/2,j+.9,w/2+.3);
+    box(i+w-RET,j+1.1,0,RET,1.0,h,BODY);box(i+w-RET,j+1.1,h-.04,RET,1.0,.05,TOP);
+    box(i,j,0,w,1.1,h,BODY);box(i,j,h-.04,w,1.1,.05,TOP);
+    box(i,j+1.08,.12,w-RET,.03,.62,GOLD);box(i+w-RET,j+2.08,.12,RET,.03,.62,GOLD);
+    {g.save();g.strokeStyle=n;g.lineWidth=2;g.shadowColor=n;g.shadowBlur=12;g.beginPath();const p1=pr(i,j+1.13,.07),p2=pr(i+w-RET,j+1.13,.07),p3=pr(i+w-RET,j+2.13,.07),p4=pr(i+w,j+2.13,.07);g.moveTo(...p1);g.lineTo(...p2);g.lineTo(...p3);g.lineTo(...p4);g.stroke();g.restore();
+     const [gx,gy]=pr(i+w/2,j+1.4,0);glowAt(gx,gy,46,hexRgb(n),.18);}
+    box(i+w/2-1.15,j+.42,h+.01,2.3,.56,.01,["#2a1f4f","#1d1638","#231a44"]);
+    [[.2,.85,.46,.05],[w/2-.65,1.3,.62,0],[w-RET-1.05+.15,.85,.46,.05]].forEach(([u,mw,mh,lift],k)=>{
+      box(i+u+mw/2-.1,j+.22,h,.2,.2,.1,MON);box(i+u,j+.12,h+.1+lift,mw,.07,mh,MON);
+      const [x,y]=pr(i+u+mw/2,j+.1,h+.1+lift+mh/2);glowAt(x,y,k===1?30:20,"94,200,255",k===1?.32:.24);
+      const a=here&&!reduce?.55+.3*Math.sin(performance.now()/180+k):.5;g.globalAlpha=a;poly([pr(i+u+.05,j+.11,h+.14+lift),pr(i+u+mw-.05,j+.11,h+.14+lift),pr(i+u+mw-.05,j+.11,h+.06+lift+mh),pr(i+u+.05,j+.11,h+.06+lift+mh)],k===1?"rgba(168,85,247,.38)":"rgba(94,200,255,.35)");g.globalAlpha=1;});
+    box(i+w/2-.55,j+.62,h+.02,1.1,.24,.03,["#ece7ff","#b9b2d8","#cfc8ea"]);
+    for(let q=0;q<6;q++){const [kx,ky]=pr(i+w/2-.48+q*.17,j+.7,h+.05);R(kx,ky,2,1,["#a855f7","#5ec8ff","#22c55e","#fbbf24","#ef4444","#a855f7"][(q+(frame>>1))%6]);}
+    box(i+w/2+.7,j+.66,h+.02,.13,.19,.04,["#ece7ff","#b9b2d8","#cfc8ea"]);
+    {const [fx3,fy3]=pr(i+.45,j+.75,h);if(!saAt("09_09",fx3,fy3+1,7))box(i+.3,j+.65,h,.26,.26,.2,["#f5f2ff","#c9c3dd","#ddd7ef"]);const [lx3,ly3]=pr(i+w-RET+.5,j+1.5,h);if(saAt("05_02",lx3,ly3+1,10))glowAt(lx3+3,ly3-6,18,"255,210,120",.3);}
+    {const [px2,py2]=pr(i+w-RET+.55,j+1.9,h);if(!plantPic("palm",px2,py2+2,.1))box(i+w-RET+.35,j+1.7,h,.3,.3,.35,["#3e8f4f","#2d6a4f","#357a49"]);}
+    box(i+w-RET+.15,j+1.25,h,.32,.24,.16,GOLD);
+    const [px,py]=pr(i+(w-RET)/2,j+1.12,.52);R(px-11,py-3,22,7,"#1b1405");R(px-10,py-2,20,5,"#ffc94a");R(px-7,py-1,14,2,"#1b1405");
+    if(here&&!reduce){const p=(frame%10)/10,[x,y]=pr(i+.45,j+.75,h+.4);R(x-1,y-6-p*10,3,3,"#f5f2ff");}}
+  function deskYou(fl){if(fl===2)return deskBig(fl);const H=HOME[fl],D=H.desk,w=H.w,i=D.i,j=D.j,h=.95,here=player.sit&&player.floor===fl;shadowE(i+w/2,j+.6,w/2);
     box(i,j,0,w,1.1,h,["#3b4a7a","#26305a","#303c6a"]);box(i,j+1.08,.1,w,.04,.6,GOLD);box(i,j,h-.04,w,1.1,.04,["#4a5b92","#2c3866","#36447a"]);
     [.08,w-.78].forEach(u=>{box(i+u+.25,j+.3,h,.2,.2,.08,MON);box(i+u,j+.2,h+.08,.7,.08,.46,MON);const [x,y]=pr(i+u+.35,j+.15,h+.4);glowAt(x,y,20,"94,200,255",.28);
       if(here&&!reduce){g.globalAlpha=.55+.3*Math.sin(performance.now()/180);poly([pr(i+u+.06,j+.2,h+.14),pr(i+u+.64,j+.2,h+.14),pr(i+u+.64,j+.2,h+.48),pr(i+u+.06,j+.2,h+.48)],"rgba(94,200,255,.35)");g.globalAlpha=1;}});
@@ -1339,13 +1394,18 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
   function movables(){const out=[],fl=viewFloor;
     itemsOn(fl).filter(d=>d.type==="rug").forEach(d=>{const s=sizeOf(d);out.push({kind:"decor",id:d.id,i:d.i,j:d.j,wi:s.wi,wj:s.wj,box:screenBox({hit:[d.i,d.j,s.wi,s.wj,.05]})});});
     if(fl===1)desks().forEach(d=>{const w=d.boss?2.6:2.2;out.push({kind:"desk",id:d.id,i:d.i,j:d.j,box:screenBox({hit:d.boss?[d.i,d.j-1.2,w,2.2,2.3]:[d.i-.4,d.j-1.6,w+.6,2.6,2.2]})});});
-    else out.push({kind:"desk",id:"stick2",i:DESK.i,j:DESK.j,box:screenBox({hit:[DESK.i,DESK.j-1.2,3.4,2.3,2.3]})});
+    else out.push({kind:"desk",id:"stick2",i:DESK.i,j:DESK.j,box:screenBox({hit:[DESK.i,DESK.j-1.2,4.4,2.3,2.3]})});
     itemsOn(fl).filter(d=>d.type!=="rug").forEach(d=>{const s=sizeOf(d);out.push({kind:"decor",id:d.id,i:d.i,j:d.j,wi:s.wi,wj:s.wj,box:screenBox({hit:[d.i,d.j,s.wi,s.wj,s.h||1]})});});
     // tap picks the thing in front: rugs first (lowest), then by depth
     const nr=out.filter(m=>!(m.kind==="decor"&&(allItems().find(x=>x.id===m.id)||{}).type==="rug")).sort((a,b)=>(a.i+a.j+(a.wi||2)/2)-(b.i+b.j+(b.wi||2)/2));return out.filter(m=>!nr.includes(m)).concat(nr);}
+  function pickNearest(list,p,boxOf,isRug){const pad=b=>{const [x,y,w,h]=b,mw=Math.max(w,26),mh=Math.max(h,26);return[x+w/2-mw/2-4,y+h/2-mh/2-4,mw+8,mh+8];};
+    const c=list.filter(m=>inBox(p,pad(boxOf(m))));const nr=isRug?c.filter(m=>!isRug(m)):c,pool=nr.length?nr:c;let best=null,bd=1e9;
+    pool.forEach(m=>{const [x,y,w,h]=boxOf(m),cx=x+w/2,cy=y+h*.6,d=Math.hypot((p.x-cx)/Math.max(w,20),(p.y-cy)/Math.max(h,20));if(d<bd){bd=d;best=m;}});return best;}
+  const rugOf=m=>m.kind==="decor"&&((allItems().find(x=>x.id===m.id)||{}).type==="rug");
+  const canRot=m=>{if(!m||m.kind!=="decor")return false;const d=allItems().find(x=>x.id===m.id);return!!d&&(d.type==="rug"||ROT_OK.has(d.type));};
   cv.addEventListener("pointerdown",e=>{const p=toWorld(e);
-    if(editMode){const m=movables().reverse().find(m=>inBox(p,m.box));selected=m||null;$("palDel").hidden=!(m&&m.kind==="decor");$("palRug").hidden=!(m&&m.kind==="decor"&&(allItems().find(x=>x.id===m.id)||{}).type==="rug");if(m){const q=unpr(p.x,p.y);drag={m,oi:q.i-m.i,oj:q.j-m.j};cv.setPointerCapture(e.pointerId);}return;}
-    const o=interactables().find(o=>inBox(p,screenBox(o)));
+    if(editMode){const m=pickNearest(movables(),p,x=>x.box,rugOf);selected=m||null;$("palDel").hidden=!(m&&m.kind==="decor");$("palRot").hidden=!canRot(m);$("palRug").hidden=!(m&&m.kind==="decor"&&(allItems().find(x=>x.id===m.id)||{}).type==="rug");if(m){const q=unpr(p.x,p.y);drag={m,oi:q.i-m.i,oj:q.j-m.j};cv.setPointerCapture(e.pointerId);}return;}
+    const o=pickNearest(interactables(),p,o=>screenBox(o));
     lastInput=performance.now();
     if(o&&workers.some(w=>w.id===o.id)){showWorker(o.id,2);return;}
     if(o&&(o.id==="mydesk"||o.id==="mydesk1")&&player.sit&&player.floor===viewFloor){o.open();return;}
@@ -1357,15 +1417,17 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     if(drag.m.kind==="desk"){layout.desks=layout.desks||{};layout.desks[drag.m.id]={i:ni,j:nj};syncHome();}else{if(!layout.items)layout.items=defaultDecor();const d=layout.items.find(d=>d.id===drag.m.id);if(d){d.i=ni;d.j=nj;}}
     selected={id:drag.m.id,kind:drag.m.kind};placeTags();});
   cv.addEventListener("pointerup",()=>{if(drag){drag=null;saveLayout();}});
-  function setEdit(on){editMode=on;stage.classList.toggle("edit",on);$("dock").hidden=on;$("pal").hidden=!on;$("help").hidden=!on;$("help").textContent=on?"Decorate: drag anything (desks, furniture, plants, rugs, signs) on this floor. Use the floor buttons to switch floors. Tap something, then Remove to take it away. Add new things from the bar below.":"Tap the floor (or arrow keys / WASD) to walk. Walk up to someone and press E.";selected=null;$("palDel").hidden=true;if(on&&!canWrite)$("help").textContent+=" (Changes only stay on this screen: saving needs the owner.)";updatePrompt();}
+  function setEdit(on){editMode=on;stage.classList.toggle("edit",on);$("dock").hidden=on;$("pal").hidden=!on;$("help").hidden=!on;$("help").textContent=on?"Decorate: drag anything (desks, furniture, plants, rugs, signs) on this floor. Use the floor buttons to switch floors. Tap something, then Remove to take it away. Add new things from the bar below.":"Tap the floor (or arrow keys / WASD) to walk. Walk up to someone and press E.";selected=null;$("palDel").hidden=true;$("palRot").hidden=true;if(on&&!canWrite)$("help").textContent+=" (Changes only stay on this screen: saving needs the owner.)";updatePrompt();}
   $("palDone").onclick=()=>setEdit(false);
   document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>{if(!layout.items)layout.items=defaultDecor();if(layout.items.length>=120)return;const type=b.dataset.add,id=type+"_"+Date.now().toString(36),s=DECOR[type]||DECOR.plant;
     const it={id,type,f:viewFloor,i:Math.max(.5,Math.min(GI-(s.wi||1)-.5,GI/2-1)),j:Math.max(.5,Math.min(GJ-(s.wj||1)-.5,GJ/2))};if(type==="rug")Object.assign(it,{w:4,h:3,c:"purple"});
-    layout.items.push(it);selected={id,kind:"decor"};$("palDel").hidden=false;$("palRug").hidden=type!=="rug";placeTags();saveLayout();});
-  $("palDel").onclick=()=>{if(selected&&selected.kind==="decor"){layout.items=allItems().filter(d=>d.id!==selected.id);selected=null;$("palDel").hidden=true;$("palRug").hidden=true;saveLayout();}};
+    layout.items.push(it);selected={id,kind:"decor"};$("palDel").hidden=false;$("palRot").hidden=!(type==="rug"||ROT_OK.has(type));$("palRug").hidden=type!=="rug";placeTags();saveLayout();});
+  $("palDel").onclick=()=>{if(selected&&selected.kind==="decor"){layout.items=allItems().filter(d=>d.id!==selected.id);selected=null;$("palDel").hidden=true;$("palRug").hidden=true;$("palRot").hidden=true;saveLayout();}};
+  $("palRot").onclick=()=>{if(!selected||selected.kind!=="decor")return;if(!layout.items)layout.items=defaultDecor();const d=layout.items.find(x=>x.id===selected.id);if(!d)return;
+    if(d.type==="rug"){const w=d.w||3;d.w=d.h||3;d.h=w;}else d.r=((d.r||0)+1)&3;const s2=sizeOf(d);d.i=Math.max(.05,Math.min(GI-s2.wi,d.i));d.j=Math.max(.05,Math.min(GJ-s2.wj,d.j));placeTags();saveLayout();};
   $("palRug").onclick=()=>{if(!selected)return;if(!layout.items)layout.items=defaultDecor();const d=layout.items.find(x=>x.id===selected.id);if(!d||d.type!=="rug")return;const K=Object.keys(RUGC);d.c=K[(K.indexOf(d.c)+1)%K.length];saveLayout();};
-  $("palReset").onclick=()=>{if(!confirmReset){confirmReset=true;$("palReset").textContent="Sure? Tap again";setTimeout(()=>{confirmReset=false;$("palReset").textContent="Reset";},3000);return;}confirmReset=false;$("palReset").textContent="Reset";layout={v:3,items:null,desks:{}};syncHome();selected=null;placeTags();saveLayout();};let confirmReset=false;
-  let saveT=null;function saveLayout(){if(!db||!canWrite)return;clearTimeout(saveT);saveT=setTimeout(async()=>{try{await db.doc("layout/main").set({v:3,items:layout.items||null,desks:layout.desks||{},savedAt:new Date().toISOString()});}catch(e){}},400);}
+  $("palReset").onclick=()=>{if(!confirmReset){confirmReset=true;$("palReset").textContent="Sure? Tap again";setTimeout(()=>{confirmReset=false;$("palReset").textContent="Reset";},3000);return;}confirmReset=false;$("palReset").textContent="Reset";layout={v:3,items:null,desks:{},bedroomV:1};syncHome();selected=null;placeTags();saveLayout();};let confirmReset=false;
+  let saveT=null;function saveLayout(){if(!db||!canWrite)return;clearTimeout(saveT);saveT=setTimeout(async()=>{try{await db.doc("layout/main").set({v:3,items:layout.items||null,desks:layout.desks||{},bedroomV:layout.bedroomV||0,savedAt:new Date().toISOString()});}catch(e){}},400);}
 
   // keyboard
   const KM={ArrowLeft:"left",a:"left",A:"left",ArrowRight:"right",d:"right",D:"right",ArrowUp:"up",w:"up",W:"up",ArrowDown:"down",s:"down",S:"down"};
@@ -1633,7 +1695,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
       db.collection("issues").onSnapshot(s=>{issues=s.docs.map(d=>({id:d.id,...d.data()}));rerender();},()=>{});
       db.collection("drawers").onSnapshot(s=>{drawers={};s.docs.forEach(d=>drawers[d.id]=d.data());rerender();},()=>{});
       db.doc("prefs/main").onSnapshot(d=>{if(d.exists){const v=JSON.parse(JSON.stringify(d.data()));prefs={...PREF0,...v,outfits:v.outfits||{}};try{localStorage.setItem("hq_prefs",JSON.stringify(prefs));}catch(e){}applyTheme();rerender();}},()=>{});
-      db.doc("layout/main").onSnapshot(d=>{if(drag)return;if(d.exists){const v=JSON.parse(JSON.stringify(d.data()));if(v.v===3)layout={v:3,items:v.items||null,desks:v.desks||{}};else if(v.desks)layout={v:3,items:null,desks:Object.fromEntries(Object.entries(v.desks).filter(([k])=>k!=="open"))};syncHome();}placeTags();},()=>{});
+      db.doc("layout/main").onSnapshot(d=>{if(drag)return;if(d.exists){const v=JSON.parse(JSON.stringify(d.data()));if(v.v===3)layout={v:3,items:v.items||null,desks:v.desks||{},bedroomV:v.bedroomV||0};else if(v.desks)layout={v:3,items:null,desks:Object.fromEntries(Object.entries(v.desks).filter(([k])=>k!=="open"))};syncHome();}ensureBedroom();placeTags();},()=>{});
     } else $("sub").textContent="Open this page in Claude while signed in to see your team.";
     sample=await claude.use("sample");
     mcp=await claude.use("mcp");
