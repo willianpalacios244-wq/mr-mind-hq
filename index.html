@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v37";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v38";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -362,6 +362,13 @@ button.btn.sm{font-size:13px;padding:3px 9px}
 }
 /* v36: Full screen never hides the panels; no Full screen button on the iPhone app (iOS can't do it) */
 html.pwa #fsBtn{display:none!important}
+/* v38 phone date bar: smaller; "Next report" centered exactly under the title */
+@media (max-width:760px){
+  .when{position:relative;padding:2px 8px;gap:5px;min-height:24px}
+  .when .w1>b,.when .t,.when #wxT{font-size:11.5px}
+  .when .cal{width:13px;height:13px} .when #skyIcon{width:12px;height:12px;margin-left:auto}
+  .when small{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);flex:none;font-size:9.5px;white-space:nowrap;pointer-events:none}
+}
 /* v35 phone: glass header floating over the office; the office runs up under the status bar */
 @media (max-width:760px){
   #app,html.pwa #app{padding-top:0}
