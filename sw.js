@@ -1,5 +1,5 @@
 // Mr. Mind app service worker: offline shell + push notifications
-const CACHE = "mrmind-v12";
+const CACHE = "mrmind-v13";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png", "./icons/badge-96.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
@@ -11,7 +11,9 @@ self.addEventListener("fetch", e => {
       .catch(() => caches.match("./data/status.json")));
     return;
   }
-  e.respondWith(fetch(e.request).then(r => { const c = r.clone(); caches.open(CACHE).then(x => x.put(e.request, c)); return r; })
+  // pages and the app shell always ask GitHub for the newest copy (GitHub Pages says "keep for 10 min"; we skip that)
+  const fresh = e.request.mode === "navigate" || /\/(index\.html)?$/.test(u.pathname) || u.pathname.endsWith("/sw.js");
+  e.respondWith(fetch(fresh ? new Request(e.request, { cache: "no-cache" }) : e.request).then(r => { const c = r.clone(); caches.open(CACHE).then(x => x.put(e.request, c)); return r; })
     .catch(() => caches.match(e.request).then(r => r || caches.match("./index.html"))));
 });
 self.addEventListener("push", e => {

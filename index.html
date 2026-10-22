@@ -339,9 +339,17 @@ button.btn.sm{font-size:13px;padding:3px 9px}
   #dock .n{top:2px;min-width:16px;height:16px;line-height:16px;font-size:10px}
   #pal{margin-bottom:calc(4px + env(safe-area-inset-bottom,0px))}
 }
-@media (max-width:760px) and (display-mode:standalone){
-  body::before{height:calc(env(safe-area-inset-top,0px) + 20px)}
-  #app{padding-top:20px}
+/* v33 phone: the page is pinned to the real screen edges (fixes the iPhone home-screen gap at the bottom);
+   on the home-screen app (html.pwa) the header starts below the status-bar blur */
+@media (max-width:760px){
+  :root{padding:0!important}
+  html,body{height:100%;overflow:hidden}
+  #app{position:fixed;top:0;right:0;bottom:0;left:0;height:auto;max-width:none;margin:0;padding-top:calc(env(safe-area-inset-top,0px) + 6px);padding-bottom:0}
+  body::before{height:0}
+}
+@media (max-width:760px){
+  html.pwa #app{padding-top:calc(env(safe-area-inset-top,0px) + 26px)}
+  html.pwa body::before{height:calc(env(safe-area-inset-top,0px) + 22px)}
 }
 
 .tvtick{position:absolute;z-index:2;overflow:hidden;background:transparent;border:0;padding:0;margin:0;color:#5ef2ff;font-family:var(--f-mono);font-weight:600;white-space:nowrap;display:flex;align-items:center;cursor:pointer;text-shadow:0 0 4px rgba(94,242,255,.8)}
@@ -1606,6 +1614,8 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
 })();
 </script>
 <script>
+(()=>{try{if(navigator.standalone||matchMedia("(display-mode: standalone)").matches||matchMedia("(display-mode: fullscreen)").matches)document.documentElement.classList.add("pwa");}catch(e){}
+})();
 (()=>{const $=id=>document.getElementById(id),hdr=$("hdr"),mb=$("menuBtn");if(!hdr||!mb)return;
   const close=()=>{hdr.classList.remove("open");mb.setAttribute("aria-expanded","false");};
   mb.onclick=e=>{e.stopPropagation();const on=!hdr.classList.contains("open");hdr.classList.toggle("open",on);mb.setAttribute("aria-expanded",String(on));};
