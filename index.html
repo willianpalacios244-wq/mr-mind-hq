@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v41";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v42";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -33,7 +33,7 @@
     store.doc["layout/main"]=newer(LS.get("app_layout_main"),d.layout||null)||null;
     store.doc["prefs/main"]=newer(LS.get("app_prefs_main"),d.prefs||null)||null;
     ["workers","fixes","issues","drawers"].forEach(fireCol);["hq/state","graph/main","layout/main","prefs/main"].forEach(p=>store.doc[p]!=null&&fireDoc(p));
-    if(navigator.setAppBadge){const k=((d.hq&&d.hq.needsYou)||[]).length;k?navigator.setAppBadge(k).catch(()=>{}):navigator.clearAppBadge().catch(()=>{});}}
+    if(navigator.setAppBadge){let td="";try{td=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Chicago"}).format(new Date());}catch(e){}const k=((d.hq&&d.hq.needsYou)||[]).filter(x=>!(x&&typeof x==="object"&&x.from&&String(x.from)>td)).length;k?navigator.setAppBadge(k).catch(()=>{}):navigator.clearAppBadge().catch(()=>{});}}
   let lastSync=null,syncErr=null;
   async function load(){
     if(!KEY){syncErr="Not connected yet";showApp(true);return;}
@@ -1356,7 +1356,9 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
       g.fillStyle="#1d1b2e";g.beginPath();g.moveTo(x-7,y);g.lineTo(x+7,y);g.lineTo(x+3,y-7);g.lineTo(x-3,y-7);g.closePath();g.fill();const fl=.85+.15*Math.sin(t*3+k);R(x-3,y,6,2,night?"#ffe7a3":"#fff3c9");
       const [fx,fy]=pr(i,j,0);glowAt(fx,fy,night?70:40,"255,214,140",(night?.22:.1)*fl);glowAt(x,y+4,night?26:14,"255,226,160",night?.5:.25);});
     const runs=[[AL.i0,AL.i1,AL.j0,"168,85,247"],[AO.i0,AO.i1,AO.j0,"236,72,153"],[0,AL.i0,0,"56,189,248"]];runs.forEach(([a,b,o,c])=>{const [x1,y1]=pr(a,o,.05),[x2,y2]=pr(b,o,.05);const gr=g.createLinearGradient(x1,y1,x2,y2);gr.addColorStop(0,`rgba(${c},.0)`);gr.addColorStop(.5,`rgba(${c},${night?.55:.3})`);gr.addColorStop(1,`rgba(${c},.0)`);g.strokeStyle=gr;g.lineWidth=2;g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke();});}
-  function moodOverlay(night){const need=((hq&&hq.needsYou)||[]).length+iss("OPEN").length,t=performance.now()/1000;g.save();g.setTransform(KS,0,0,KS,0,0);
+  function NEEDNOW(){const L=(hq&&hq.needsYou)||[];let p="";try{p=new Intl.DateTimeFormat("en-CA",{timeZone:TZ}).format(new Date());}catch(e){}
+    return L.filter(x=>!(x&&typeof x==="object"&&x.from&&String(x.from)>p)).map(x=>x&&typeof x==="object"?String(x.t||x.text||""):x);}
+  function moodOverlay(night){const need=(NEEDNOW()).length+iss("OPEN").length,t=performance.now()/1000;g.save();g.setTransform(KS,0,0,KS,0,0);
     if(night){g.fillStyle="rgba(6,3,22,.22)";g.fillRect(0,0,VW,VH);}if(need){g.fillStyle=`rgba(255,20,50,${.05+.04*Math.sin(t*2.4)})`;g.fillRect(0,0,VW,VH);}g.restore();}
   // ---- 6. gaming corner pieces
   function gamingTV(i,j){shadowE(i+1,j+.25,1);box(i+.85,j+.1,0,.3,.3,.9,["#2a2a3a","#1a1a26","#222232"]);box(i,j,.9,2.0,.18,1.15,["#111","#050505","#0a0a0a"]);
@@ -1925,7 +1927,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
   const deskStick=fl=>deskYou(fl);
   function draw(){spiderCheck();try{celebrateCheck();}catch(e){}
     g.imageSmoothingEnabled=false;g.setTransform(KS,0,0,KS,0,0);const ph=drawSky();if(viewFloor===3){try{lairBackdrop();}catch(e){}}camStep();g.setTransform(KS,0,0,KS,-Math.round(camX*KS),-Math.round(camY*KS));
-    const t=chi(),night=ph==="night"||ph==="dusk",ds=desks(),needN=(hq&&hq.needsYou||[]).length;
+    const t=chi(),night=ph==="night"||ph==="dusk",ds=desks(),needN=NEEDNOW().length;
     if(viewFloor===3)drawAttic(ph);else if(viewFloor===2)drawRoom2(ph);else drawRoom(ph);
     const list=[];const add=(d,fn)=>list.push({d,fn});
     const plat=(fn)=>()=>{ZB=PZ;fn();ZB=0;};
@@ -1992,7 +1994,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
       if(!e.hidden){placeWall(e,sg.side,sg.a+.1,sg.b-.1,sg.z0+.08,sg.z1-.08,sg.ii);const hpx=(sg.z1-sg.z0-.16)*ZS*ZOOM,wpx=(sg.b-sg.a-.2)*TW/2*ZOOM,ls=sg.text.split("\n"),n=ls.length,mx=Math.max(...ls.map(x=>x.length));
         const fs=sg.kind==="neon"?Math.min(hpx*(sg.own?.5:.62)/n,wpx*.92/(mx*.58)):sg.kind==="board"?Math.min(hpx*.8/(n+.3),wpx*.9/(mx*.52)):sg.kind==="plate"?Math.min(hpx*.6,wpx*.95/(mx*.56)):Math.min(hpx*.72/(n+.8),wpx*.9/(mx*.64));e.style.fontSize=Math.max(5,Math.min(30,fs))+"px";if(e.dataset.t!==sg.text){e.dataset.t=sg.text;e.textContent=sg.text;}}}));
     const fl=viewFloor;["tvTick","brainLbl","mottoLbl"].forEach(id=>{const e=$(id);if(e)e.hidden=fl!==1;});
-    const fixN=waiting().length+iss("OPEN").length,needN=(hq&&hq.needsYou||[]).length;
+    const fixN=waiting().length+iss("OPEN").length,needN=NEEDNOW().length;
     if(fl===2||fl===3){statsBar();paintIcons();
       $("dTasksN").textContent=needN+fixN;$("dTasksN").hidden=!(needN+fixN);$("dTasksN").classList.toggle("hot2",needN+fixN>0);$("bellN").textContent=needN+iss("OPEN").length;$("bellN").hidden=!(needN+iss("OPEN").length);return;}
     desks().forEach(d=>{const st=state(d.w),fire2=(d.w.streak||0)>=3&&!issues.some(x=>x.worker===d.w.id&&(x.status||"OPEN")==="OPEN");
@@ -2029,7 +2031,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     const sig=JSON.stringify(items.map(x=>x.slice(0,4)));if(b.dataset.s!==sig){b.dataset.s=sig;b.replaceChildren();
       items.forEach(([cls,ic,v,l,fn])=>{const d=el("button","tile t-"+cls);d.type="button";d.onclick=fn;d.setAttribute("aria-label",v+" "+l);const i=el("span","ic"+(ic.length<3?" c":""));i.setAttribute("aria-hidden","true");
         if(ic.length<3)i.textContent=ic;else{const p=el("span","px");p.dataset.icon=ic;i.append(p);}const tx=el("span","tx");tx.append(el("b",null,String(v)),el("small",null,l));d.append(i,tx);b.append(d);});paintIcons();}
-    const nY=(hq&&hq.needsYou||[]).length,nP=iss("OPEN").length,nF=waiting().length;
+    const nY=NEEDNOW().length,nP=iss("OPEN").length,nF=waiting().length;
     $("nYouN").textContent=nY;$("nYouL").textContent=nY===1?"needs you":"need you";$("nYou").classList.toggle("zero",!nY);
     $("nProbN").textContent=nP;$("nProbL").textContent=nP===1?"problem":"problems";$("nProb").classList.toggle("zero",!nP);
     $("nFix").hidden=!nF;$("nFixN").textContent=nF;$("nFixL").textContent=nF===1?"fix idea to approve":"fix ideas to approve";
@@ -2165,7 +2167,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     const strip=o=>{const {schedule,shiftMin,order,look,taskId,...r}=o||{};return r;};
     const f={you:strip(w),status_now:LABEL[state(w)],next:nextText(w),live:liveOf(w)?{enabled:liveOf(w).enabled,last_run:liveOf(w).last_run,next_run_at:liveOf(w).next_run_at}:null,fixes:fixes.filter(x=>(x.worker||"").toLowerCase().includes((w.short||w.name||"").toLowerCase().split(" ")[0])).map(x=>({n:x.n,problem:x.problem,fix:x.fix,status:x.status}))};
     const dr=drawers[w.id];if(dr)f.desk=(dr.sections||[]).map(s=>({title:s.title,items:(s.items||[]).slice(0,60).map(i=>`${i.label} — ${i.detail||""}`)}));
-    if(w.look==="boss"){f.team=workers.filter(x=>x!==w).map(x=>({name:x.name,status:LABEL[state(x)],last:x.lastResult,problems:issues.length?ownIssues(x).map(i=>"#"+i.n+" "+i.title):(x.problems||[])}));f.needs_stick=(hq&&hq.needsYou)||[];f.last_report=hq&&hq.lastReport;f.all_fixes=fixes.map(x=>({n:x.n,worker:x.worker,problem:x.problem,status:x.status}));}
+    if(w.look==="boss"){f.team=workers.filter(x=>x!==w).map(x=>({name:x.name,status:LABEL[state(x)],last:x.lastResult,problems:issues.length?ownIssues(x).map(i=>"#"+i.n+" "+i.title):(x.problems||[])}));f.needs_stick=NEEDNOW();f.last_report=hq&&hq.lastReport;f.all_fixes=fixes.map(x=>({n:x.n,worker:x.worker,problem:x.problem,status:x.status}));}
     return f;
   }
   function talkTab(w){return{name:"Talk",still:true,render(b){
@@ -2266,7 +2268,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     if((i.affects||[]).length&&st!=="DONE")d.append(el("div","plan","Also holds up: "+i.affects.map(wname).join(", ")+" (shown only here)"));
     if(st!=="DONE")d.append(issueActions(i,st));
     return d;}
-  function needsTab(){return{name:`Needs you (${((hq&&hq.needsYou)||[]).length})`,render(b){const n=(hq&&hq.needsYou)||[];if(hq&&hq.lastReport&&hq.lastReport!=="none yet")b.append(el("p","note","From the "+hq.lastReport+" report"));
+  function needsTab(){return{name:`Needs you (${(NEEDNOW()).length})`,render(b){const n=NEEDNOW();if(hq&&hq.lastReport&&hq.lastReport!=="none yet")b.append(el("p","note","From the "+hq.lastReport+" report"));
     if(!n.length){b.append(el("div","empty","Nothing needs you right now."));return;}const u=el("ul","list");n.forEach(x=>u.append(el("li",null,x)));b.append(u);if(hq&&hq.headline)b.append(el("p","note",hq.headline));}};}
   function showProblems(start){showTasks((start||0)+1);}
   function showTasks(start){opener(()=>card("tasks","Tasks","What needs you, and every problem by worker","#efe8d8",[needsTab(),questionsTab(),listenTab(),
