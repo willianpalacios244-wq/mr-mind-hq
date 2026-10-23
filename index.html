@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v42";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v43";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -420,6 +420,64 @@ body.bigmode #app{gap:6px;padding-block:6px}
 body[data-season="christmas"]{--line:#1f5c3c;--violet:#3ddc84;--violet-soft:rgba(61,220,132,.28);--gold:#ffd166;--bg2:#0e1a22;--panel2:#152a2a;--edge:rgba(61,220,132,.45)}
 body[data-season="christmas"] .panel{background:linear-gradient(180deg,rgba(21,42,42,.94),rgba(12,24,30,.94))}
 body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rgba(255,93,108,.5)}
+
+
+/* Oct 22: see-through windows, Stick picks how much */
+:root{--winA:.82}
+body.winmode #card{background:linear-gradient(180deg,rgba(29,24,64,var(--winA)),rgba(20,17,48,var(--winA)))!important;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+body.winmode #rlBox{background:linear-gradient(180deg,rgba(42,13,26,var(--winA)),rgba(22,8,18,var(--winA)))!important;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.winop{display:flex;align-items:center;gap:6px;margin-left:auto;font:800 11px var(--f-display);color:var(--muted);white-space:nowrap}
+.winop input{width:84px;accent-color:var(--violet)}
+.card-h .winop + .x{margin-left:8px}
+.typerow{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}.typerow span{background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font:800 14px var(--f-display)}.typerow b{font-size:20px;color:var(--gold);margin-right:4px}
+
+/* Oct 22: small decorate bar; the add list hides behind ⋯ so it doesn't cover the game */
+#pal{position:relative;flex-wrap:nowrap!important;gap:6px!important}
+#pal > .lbl,#pal > [data-add]{display:none!important}
+#pal #palRot[hidden]{display:flex!important}
+#pal #palRot.off{opacity:.45}
+#pal > button{flex:1 1 0!important;min-width:0}
+#palMore{position:absolute;left:0;right:0;bottom:calc(100% + 8px);z-index:20;display:flex;flex-wrap:wrap;gap:6px;padding:10px;max-height:46vh;overflow:auto;border-radius:14px;border:1.5px solid var(--edge);background:linear-gradient(180deg,rgba(29,24,64,.97),rgba(20,17,48,.97));box-shadow:0 -10px 30px rgba(0,0,0,.5)}
+#palMore button{flex:1 1 auto;font:800 14px var(--f-display);height:36px;padding:0 10px;border-radius:10px;border:1.5px solid var(--line);background:rgba(10,8,30,.7);color:var(--ink);cursor:pointer}
+#palMore .ttl{flex:1 1 100%;font:900 12px var(--f-display);color:var(--gold);letter-spacing:.5px}
+#palHint{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);z-index:21;white-space:nowrap;font:800 12px var(--f-display);background:var(--gold);color:#1b1405;padding:5px 10px;border-radius:8px}
+
+/* Oct 22: computer layout from Stick's picture: the office fills the screen, small cards float on top (not on phones / the installed app) */
+body.deskui #app{padding:0!important;max-width:none!important;gap:0!important}
+body.deskui #stage{position:fixed!important;inset:0!important;border-radius:0!important;border:0!important;box-shadow:none!important;z-index:0}
+body.deskui .glass{background:rgba(14,10,36,.80)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1.5px solid rgba(124,77,255,.55)!important;border-radius:14px!important;box-shadow:0 8px 24px rgba(0,0,0,.35),0 0 18px -8px var(--violet)!important}
+body.deskui .hdr{position:fixed!important;left:16px;top:16px;z-index:10;width:290px;display:flex!important;flex-direction:column;align-items:stretch!important;gap:8px!important;padding:12px 14px!important}
+body.deskui .hdr .logo,body.deskui .hdr .when,body.deskui .hdr .lvring,body.deskui .hdr .menub{display:none!important}
+body.deskui .hdr h1{font-size:22px!important}
+body.deskui .hdr .online{font-size:13px}
+body.deskui .hdr .acts2{display:flex!important;position:static!important;gap:6px!important;margin:0!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;flex-direction:row!important}
+body.deskui .hdr .acts2 .ibtn{width:36px!important;height:34px!important;border-radius:9px}
+body.deskui .hdr .acts2 .ibtn .px{width:18px!important;height:18px!important}
+body.deskui .hdr .acts2 .ibtn::after{content:none!important}
+#dkInfo{display:none}
+body.deskui #dkInfo{display:grid;gap:6px;border-top:1px solid rgba(124,77,255,.3);border-bottom:1px solid rgba(124,77,255,.3);padding:8px 0;font-weight:800}
+#dkInfo .r{display:flex;align-items:center;gap:8px;font-size:14px}#dkInfo .r .px{width:16px;height:16px}#dkInfo small{display:block;color:var(--muted);font-size:12px;font-weight:700;margin-left:24px;margin-top:-4px}
+body.deskui .bottom{position:fixed!important;left:16px;right:16px;bottom:14px;z-index:10;display:flex!important;gap:10px!important;align-items:stretch!important}
+body.deskui .tiles{display:flex!important;gap:8px!important;flex:0 0 auto;padding:6px;border-radius:14px}
+body.deskui .tile{flex-direction:column!important;align-items:center!important;text-align:center;gap:2px!important;padding:6px 10px!important;min-width:84px;border-radius:10px!important}
+body.deskui .tile .ic{width:24px!important;height:24px!important}body.deskui .tile .ic .px{width:20px!important;height:18px!important}body.deskui .tile .ic.c{font-size:13px!important}
+body.deskui .tile .tx{align-items:center}body.deskui .tile b{font-size:18px!important}body.deskui .tile small{font-size:11px!important}
+body.deskui .needs{flex:1 1 auto;flex-direction:row!important;align-items:center!important;gap:8px!important;padding:8px!important;justify-content:flex-start!important}
+body.deskui .needs h3{display:none!important}body.deskui .nrow{flex:0 1 auto;padding:7px 12px!important;font-size:14px!important}
+body.deskui .lvl{position:fixed!important;right:16px;top:16px;z-index:10;width:250px;flex-wrap:wrap;gap:8px 10px!important;padding:12px 14px!important}
+body.deskui .lvl .cr{display:none!important}body.deskui .lvl .crownb{order:-1;width:30px;height:24px}body.deskui .lvl .l{flex:1;font-size:20px!important}
+body.deskui .lvl .bar{flex:1 1 100%;height:10px!important}
+body.deskui #dock,body.deskui #pal{flex:0 0 400px;margin:0!important}
+body.deskui #dock button{height:56px!important;font-size:15px!important}
+body.deskui #stage .floors{top:auto!important;bottom:auto!important;left:16px!important;top:300px!important}
+body.deskui #stage .zoombox{right:16px!important;top:104px!important}
+body.deskui .help{left:320px!important;top:16px!important}
+body.deskui #rlChip{bottom:104px!important}
+/* Oct 22: windows open over the office, bottom bar stays usable */
+body.winmode #scrim,body.winmode #rlScrim{display:none!important}
+body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!important;max-width:none!important;border-radius:14px!important;box-shadow:0 0 0 2px #05040d,0 0 30px -10px var(--violet)!important;z-index:16!important}
+.tilewin .big{font:900 44px/1 var(--f-display);color:var(--gold)}
+.tilewin table{width:100%;border-collapse:collapse;font-size:14px}.tilewin td{padding:7px 6px;border-bottom:1px solid var(--line)}.tilewin td.r{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
 </style>
 
 <div id="app">
@@ -464,7 +522,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
       <button type="button" data-add="plant">Plant</button><button type="button" data-add="planter">Planter</button><button type="button" data-add="rug">Rug</button><button type="button" data-add="sofa">Sofa</button><button type="button" data-add="coffee">Table</button>
       <button type="button" data-add="sidetable">Side table</button><button type="button" data-add="bookshelf">Bookshelf</button><button type="button" data-add="lamp">Lamp</button><button type="button" data-add="foosball">Foosball</button>
       <button type="button" data-add="cooler">Cooler</button><button type="button" data-add="cat">Cat</button><button type="button" data-add="trophy">Trophy</button><button type="button" data-add="cabinet">Cabinet</button><button type="button" data-add="bed">Bed</button><button type="button" data-add="nightstand">Nightstand</button><button type="button" data-add="wardrobe">Wardrobe</button><button type="button" data-add="gymrack">Weights</button><button type="button" data-add="treadmill">Treadmill</button><button type="button" data-add="coffeebar">Coffee bar</button><button type="button" data-add="agentboard">Agents board</button><button type="button" data-add="serverrack">Server rack</button><button type="button" data-add="pooltable">Pool table</button><button type="button" data-add="arcade2">Arcade</button><button type="button" data-add="tank">Fish tank</button><button type="button" data-add="musicset">Music</button><button type="button" data-add="scout">Web Scout</button><button type="button" data-add="gamingtv">Gaming TV</button><button type="button" data-add="crate">Crate</button><button type="button" data-add="uplight">Floor light</button><button type="button" data-add="gconsole">Console</button>
-      <button type="button" id="palRot" hidden>⟳ Rotate</button><button type="button" id="palRug" hidden>Rug color</button><button type="button" id="palDel" hidden>Remove</button><button type="button" id="palReset">Reset</button><button type="button" id="palDone" class="sel">Done</button>
+      <button type="button" data-add="focussign">Focus sign</button><button type="button" data-add="neon1010">1010 sign</button><button type="button" data-add="workstation">Workstation</button><button type="button" data-add="analyticsdesk">Analytics desk</button><button type="button" data-add="researchdesk">Research desk</button><button type="button" data-add="serverconsole">Server console</button><button type="button" data-add="meetingtable">Meeting table</button><button type="button" data-add="breaktable">Break table</button><button type="button" id="palRot" hidden>⟳ Rotate</button><button type="button" id="palRug" hidden>Rug color</button><button type="button" id="palDel" hidden>Remove</button><button type="button" id="palReset">Reset</button><button type="button" id="palDone" class="sel">Done</button>
     </nav>
   </div>
 </div>
@@ -551,10 +609,11 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
   // =====================================================================
   // ---------- ISOMETRIC PIXEL OFFICE (scene, sprites, effects) ----------
   // =====================================================================
-  const TW=28,TH=14,ZS=14,WH=4.0,MG=26,PZ=.15,DIMS={1:[28,17],2:[42,21],3:[18,12]};let GI=28,GJ=17,OXw,OYw,WX,WY,CB=0,CT=26+4;
+  const TW=28,TH=14,ZS=14,WH=4.0,MG=26,PZ=.15,DIMS={1:[36,26],2:[42,21],3:[18,12]};let GI=28,GJ=17,OXw,OYw,WX,WY,CB=0,CT=26+4;
   const ATZ=6.2,ATK=1.5;function applyDims(fl){[GI,GJ]=DIMS[fl]||DIMS[1];OXw=MG+GJ*TW/2;OYw=MG+WH*ZS+10;WX=MG*2+(GI+GJ)*TW/2+(fl===2?Math.max(0,...ALS.map(A=>(A.i1-A.j0)-GI))*TW/2:0);WY=MG*2+(GI+GJ)*TH/2+WH*ZS+20;CB=OYw+(GI+GJ)*TH/2+12;CT=MG+4;if(fl===2)CT=Math.min(CT,...ALS.map(A=>OYw+(A.i0+A.j0)*TH/2-(WH+1.2)*ZS));if(fl===3)CT=Math.min(CT,OYw+(GJ/2)*TH/2-(ATZ+4.5)*ZS);}applyDims(1);
   let ZB=0; // raised-floor offset while drawing things on Mr. Mind's platform
-  const pr=(i,j,z=0)=>[OXw+(i-j)*TW/2,OYw+(i+j)*TH/2-(z+ZB)*ZS];
+  let ROTC=null;const pr=(i,j,z=0)=>{if(ROTC){const a=i-ROTC[0],b=j-ROTC[1];i=ROTC[0]+b;j=ROTC[1]+a;}return[OXw+(i-j)*TW/2,OYw+(i+j)*TH/2-(z+ZB)*ZS];};
+  const OFZ=.28;const RW=(d,fn)=>()=>{const sv=ROTC,sz=ZB;if(d&&d.r)ROTC=[d.i+1.1,d.j-.3];ZB=sz+OFZ;try{fn();}finally{ROTC=sv;ZB=sz;}};
   const zAt=(i,j,fl)=>fl===1?(i<6.8&&j<4.8?PZ:0):(fl===2&&inAl(i,j)?PZ:0);
   const glowAt=(x,y,r,rgb,a)=>{const gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,`rgba(${rgb},${a})`);gr.addColorStop(1,`rgba(${rgb},0)`);g.fillStyle=gr;g.fillRect(x-r,y-r,r*2,r*2);};
   const hexRgb=h=>{const n=parseInt(h.slice(1),16);return`${n>>16},${n>>8&255},${n&255}`;};
@@ -606,16 +665,16 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
   const roomAt=(i,j,fl)=>roomsOf(fl||player.floor).find(r=>i>r.i0&&i<r.i1&&j<r.j1)||null;
   const ROOMS=ROOMS1;
   // ---------- layout: Mr. Mind back-left on his platform, Check-in left, Audio center, SubJefe right, School far right ----------
-  const BOSS_AT={i:2.8,j:1.9},SEATS={checkin:[3.4,8.4],audio:[8.4,5.2],subjefe:[15.6,6.0],school:[21.0,6.2]},XSLOTS=[[13.2,1.9],[23.6,12.4],[2.0,15.0]];
+  const BOSS_AT={i:2.8,j:1.9},SEATS={checkin:[1.2,9.2],audio:[20.2,12.2],subjefe:[18.0,2.4],school:[1.4,18.4]},XSLOTS=[[11.0,18.6],[29.0,11.0],[13.2,1.9]];
   function defaultSeats(){const boss=workers.find(w=>w.look==="boss")||{id:"mrmind",name:"Mr. Mind",short:"Mr. Mind",look:"boss",role:"Boss",status:"idle"};
     const staff=workers.filter(w=>w!==boss).sort((a,b)=>(a.order??99)-(b.order??99));const used=new Set();let x=0;
     const items=staff.map(w=>{let s2=SEATS[w.look];if(!s2||used.has(w.look))s2=XSLOTS[(x++)%XSLOTS.length];else used.add(w.look);return{w,i:s2[0],j:s2[1]};});
     return{boss:{w:boss,i:BOSS_AT.i,j:BOSS_AT.j},staff:items};}
-  function desks(){const s=defaultSeats(),L=layout.desks||{},out=[];const at=(id,d)=>L[id]&&L[id].i!=null?{i:L[id].i,j:L[id].j}:{i:d.i,j:d.j};
+  function desks(){const s=defaultSeats(),L=layout.desks||{},out=[];const at=(id,d)=>L[id]&&L[id].i!=null?{i:L[id].i,j:L[id].j,r:L[id].r||0}:{i:d.i,j:d.j,r:(L[id]&&L[id].r)||0};
     out.push({id:s.boss.w.id,w:s.boss.w,boss:true,open:false,...at(s.boss.w.id,s.boss)});s.staff.forEach(x=>out.push({id:x.w.id,w:x.w,boss:false,open:false,...at(x.w.id,x)}));return out;}
   // Everything in the office that can be moved (Decorate mode). f = floor. Rugs lie flat under everything.
   // wi/wj = footprint in tiles, h = height (for the selection box), block = people walk around it
-  const DECOR={plant:{wi:.6,wj:.6,h:1.5,name:"Plant"},lamp:{wi:.4,wj:.4,h:2,name:"Lamp"},sofa:{wi:2.4,wj:.9,h:1.1,name:"Sofa"},sofa2:{wi:2.4,wj:.9,h:1.1,name:"Sofa (facing)"},navysofa:{wi:.9,wj:2.4,h:1.1,name:"Side sofa"},
+  const DECOR={workstation:{wi:2.4,wj:1.0,h:1.6,name:"Workstation"},researchdesk:{wi:2.4,wj:1.0,h:1.7,name:"Research desk"},meetingtable:{wi:4.6,wj:1.7,h:1.2,name:"Meeting table"},serverconsole:{wi:2.8,wj:1.1,h:1.7,name:"Server console"},analyticsdesk:{wi:2.4,wj:1.0,h:1.6,name:"Analytics desk"},breaktable:{wi:1.3,wj:1.3,h:1.0,name:"Break table"},focussign:{wi:1.3,wj:.35,h:2.6,name:"Focus sign"},neon1010:{wi:.3,wj:2.2,h:2.9,name:"1010 brain sign"},plant:{wi:.6,wj:.6,h:1.5,name:"Plant"},lamp:{wi:.4,wj:.4,h:2,name:"Lamp"},sofa:{wi:2.4,wj:.9,h:1.1,name:"Sofa"},sofa2:{wi:2.4,wj:.9,h:1.1,name:"Sofa (facing)"},navysofa:{wi:.9,wj:2.4,h:1.1,name:"Side sofa"},
     cat:{wi:.6,wj:.4,h:.6,block:false,name:"Cat"},trophy:{wi:.5,wj:.5,h:1.2,name:"Trophy"},cooler:{wi:.5,wj:.5,h:1.9,name:"Water cooler"},vending:{wi:.9,wj:1.1,h:2.4,name:"Snack machine"},fridge:{wi:.7,wj:.7,h:2.2,name:"Fridge"},
     foosball:{wi:1.7,wj:.9,h:1.1,name:"Foosball"},lockbox:{wi:1.4,wj:.8,h:.9,name:"Chest"},sidetable:{wi:.6,wj:.6,h:1.1,name:"Side table"},coffee:{wi:1.4,wj:.8,h:.7,name:"Coffee table"},planter:{wi:1.2,wj:.5,h:1.4,name:"Planter box"},
     bookshelf:{wi:1.8,wj:.45,h:2.3,name:"Bookshelf"},bossshelf:{wi:1.8,wj:.45,h:2.3,name:"Reports shelf"},shelfmini:{wi:1.2,wj:.4,h:1.8,name:"Small shelf"},console:{wi:3.0,wj:.55,h:1.2,name:"Cabinet"},
@@ -623,7 +682,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     dining:{wi:3.2,wj:2.8,h:1.2,name:"Dining set"},bench:{wi:.8,wj:2.4,h:.5,name:"Bench"},tv:{wi:2.2,wj:.8,h:1.4,name:"TV"},teddy:{wi:.3,wj:.3,h:.6,block:false,name:"Teddy"},pizza:{wi:.3,wj:.3,h:.5,block:false,name:"Pizza"},
     bed:{wi:2.2,wj:3.0,h:1.4,name:"Bed"},recdesk:{wi:2.6,wj:1.6,h:1.4,name:"Desk"},cabinet:{wi:.7,wj:.6,h:1.6,name:"Filing cabinet"},nightstand:{wi:.6,wj:.6,h:.9,name:"Nightstand"},wardrobe:{wi:1.7,wj:.6,h:2.6,name:"Wardrobe"},dresser:{wi:.55,wj:1.6,h:1.9,name:"Dresser"},beanbag:{wi:.8,wj:.8,h:.7,name:"Bean bag"},
     rug:{wi:3,wj:3,h:.05,rug:true,block:false,name:"Rug"},gymrack:{wi:2.2,wj:.6,h:1.6,name:"Weight rack"},gymbench:{wi:.6,wj:1.8,h:.8,name:"Weight bench"},treadmill:{wi:.9,wj:2.0,h:1.4,name:"Treadmill"},coffeebar:{wi:3.0,wj:.8,h:1.6,name:"Coffee bar"},stool:{wi:.45,wj:.45,h:.8,name:"Stool"},agentboard:{wi:2.2,wj:.35,h:2.2,name:"Agents board"},serverrack:{wi:.8,wj:.8,h:2.4,name:"Server rack"},pooltable:{wi:2.6,wj:1.5,h:1.0,name:"Pool table"},arcade2:{wi:.8,wj:.8,h:2.1,name:"Arcade"},tank:{wi:1.6,wj:.6,h:1.4,name:"Fish tank"},musicset:{wi:1.4,wj:.8,h:1.6,name:"Music corner"},scout:{wi:1.8,wj:.4,h:2.7,name:"Web Scout"},crate:{wi:.8,wj:.8,h:.7,name:"Crate"},braincore:{wi:4.8,wj:4.8,h:4.5,name:"Brain Core"},uplight:{wi:.3,wj:.3,h:.1,block:false,name:"Floor light"},gamingtv:{wi:2.0,wj:.4,h:2.1,name:"Gaming TV"},gconsole:{wi:.9,wj:.6,h:.4,name:"Game console"}};
-  const ROT_OK=new Set(["plant","lamp","sofa","sofa2","navysofa","cat","trophy","cooler","fridge","foosball","lockbox","sidetable","coffee","planter","bookshelf","bossshelf","shelfmini","console","dining","bench","tv","teddy","pizza","bed","nightstand","wardrobe","dresser","beanbag","cabinet","recdesk","gymrack","gymbench","treadmill","coffeebar","agentboard","pooltable","tank","musicset"]);
+  const ROT_OK=new Set(["workstation","researchdesk","meetingtable","serverconsole","analyticsdesk","breaktable","plant","lamp","sofa","sofa2","navysofa","cat","trophy","cooler","fridge","foosball","lockbox","sidetable","coffee","planter","bookshelf","bossshelf","shelfmini","console","dining","bench","tv","teddy","pizza","bed","nightstand","wardrobe","dresser","beanbag","cabinet","recdesk","gymrack","gymbench","treadmill","coffeebar","agentboard","pooltable","tank","musicset"]);
   const RUGC={purple:["#181b46","#a855f7"],red:["#4f1b26","#ff5d6c"],violet:["rgba(60,40,110,.3)","#a855f7"],gold:["#2a2410","#fbbf24"],teal:["#0f2f33","#2dd4bf"]};
   const sizeOf=d=>{const t=DECOR[d.type]||DECOR.plant;return t.rug?{wi:d.w||3,wj:d.h||3,h:.05}:((d.r||0)&1)&&ROT_OK.has(d.type)?{...t,wi:t.wj,wj:t.wi}:t;};
   function defaultDecor(){const L=[];let n=0;const P=(f,type,i,j,x)=>L.push({id:type+"_"+(n++),type,i,j,f,...(x||{})});
@@ -751,7 +810,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
   // typing while working (hands up/down), a blink every few seconds; turned to face the desk
   function drawAnim(look,st,x,y){const A=ANIM[look],blink=!reduce&&(frame+look.length*7)%26===0,typing=st==="work"&&!reduce;
     const im=blink?A[2]:typing?A[(frame>>1)%2]:A[0],xw=typeof XCHARS!=="undefined"&&XCHARS[look],h=xw?29*im.height/im.width:37,w=xw?29:im.width*h/im.height,s0=g.imageSmoothingEnabled;
-    g.imageSmoothingEnabled=true;g.imageSmoothingQuality="high";g.save();g.translate(x*2,0);g.scale(-1,1);g.drawImage(im,x-w/2,y-h,w,h);g.restore();g.imageSmoothingEnabled=s0;return y-h;}
+    g.imageSmoothingEnabled=true;g.imageSmoothingQuality="high";g.save();const fl=1^(typeof ROTC!=="undefined"&&ROTC?1:0);if(fl){g.translate(x*2,0);g.scale(-1,1);}g.drawImage(im,x-w/2,y-h,w,h);g.restore();g.imageSmoothingEnabled=s0;return y-h;}
   const CH=41/121; // picture pixels -> office pixels (a standing person is about 50 px tall)
   function drawPic(ctx,im,x,top,bob,flip){const w=im.width*CH,h=im.height*CH,s0=ctx.imageSmoothingEnabled;ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";if(flip){ctx.save();ctx.translate(x*2,0);ctx.scale(-1,1);}ctx.drawImage(im,x-w/2,top-bob,w,h);if(flip)ctx.restore();ctx.imageSmoothingEnabled=s0;}
   function person(ctx,x,y,look,st,f,id,o){o=o||{};
@@ -982,7 +1041,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
   function rugSheet(d,c){const im=FIMG.x_rug,w=d.w||3,h=d.h||3,P0=pr(d.i,d.j),Pi=pr(d.i+w,d.j),Pj=pr(d.i,d.j+h),IW=im.width,IH=im.height;g.save();g.imageSmoothingEnabled=true;
     if(w>=h)g.transform((Pj[0]-P0[0])/IW,(Pj[1]-P0[1])/IW,(Pi[0]-P0[0])/IH,(Pi[1]-P0[1])/IH,P0[0],P0[1]);else g.transform((Pi[0]-P0[0])/IW,(Pi[1]-P0[1])/IW,(Pj[0]-P0[0])/IH,(Pj[1]-P0[1])/IH,P0[0],P0[1]);
     g.globalAlpha=.95;g.drawImage(im,0,0);g.restore();g.save();g.strokeStyle=c[1];g.globalAlpha=.55;g.lineWidth=1;g.beginPath();g.moveTo(...P0);g.lineTo(...Pi);g.lineTo(...pr(d.i+w,d.j+h));g.lineTo(...Pj);g.closePath();g.stroke();g.restore();}
-  function drawDecorItem0(d,night){if(d.f===2&&sheetArt(d,night))return;const i=d.i,j=d.j;switch(d.type){
+  function drawDecorItem0(d,night){if(d.f===2&&sheetArt(d,night))return;const i=d.i,j=d.j;switch(d.type){case"workstation":return wsDesk(i,j,"work");case"analyticsdesk":return wsDesk(i,j,"chart");case"researchdesk":return researchDesk(i,j);case"serverconsole":return serverConsole(i,j);case"meetingtable":return meetingTable(i,j);case"breaktable":return breakTable(i,j);case"focussign":return focusSignD(i,j,night);case"neon1010":return neon1010D(i,j,night);
     case"lamp":return lampD(i,j,night);case"sofa":return sofaD(i,j);case"sofa2":return sofaFacing(i,j);case"navysofa":return navySofa(i,j);case"cat":return catD(i,j);case"trophy":return trophyD(i,j);case"cooler":return coolerD(i,j);case"gymrack":return gymRack(i,j);case"gymbench":return gymBench(i,j);case"treadmill":return treadmillD(i,j);case"coffeebar":return coffeeBar(i,j);case"stool":return stoolD(i,j);case"agentboard":return agentBoard(i,j);case"serverrack":return serverRack(i,j);case"pooltable":return poolTable(i,j);case"arcade2":return arcadeD(i,j);case"tank":return aquariumD(i,j);case"musicset":return musicSet(i,j);case"scout":return scoutWeb(i,j);case"crate":return crateD(i,j);case"braincore":return;case"uplight":return uplightD(i,j);case"gamingtv":return gamingTV(i,j);case"gconsole":return consoleD(i,j);
     case"vending":return vending(i,j);case"fridge":return fridge(i,j);case"foosball":return foosball(i,j);case"lockbox":return lockBox(i,j);case"sidetable":return sideTable(i,j,true);case"coffee":return coffeeTable(i,j);
     case"planter":{const [x,y]=pr(i+.5,j+.25,0);shadowE(i+.5,j+.25,.6);return plantPic("planter",x,y+6,.27);}
@@ -1311,7 +1370,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
 
   // ================= Floor 2 upgrades (Oct 22): fame wall, city windows, live screen, mood lights, gaming, plants, celebrations, level rewards, spider hatch
   const IMGC={};const imgOf=src=>{if(!src)return null;let im=IMGC[src];if(!im){im=new Image();im.src=src;IMGC[src]=im;}return im.complete&&im.naturalWidth?im:null;};
-  function wallImg(im,a,b,z0,z1,o){const W=im.width||im.naturalWidth,Hh=im.height||im.naturalHeight;if(!W||!Hh)return;const [x0,y0]=pr(a,o,z1);g.save();g.transform((TW/2)*(b-a)/W,(TH/2)*(b-a)/W,0,ZS*(z1-z0)/Hh,x0,y0);g.drawImage(im,0,0);g.restore();}
+  function wallImg(im,a,b,z0,z1,o){const W=im.width||im.naturalWidth,Hh=im.height||im.naturalHeight;if(!W||!Hh)return;let s0=pr(a,o,z1),e0=pr(b,o,z1);if(e0[0]<s0[0]){const q=s0;s0=e0;e0=q;}g.save();g.transform((e0[0]-s0[0])/W,(e0[1]-s0[1])/W,0,ZS*(z1-z0)/Hh,s0[0],s0[1]);g.drawImage(im,0,0);g.restore();}
   const lvNow=()=>{try{return +($("lvN").textContent)||1;}catch(e){return 1;}};
   // ---- 2. city skyline in every window (time of day + real weather)
   function cityView(q,ph,seed){const P=(u,v)=>[q[0][0]+(q[1][0]-q[0][0])*u+(q[3][0]-q[0][0])*v,q[0][1]+(q[1][1]-q[0][1])*u+(q[3][1]-q[0][1])*v];
@@ -1356,9 +1415,316 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
       g.fillStyle="#1d1b2e";g.beginPath();g.moveTo(x-7,y);g.lineTo(x+7,y);g.lineTo(x+3,y-7);g.lineTo(x-3,y-7);g.closePath();g.fill();const fl=.85+.15*Math.sin(t*3+k);R(x-3,y,6,2,night?"#ffe7a3":"#fff3c9");
       const [fx,fy]=pr(i,j,0);glowAt(fx,fy,night?70:40,"255,214,140",(night?.22:.1)*fl);glowAt(x,y+4,night?26:14,"255,226,160",night?.5:.25);});
     const runs=[[AL.i0,AL.i1,AL.j0,"168,85,247"],[AO.i0,AO.i1,AO.j0,"236,72,153"],[0,AL.i0,0,"56,189,248"]];runs.forEach(([a,b,o,c])=>{const [x1,y1]=pr(a,o,.05),[x2,y2]=pr(b,o,.05);const gr=g.createLinearGradient(x1,y1,x2,y2);gr.addColorStop(0,`rgba(${c},.0)`);gr.addColorStop(.5,`rgba(${c},${night?.55:.3})`);gr.addColorStop(1,`rgba(${c},.0)`);g.strokeStyle=gr;g.lineWidth=2;g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke();});}
+
+  // ---- Alerts window (Oct 22): what turned the room red, WHO it is about, fix each item right there, or just tell it in plain words
+  const RLK="hq_alert";let RLS={mode:"on",muted:[],hidden:[]};try{const v=JSON.parse(localStorage.getItem(RLK)||"null");if(v)RLS={...RLS,...v};}catch(e){}
+  const rlSave=()=>{try{localStorage.setItem(RLK,JSON.stringify(RLS));}catch(e){}};
+  const RLWHO=[[/subjefe/i,"subjefe"],[/check-?in/i,"checkin"],[/audiobook|voicestudio|chapter recording|render files/i,"audiobook"],[/school|canvas|bio-?\d|phl-?\d|discussion|quiz|smartbook|homework/i,"schoolwork"]];
+  const RLCOL={subjefe:"#f59e0b",checkin:"#22c55e",audiobook:"#38bdf8",schoolwork:"#a855f7",mrmind:"#fbbf24",you:"#fbbf24"};
+  function rlName(id){if(id==="you")return "You (Stick)";const w=(workers||[]).find(x=>x.id===id);return w?(w.name||w.short||id):id;}
+  function rlShort(id){if(id==="you")return "You";const w=(workers||[]).find(x=>x.id===id);return w?(w.short||w.name):id;}
+  const rlDay=(add=0)=>{try{return new Intl.DateTimeFormat("en-CA",{timeZone:TZ}).format(new Date(Date.now()+add*864e5));}catch(e){return "";}};
+  function rlItems(){const out=[],raw=(hq&&hq.needsYou)||[],p=rlDay();
+    raw.forEach((x,ix)=>{const o=x&&typeof x==="object";if(o&&x.from&&String(x.from)>p)return;const t=o?String(x.t||x.text||""):String(x);
+      let who=o&&x.who?[].concat(x.who):RLWHO.filter(([r])=>r.test(t)).map(([,id])=>id);who=[...new Set(who)];
+      out.push({key:"N:"+t.slice(0,60),cat:"you",kind:"Reminder for you",t,who:who.length?who:["you"],raw:x});});
+    iss("OPEN").forEach(i=>out.push({key:"I:"+(i.id||i.n),cat:"prob",kind:"Problem #"+(i.n||"?"),t:i.title||i.problem||"",who:[i.worker||"?"],ref:i}));
+    waiting().forEach(f=>out.push({key:"F:"+(f.id||f.n),cat:"fix",kind:"Fix idea #"+(f.n||"?"),t:(f.problem||"")+(f.fix?" → My fix: "+f.fix:""),who:[f.worker||"mrmind"],ref:f}));
+    return out.filter(a=>!RLS.hidden.includes(a.key));}
+  function rlLive(){if(RLS.mode==="off")return [];return rlItems().filter(a=>a.cat!=="fix"&&!RLS.muted.includes(a.key));}
+  // ---- actions (same saves as the Tasks window; Mr. Mind reads them on his next run)
+  async function rlLog(entry){if(!db)return;try{const ref=db.doc("reminders/stick");let cur={log:[]};try{const g0=await ref.get();if(g0&&g0.exists)cur=g0.data()||cur;}catch(e){}
+      const log=(cur.log||[]).concat([{...entry,at:new Date().toISOString(),from:"HQ"}]).slice(-80);await ref.set({...cur,log});}catch(e){console.warn("rl log",e);}}
+  async function rlNeedsWrite(fn){const L=((hq&&hq.needsYou)||[]).slice();const nl=fn(L);if(hq)hq.needsYou=nl;if(db&&canWrite){try{await db.doc("hq/state").update({needsYou:nl});}catch(e){console.warn(e);}}}
+  async function rlAct(a,what,extra){
+    if(a.cat==="you"){const same=x=>(x&&typeof x==="object"?String(x.t||x.text||""):String(x))===a.t;
+      if(what==="done"){await rlNeedsWrite(L=>L.filter(x=>!same(x)));await rlLog({type:"reminder",action:"DONE",item:a.t});RLS.hidden.push(a.key);}
+      else if(what==="later"){const d=extra||rlDay(1);await rlNeedsWrite(L=>L.map(x=>same(x)?{t:a.t,from:d,...(x&&x.who?{who:x.who}:{})}:x));await rlLog({type:"reminder",action:"LATER",item:a.t,until:d});}}
+    else if(a.cat==="prob"){const i=a.ref;const data=what==="done"?{status:"DONE",doneAt:today()}:{status:"HOLD",waitingOn:extra||"someone",holdSince:today()};
+      if(db&&canWrite){try{await db.doc("issues/"+i.id).update({...data,updated:new Date().toISOString(),changedIn:"HQ"});}catch(e){throw new Error("couldn't save");}}
+      Object.assign(i,data);await rlLog({type:"problem",action:data.status,n:i.n});}
+    else if(a.cat==="fix"){const f=a.ref,to=what==="approve"?"APPROVED":"DECLINED";
+      if(db&&canWrite){try{await db.doc("fixes/"+f.id).update({status:to,decidedAt:new Date().toISOString(),decidedIn:"HQ"});}catch(e){throw new Error("couldn't save");}}
+      f.status=to;await rlLog({type:"fix",action:to,n:f.n});}
+    rlSave();rlUpdate();rlRender();}
+  let rlChip=null,rlBox=null,rlT=0,rlTab="all",rlChat=[],rlBusy=false;
+  function rlInit(){if(rlChip)return;rlChip=document.createElement("button");rlChip.type="button";rlChip.id="rlChip";rlChip.hidden=true;
+    rlChip.style.cssText="position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:4;display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:14px;border:1.5px solid #ef4444;background:rgba(40,6,14,.9);color:#fff;font:800 11.5px var(--f-display);cursor:pointer;box-shadow:0 0 16px rgba(239,68,68,.6);white-space:nowrap";
+    stage.append(rlChip);rlChip.onclick=()=>rlOpen("all");
+    rlBox=document.createElement("section");rlBox.id="rlBox";rlBox.hidden=true;rlBox.setAttribute("role","dialog");rlBox.setAttribute("aria-label","Alerts");
+    rlBox.style.cssText="position:fixed;z-index:17;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,calc(100% - 20px));height:min(84vh,680px);display:flex;flex-direction:column;border-radius:14px;border:2px solid #ef4444;background:linear-gradient(180deg,#2a0d1a,#160812);color:#fff;font:600 14px/1.35 var(--f-body);box-shadow:0 0 0 3px #05040d,0 0 40px -10px #ef4444,8px 8px 0 #05040d";
+    document.body.append(rlBox);
+    const sc=document.createElement("div");sc.id="rlScrim";sc.hidden=true;sc.style.cssText="position:fixed;inset:0;background:rgba(5,4,13,.6);z-index:16";sc.onclick=rlClose;document.body.append(sc);
+    addEventListener("keydown",e=>{if(e.key==="Escape"&&!rlBox.hidden)rlClose();});
+    // the bell and the 3 "Needs attention" rows open their own window here
+    try{$("bellBtn").onclick=()=>rlOpen("all");$("nYou").onclick=()=>rlOpen("you");$("nProb").onclick=()=>rlOpen("prob");$("nFix").onclick=()=>rlOpen("fix");}catch(e){}}
+  function rlOpen(tab){rlInit();try{if(openCard)closeCard();}catch(e){}rlTab=tab||"all";rlBox.hidden=false;document.getElementById("rlScrim").hidden=false;rlRender();try{winPlace();}catch(e){}}
+  function rlClose(){if(!rlBox)return;rlBox.hidden=true;document.getElementById("rlScrim").hidden=true;}
+  function rlRender(){if(!rlBox||rlBox.hidden)return;const all=rlItems(),live=rlLive();const keepIn=rlBox.querySelector("#rlSay");const draft=keepIn?keepIn.value:"";rlBox.innerHTML="";
+    const T={all:"All",you:"Need you",prob:"Problems",fix:"Fix ideas"},TT={all:"🔔 Alerts",you:"🙋 Things that need you",prob:"❗ Problems",fix:"💡 Fix ideas to approve"};
+    const h=el("div");h.style.cssText="display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1.5px solid #7f1d1d";const hb=el("b",null,TT[rlTab]);hb.style.cssText="font:900 18px var(--f-display)";
+    const x=el("button",null,"✕");x.type="button";x.setAttribute("aria-label","Close");x.style.cssText="margin-left:auto;background:none;border:1.5px solid #7f1d1d;color:#fff;border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:16px";x.onclick=rlClose;h.append(hb);try{h.append(winOp());}catch(e){}h.append(x);x.style.marginLeft="8px";rlBox.append(h);
+    const tabs=el("div");tabs.style.cssText="display:flex;gap:6px;padding:8px 14px 0;flex-wrap:wrap";
+    Object.keys(T).forEach(k=>{const n=k==="all"?all.length:all.filter(a=>a.cat===k).length;const b=el("button",null,`${T[k]} ${n}`);b.type="button";b.style.cssText=`font:800 13px var(--f-display);padding:5px 11px;border-radius:999px;cursor:pointer;border:1.5px solid ${k===rlTab?"#ef4444":"#4c1d2a"};background:${k===rlTab?"#ef4444":"transparent"};color:#fff`;b.onclick=()=>{rlTab=k;rlRender();};tabs.append(b);});rlBox.append(tabs);
+    const body=el("div");body.style.cssText="flex:1;min-height:0;overflow:auto;padding:10px 14px;display:flex;flex-direction:column;gap:8px";rlBox.append(body);
+    const items=all.filter(a=>rlTab==="all"||a.cat===rlTab);
+    if(!items.length)body.append(el("p","empty",rlTab==="fix"?"No fix ideas waiting for you.":"Nothing here right now. 🎉"));
+    if(rlTab!=="fix"&&items.some(a=>a.cat!=="fix"))body.append(el("p","note",RLS.mode==="off"?"The red light is OFF (the list still shows here).":live.length?"These turn your room red. Fix them here, or tell me below.":"The red light is stopped for these until something new comes in."));
+    items.forEach(a=>{const m=a.cat!=="fix"&&(RLS.muted.includes(a.key)||RLS.mode==="off");const r=el("div");r.style.cssText=`display:grid;gap:6px;padding:9px 11px;border-radius:10px;background:rgba(0,0,0,.32);border-left:4px solid ${a.cat==="fix"?"#f59e0b":m?"#6b7280":"#ef4444"}`;
+      const top=el("div");top.style.cssText="display:flex;flex-wrap:wrap;gap:6px;align-items:center";
+      a.who.forEach(id=>{const c=el("span",null,rlName(id));c.style.cssText=`font:800 12px var(--f-display);padding:2px 8px;border-radius:10px;background:${RLCOL[id]||"#64748b"};color:#120a10`;top.append(c);});
+      const k=el("small",null,a.kind);k.style.cssText="color:#fca5a5;font-weight:800";top.append(k);r.append(top,el("div",null,a.t));
+      const acts=el("div","acts");const mk=(t,cls,fn)=>{const b=el("button","btn sm "+cls,t);b.type="button";b.onclick=async()=>{if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Sure? tap again";return;}b.disabled=true;try{await fn();}catch(e){acts.replaceChildren(el("span","msg err","Couldn't save. Try again or reply to Mr. Mind's email."));}};acts.append(b);};
+      if(a.cat==="you"){mk("✅ Done","yes",()=>rlAct(a,"done"));mk("⏰ Tomorrow","",()=>rlAct(a,"later"));}
+      if(a.cat==="prob"){mk("✅ Fixed","yes",()=>rlAct(a,"done"));mk("⏸ On hold","",()=>rlAct(a,"hold","Stick"));}
+      if(a.cat==="fix"){mk("👍 Approve","yes",()=>rlAct(a,"approve"));mk("👎 Decline","no",()=>rlAct(a,"decline"));}
+      if(!(db&&canWrite)&&a.cat!=="you")acts.append(el("span","note","(saving needs the live HQ)"));
+      r.append(acts);body.append(r);});
+    // talk box
+    const chat=el("div");chat.style.cssText="padding:8px 14px 12px;border-top:1.5px solid #7f1d1d;display:grid;gap:6px";
+    const log=el("div");log.style.cssText="display:flex;flex-direction:column;gap:6px;max-height:130px;overflow:auto";
+    rlChat.slice(-6).forEach(m=>{const b=el("div","bub "+(m.role==="user"?"me":"them"),m.content);log.append(b);});if(rlChat.length)chat.append(log);
+    const row=el("div","sayrow"),inp=el("input","say");inp.id="rlSay";inp.value=draft;inp.placeholder='Tell me in your words: "the Sonnet switch is done", "remind me Monday"…';inp.setAttribute("aria-label","Tell the alerts what to do");
+    const send=el("button","btn go",rlBusy?"…":"Send");send.type="button";send.disabled=rlBusy;row.append(inp,send);chat.append(row);
+    if(!sample)chat.append(el("p","note","Talking works when this page is open in Claude and you're signed in."));
+    send.onclick=()=>rlAsk(inp.value);inp.addEventListener("keydown",e=>{if(e.key==="Enter")rlAsk(inp.value);});
+    // light controls
+    const lc=el("div","acts");lc.style.cssText="padding:0 14px 12px";
+    const b1=el("button","btn sm no",live.length?"🔕 Stop the light (until something new)":"Light is stopped");b1.type="button";b1.disabled=!live.length||RLS.mode==="off";b1.onclick=()=>{RLS.muted=[...new Set([...RLS.muted.filter(k=>all.some(a=>a.key===k)),...all.map(a=>a.key)])];rlSave();rlUpdate();rlRender();};
+    const b2=el("button","btn sm",RLS.mode==="off"?"💡 Turn the light back on":"Turn the light off for good");b2.type="button";b2.onclick=()=>{RLS.mode=RLS.mode==="off"?"on":"off";if(RLS.mode==="on")RLS.muted=[];rlSave();rlUpdate();rlRender();};
+    lc.append(b1,b2);chat.append(lc);rlBox.append(chat);
+    const li=log.lastChild;if(li)log.scrollTop=log.scrollHeight;}
+  async function rlAsk(q){q=(q||"").trim();if(!q||rlBusy)return;if(!sample){rlChat.push({role:"user",content:q},{role:"assistant",content:"(Talking needs this page open in Claude.)"});rlRender();return;}
+    rlBusy=true;rlChat.push({role:"user",content:q});const ans={role:"assistant",content:"…"};rlChat.push(ans);rlRender();const did=[];
+    const find=k=>rlItems().find(a=>a.key===String(k));
+    const tools=[
+      {name:"list_items",description:"Returns the current alert items: key, category (you=reminder for Stick, prob=open problem, fix=fix idea waiting for approval), who it is about, and text.",execute:()=>rlItems().map(a=>({key:a.key,category:a.cat,who:a.who.map(rlName),text:a.t.slice(0,240)}))},
+      {name:"reminder_done",description:"Close a reminder Stick says he did. Input: key from list_items.",inputSchema:{type:"object",properties:{key:{type:"string"}},required:["key"]},execute:async i=>{const a=find(i.key);if(!a||a.cat!=="you")throw new Error("no reminder with that key");await rlAct(a,"done");did.push("✅ "+a.t.slice(0,50));return "done";}},
+      {name:"remind_later",description:"Hide a reminder until a later day. Input: key and date YYYY-MM-DD (Chicago). Today is "+rlDay()+".",inputSchema:{type:"object",properties:{key:{type:"string"},date:{type:"string"}},required:["key","date"]},execute:async i=>{const a=find(i.key);if(!a||a.cat!=="you")throw new Error("no reminder with that key");const d=String(i.date||"").slice(0,10);if(!/^\d{4}-\d\d-\d\d$/.test(d))throw new Error("date must be YYYY-MM-DD");await rlAct(a,"later",d);did.push("⏰ "+d+": "+a.t.slice(0,40));return "moved to "+d;}},
+      {name:"problem_fixed",description:"Mark an open problem as fixed/done. Input: key.",inputSchema:{type:"object",properties:{key:{type:"string"}},required:["key"]},execute:async i=>{const a=find(i.key);if(!a||a.cat!=="prob")throw new Error("no problem with that key");await rlAct(a,"done");did.push("✅ "+a.kind);return "done";}},
+      {name:"problem_on_hold",description:"Put an open problem on hold. Input: key and waiting_on (who we wait for).",inputSchema:{type:"object",properties:{key:{type:"string"},waiting_on:{type:"string"}},required:["key"]},execute:async i=>{const a=find(i.key);if(!a||a.cat!=="prob")throw new Error("no problem with that key");await rlAct(a,"hold",String(i.waiting_on||"Stick"));did.push("⏸ "+a.kind);return "on hold";}},
+      {name:"decide_fix",description:"Approve or decline a fix idea. Input: key and decision APPROVED or DECLINED.",inputSchema:{type:"object",properties:{key:{type:"string"},decision:{type:"string",enum:["APPROVED","DECLINED"]}},required:["key","decision"]},execute:async i=>{const a=find(i.key);if(!a||a.cat!=="fix")throw new Error("no fix idea with that key");await rlAct(a,String(i.decision)==="APPROVED"?"approve":"decline");did.push((String(i.decision)==="APPROVED"?"👍 ":"👎 ")+a.kind);return "saved";}},
+      {name:"red_light",description:"Control the red alert light: mode stop (until something new), off (for good) or on.",inputSchema:{type:"object",properties:{mode:{type:"string",enum:["stop","off","on"]}},required:["mode"]},execute:i=>{const m=String(i.mode);if(m==="stop"){RLS.muted=rlItems().map(a=>a.key);}else if(m==="off"){RLS.mode="off";}else{RLS.mode="on";RLS.muted=[];}rlSave();rlUpdate();did.push("light: "+m);return "ok";}}];
+    const prompt=`You are the Alerts helper inside "Mr. Mind HQ", Stick Rivera's pixel office for his AI worker agents (Mr. Mind is the boss; workers: SubJefe, Daily Check-in, Audiobook Agent, School Work). Stick talks casually and may misspell words. Understand what he means and use the tools to do it: call list_items first, then act ONLY on the items he clearly means. If it's unclear which item, ask a short question instead of guessing. Never invent items. After acting, answer in 1-3 short plain sentences saying exactly what you changed. Mr. Mind reads every change on his next run.\nToday (Chicago): ${rlDay()}.\nRecent chat: ${JSON.stringify(rlChat.slice(-7,-2))}\nStick says: ${q}`;
+    try{const ctl=new AbortController();const r=await sample(prompt,{cache:false,modelTier:"default",signal:ctl.signal,tools,onText:({text})=>{ans.content=text;const L=rlBox&&rlBox.querySelector(".bub.them:last-child");if(L)L.textContent=text;}});ans.content=(r&&r.text)||ans.content;}
+    catch(e){ans.content=e&&e.code==="not_granted"?"(Allow Claude for this page and try again.)":e&&e.code==="rate_limited"?"(Too many messages, wait a moment.)":(e&&e.text)||"(I couldn't do that just now. Try the buttons above.)";}
+    if(did.length&&!/✅|⏰|⏸|👍|👎/.test(ans.content))ans.content+="\n"+did.join("\n");rlBusy=false;rlRender();setTimeout(()=>{const i=rlBox&&rlBox.querySelector("#rlSay");if(i)i.focus();},0);}
+  function rlUpdate(){const all=rlItems().filter(a=>a.cat!=="fix"),live=rlLive();if(!all.length){rlChip.hidden=true;return;}
+    rlChip.hidden=false;const who=[...new Set(live.flatMap(a=>a.who))].map(rlShort);
+    rlChip.style.borderColor=live.length?"#ef4444":"#6b7280";rlChip.style.boxShadow=live.length?"0 0 16px rgba(239,68,68,.6)":"none";rlChip.style.background=live.length?"rgba(40,6,14,.9)":"rgba(20,16,30,.88)";
+    rlChip.textContent=live.length?`🔴 ${live.length} · ${who.slice(0,3).join(", ")}${who.length>3?" +"+(who.length-3):""}`:`🔕 Red light stopped · ${all.length}`;}
+  function rlTick(){const n=performance.now();if(n-rlT<700)return;rlT=n;try{rlInit();rlUpdate();}catch(e){console.error(e);}}
+  setInterval(()=>{try{if(document.readyState!=="loading"&&hq){rlInit();rlUpdate();}}catch(e){}},1500);
+
+
+  // ---- see-through slider (Oct 22): 30% to 100%, saved on this device
+  let WINA=.82;try{const v=parseFloat(localStorage.getItem("hq_winA"));if(v>=.3&&v<=1)WINA=v;}catch(e){}
+  document.documentElement.style.setProperty("--winA",WINA);
+  function winOp(){const w=el("label","winop");w.title="How see-through the window is";const i=document.createElement("input");i.type="range";i.min="30";i.max="100";i.value=String(Math.round(WINA*100));i.setAttribute("aria-label","Window see-through");
+    const t=el("span",null,"👁 "+i.value+"%");i.oninput=()=>{WINA=+i.value/100;document.documentElement.style.setProperty("--winA",WINA);t.textContent="👁 "+i.value+"%";document.querySelectorAll(".winop input").forEach(o=>{if(o!==i)o.value=i.value;});try{localStorage.setItem("hq_winA",String(WINA));}catch(e){}};
+    w.append(t,i);return w;}
+  try{const ch=document.querySelector("#card .card-h");if(ch&&!ch.querySelector(".winop"))ch.insertBefore(winOp(),$("cardX"));}catch(e){}
+
+  // ---- each worker gets a nice office (Oct 22): carpet in their color, lit name sign, themed wall art + corner furniture, plant, sconces
+  const OFFC={};
+  function offCanvas(key,w,h,draw){if(OFFC[key])return OFFC[key];const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");x.imageSmoothingEnabled=false;draw(x,w,h);return OFFC[key]=c;}
+  function offSign(name,col){return offCanvas("sign"+name+col,96,20,(x,w,h)=>{x.fillStyle="#0a0816";x.fillRect(0,0,w,h);x.strokeStyle=col;x.lineWidth=2;x.strokeRect(1,1,w-2,h-2);
+    x.font="900 12px Nunito,sans-serif";x.textAlign="center";x.textBaseline="middle";x.shadowColor=col;x.shadowBlur=6;x.fillStyle="#fff";x.fillText(name,w/2,h/2+1);});}
+  function offArt(look,st,col){
+    if(look==="audio"){const on=st==="work";return offCanvas("audio"+on,120,40,(x,w,h)=>{x.clearRect(0,0,w,h);
+        for(let r=0;r<3;r++)for(let c=0;c<5;c++){const X=2+c*13,Y=2+r*12;x.fillStyle="#2a1f4a";x.fillRect(X,Y,12,11);x.fillStyle="#3b2d66";for(let k=0;k<3;k++)x.fillRect(X+1+k*4,Y+1,2,9);x.fillStyle="#171128";x.fillRect(X,Y+10,12,1);}
+        x.fillStyle=on?"#3b0a10":"#1a0a0e";x.fillRect(72,6,44,16);x.strokeStyle=on?"#ff3b4d":"#5a2a30";x.lineWidth=2;x.strokeRect(73,7,42,14);x.font="900 10px Nunito,sans-serif";x.textAlign="center";x.textBaseline="middle";
+        if(on){x.shadowColor="#ff3b4d";x.shadowBlur=8;}x.fillStyle=on?"#ffd6da":"#6b3a40";x.fillText("ON AIR",94,15);x.shadowBlur=0;
+        x.fillStyle="#0f0c1c";x.beginPath();x.arc(94,32,7,0,7);x.fill();x.fillStyle="#38bdf8";x.beginPath();x.arc(94,32,2,0,7);x.fill();});}
+    if(look==="subjefe")return offCanvas("subjefe",120,40,(x,w,h)=>{x.fillStyle="#7a5236";x.fillRect(0,0,74,40);x.fillStyle="#c49a6c";x.fillRect(3,3,68,34);
+        const cols=["#7c3aed","#0ea5e9","#f59e0b","#22c55e","#ef4444","#ec4899"];for(let k=0;k<8;k++){const X=6+(k%4)*16,Y=6+Math.floor(k/4)*15;x.fillStyle=cols[k%6];x.fillRect(X,Y,11,13);x.fillStyle="rgba(255,255,255,.6)";x.fillRect(X+2,Y+3,7,1);x.fillRect(X+2,Y+6,5,1);x.fillStyle="#ef4444";x.fillRect(X+5,Y-1,2,2);}
+        x.fillStyle="#0a0816";x.fillRect(80,6,40,26);x.strokeStyle="#f59e0b";x.lineWidth=2;x.strokeRect(81,7,38,24);x.font="900 8px Nunito,sans-serif";x.textAlign="center";x.fillStyle="#fde68a";x.fillText("REDEMPTIO",100,18);x.fillStyle="#f59e0b";x.fillText("✓ synced",100,27);});
+    if(look==="school")return offCanvas("school",120,40,(x,w,h)=>{x.fillStyle="#6b4a2a";x.fillRect(0,0,84,40);x.fillStyle="#1f3d2c";x.fillRect(3,3,78,32);x.fillStyle="#8b6a44";x.fillRect(0,35,84,5);
+        x.strokeStyle="rgba(240,240,230,.8)";x.lineWidth=1;x.font="bold 8px monospace";x.fillStyle="rgba(240,240,230,.85)";x.fillText("E = mc²",8,14);x.fillText("BIO-109",8,26);x.beginPath();x.moveTo(50,12);x.lineTo(76,12);x.moveTo(50,18);x.lineTo(70,18);x.stroke();
+        x.fillStyle="#facc15";x.font="900 14px Nunito,sans-serif";x.fillText("A+",56,32);x.fillStyle="#fff";x.fillRect(70,36,6,2);
+        x.fillStyle="#1e293b";x.fillRect(90,4,28,32);x.fillStyle="#a855f7";x.fillRect(92,6,24,8);x.fillStyle="#fff";x.font="bold 6px Nunito";x.fillText("GOALS",95,12);x.fillStyle="#22c55e";for(let k=0;k<3;k++){x.fillRect(93,18+k*6,3,3);x.fillStyle="rgba(255,255,255,.7)";x.fillRect(98,19+k*6,15,1);x.fillStyle="#22c55e";}});
+    if(look==="checkin"){const c=chi(),key="checkin"+c.h+":"+c.m;return offCanvas(key,120,40,(x,w,h)=>{x.fillStyle="#0f172a";x.beginPath();x.arc(20,20,17,0,7);x.fill();x.strokeStyle="#22c55e";x.lineWidth=2;x.stroke();x.fillStyle="#e2e8f0";for(let k=0;k<12;k++){const a=k/12*Math.PI*2;x.fillRect(20+Math.cos(a)*14-1,20+Math.sin(a)*14-1,2,2);}
+        const ha=((c.h%12)+c.m/60)/12*Math.PI*2-Math.PI/2,ma=c.m/60*Math.PI*2-Math.PI/2;x.strokeStyle="#fff";x.lineWidth=2;x.beginPath();x.moveTo(20,20);x.lineTo(20+Math.cos(ha)*8,20+Math.sin(ha)*8);x.stroke();x.lineWidth=1;x.strokeStyle="#22c55e";x.beginPath();x.moveTo(20,20);x.lineTo(20+Math.cos(ma)*12,20+Math.sin(ma)*12);x.stroke();
+        x.fillStyle="#f8fafc";x.fillRect(46,2,72,36);x.fillStyle="#22c55e";x.fillRect(46,2,72,8);x.fillStyle="#fff";x.font="900 7px Nunito";x.fillText("THIS WEEK",50,9);x.fillStyle="#cbd5e1";
+        for(let r=0;r<3;r++)for(let k=0;k<7;k++){x.fillStyle="#e2e8f0";x.fillRect(48+k*10,13+r*8,8,6);if(r*7+k<(new Date().getDay()+7)){x.fillStyle="#16a34a";x.fillRect(50+k*10,15+r*8,4,2);}}});}
+    return offCanvas("other"+col,120,40,(x,w,h)=>{x.fillStyle="#0b1324";x.fillRect(0,0,84,40);x.strokeStyle=col;x.lineWidth=2;x.strokeRect(1,1,82,38);x.fillStyle="#1e3a5f";[[8,8,22,12],[34,6,18,16],[56,10,20,14],[14,24,16,10],[44,26,14,8]].forEach(([a,b,c2,d2])=>x.fillRect(a,b,c2,d2));
+      x.fillStyle="#ef4444";[[14,12],[40,12],[62,16],[20,28],[48,28]].forEach(([a,b])=>x.fillRect(a,b,3,3));x.strokeStyle="rgba(239,68,68,.6)";x.lineWidth=1;x.beginPath();x.moveTo(15,13);x.lineTo(41,13);x.lineTo(63,17);x.lineTo(49,29);x.lineTo(21,29);x.stroke();});}
+  function officeOf(d,add){const L=d.w&&d.w.look,col=(LOOK[L]&&LOOK[L].acc)||"#a855f7",rgb=hexRgb(col),i=d.i,j=d.j,t=performance.now()/1000,st=state(d.w);
+    const I0=i-.45,I1=i+2.9,J0=j-1.65,J1=j+1.55;
+    // carpet: soft tiles in the worker's color with a glowing edge
+    add(.002,()=>{for(let a=I0;a<I1-.01;a+=.5)for(let b=J0;b<J1-.01;b+=.5){const a2=Math.min(I1,a+.5),b2=Math.min(J1,b+.5);poly([pr(a,b,.006),pr(a2,b,.006),pr(a2,b2,.006),pr(a,b2,.006)],`rgba(${rgb},${((a-I0+b-J0)*2|0)%2?.16:.26})`);}
+      g.strokeStyle=`rgba(${rgb},${.55+.15*Math.sin(t*1.6)})`;g.lineWidth=1.5;g.beginPath();[pr(I0,J0,.01),pr(I1,J0,.01),pr(I1,J1,.01),pr(I0,J1,.01)].forEach(([x,y],k)=>k?g.lineTo(x,y):g.moveTo(x,y));g.closePath();g.stroke();
+      const [cx,cy]=pr((I0+I1)/2,(J0+J1)/2,0);glowAt(cx,cy,70,rgb,.08);});
+    // wall art on the back glass + lit name sign standing on top of the wall
+    add(i+j+.92,()=>{wallImg(offArt(L,st,col),i+.05,i+2.35,.42,1.22,J0+.11);
+      box(i+.55,J0+.02,1.3,1.3,.08,.05,["#2b2a40","#17162a","#201f35"]);wallImg(offSign((d.w.short||d.w.name||"").toUpperCase(),col),i+.55,i+1.85,1.35,1.72,J0+.1);
+      const [sx,sy]=pr(i+1.2,J0+.1,1.55);glowAt(sx,sy,30,rgb,.25+.08*Math.sin(t*2));
+      [[i-.2],[i+2.45]].forEach(([a])=>{const [x,y]=pr(a,J0+.12,1.05);R(x-2,y-2,4,4,"#2b2a40");glowAt(x,y+2,16,"255,226,160",.45);});});
+    // corner furniture (back-left) + tall plant (back-right)
+    add(i+j+1.05,()=>{const a=i-.32,b=j-1.45;
+      if(L==="audio"){box(a+.15,b+.15,0,.22,.22,.04,["#3a3a50","#1d1d2a","#2a2a3a"]);const [x0,y0]=pr(a+.26,b+.26,.04),[x1,y1]=pr(a+.26,b+.26,1.25),[x2,y2]=pr(a+.75,b+.5,1.35);g.strokeStyle="#6b7280";g.lineWidth=1.5;g.beginPath();g.moveTo(x0,y0);g.lineTo(x1,y1);g.lineTo(x2,y2);g.stroke();
+        R(x2-2,y2-5,5,8,"#9aa3b5");g.strokeStyle="rgba(200,200,220,.6)";g.beginPath();g.arc(x2+5,y2,4,0,7);g.stroke();if(st==="work")glowAt(x2,y2,14,"56,189,248",.4);}
+      else if(L==="subjefe"){box(a,b,0,.55,.5,1.05,["#475569","#1e293b","#334155"]);for(let k=0;k<3;k++){const z=.15+k*.3;poly([pr(a+.08,b+.5,z),pr(a+.47,b+.5,z),pr(a+.47,b+.5,z+.24),pr(a+.08,b+.5,z+.24)],"#2b3648");const [hx,hy]=pr(a+.27,b+.5,z+.14);R(hx-2,hy,4,1,"#cbd5e1");}
+        [["#7c3aed"],["#f59e0b"],["#0ea5e9"]].forEach(([c],k)=>box(a+.08,b+.1,1.05+k*.07,.4,.3,.07,[c,"#1f1a30",c]));}
+      else if(L==="school"){box(a+.05,b+.05,0,.45,.45,.6,["#8f6342","#5e3c25","#734a2f"]);const [x,y]=pr(a+.28,b+.28,.95);g.fillStyle="#2563eb";g.beginPath();g.arc(x,y,7,0,7);g.fill();g.fillStyle="#22c55e";g.beginPath();g.ellipse(x-2,y-1,3,4,.4,0,7);g.fill();g.ellipse(x+3,y+2,2,3,0,0,7);g.fill();
+        g.strokeStyle="#b45309";g.lineWidth=1;g.beginPath();g.arc(x,y,8.5,-1.2,1.9);g.stroke();const [bx,by]=pr(a+.28,b+.28,.6);R(bx-1,by-6,2,6,"#b45309");}
+      else if(L==="checkin"){box(a+.02,b+.05,0,.5,.45,.75,["#334155","#1e293b","#273449"]);box(a+.1,b+.1,.75,.34,.3,.42,["#111827","#0b1220","#0f172a"]);const [x,y]=pr(a+.27,b+.4,.85);R(x-2,y-3,5,4,"#e5e7eb");R(x-1,y-6,3,2,"#22c55e");
+        if(!reduce){const p2=(t*.9)%1;g.globalAlpha=.5*(1-p2);R(x+Math.sin(t*3),y-9-p2*9,1,3,"#e5e7eb");g.globalAlpha=1;}}
+      else{box(a+.1,b+.1,0,.4,.4,.35,["#3a3a50","#1d1d2a","#2a2a3a"]);const [x,y]=pr(a+.3,b+.3,.35);g.fillStyle="#3e8f4f";g.beginPath();g.ellipse(x,y-8,7,7,0,0,7);g.fill();}
+      // tall plant in the back-right corner
+      {const a2=i+2.5,b2=j-1.4;box(a2,b2,0,.22,.22,.22,["#3a3a50","#1d1d2a","#2a2a3a"]);const [x,y]=pr(a2+.11,b2+.11,.22),sw=Math.sin(t*1.2)*.8;
+       [["#2f7d43",-3,-8,4,6],["#3e8f4f",3,-10,4,6],["#5cc274",0,-14,3,6],["#3e8f4f",-2,-17,3,4]].forEach(([c,dx,dy,rx,ry])=>{g.fillStyle=c;g.beginPath();g.ellipse(x+dx+sw,y+dy,rx,ry,0,0,7);g.fill();});}});}
+
+  // ---- small decorate bar (Oct 22)
+  let EDSNAP=null;
+  function palHint(t){let h=document.getElementById("palHint");if(!h){h=el("div");h.id="palHint";$("pal").append(h);}h.textContent=t;h.hidden=false;clearTimeout(palHint.t);palHint.t=setTimeout(()=>{h.hidden=true;},2600);}
+  (function palSetup(){const pal=$("pal");if(!pal||pal.dataset.small)return;pal.dataset.small="1";
+    const more=el("div");more.id="palMore";more.hidden=true;more.append(el("span","ttl","ADD TO THIS FLOOR"));
+    [...pal.querySelectorAll("[data-add]")].forEach(b=>{b.addEventListener("click",()=>{more.hidden=true;});more.append(b);});
+    pal.append(more);
+    const cancel=el("button",null,"✕ Cancel");cancel.type="button";cancel.title="Undo what you changed and close";
+    cancel.onclick=()=>{if(EDSNAP){layout=JSON.parse(JSON.stringify(EDSNAP));try{syncHome();}catch(e){}selected=null;placeTags();saveLayout();}setEdit(false);};
+    const dots=el("button",null,"⋯");dots.type="button";dots.title="Add things";dots.setAttribute("aria-label","Add things");dots.style.fontSize="22px";dots.onclick=()=>{more.hidden=!more.hidden;};
+    $("palRot").textContent="⟳ Rotate";$("palDone").textContent="✓ Done";
+    pal.insertBefore($("palRot"),pal.firstChild);pal.insertBefore(cancel,$("palReset"));pal.append(dots);pal.append($("palDone"));pal.insertBefore($("palDone"),cancel);
+    setInterval(()=>{try{$("palRot").classList.toggle("off",!canRot(selected));}catch(e){}},400);})();
+
+  // ---- private offices (Oct 22): raised floor with a neon edge, glass walls all around, a door, everything in the worker's color
+  function offWall(i,j,wi,wj,h,col){const rgb=hexRgb(col);box(i,j,0,wi,wj,.16,["#2b2440","#1a1530","#221c38"],"rgba(10,6,22,.6)");
+    box(i,j,.16,wi,wj,h-.16,["rgba(236,232,255,.40)","rgba(205,198,245,.42)","rgba(222,216,252,.48)"],"rgba(250,248,255,.55)");
+    neonLine(wi>wj?[pr(i,j+wj,h),pr(i+wi,j+wj,h)]:[pr(i+wi,j,h),pr(i+wi,j+wj,h)],col,1.2);}
+  function officeWalls(d,add){const L=d.w&&d.w.look,col=(LOOK[L]&&LOOK[L].acc)||"#a855f7",rgb=hexRgb(col),i=d.i,j=d.j;
+    const I0=i-.45,I1=i+2.9,J0=j-1.65,J1=j+1.55,TH2=1.45,LO=.85,DOOR=[I1-1.25,I1-.2];
+    // raised floor slab with a glowing edge (drawn first, under everything in the office)
+    add(.0015,RW(d,()=>{box(I0,J0,-OFZ,I1-I0,J1-J0,OFZ,["#1d1836","#120f26","#17132e"]);const t=performance.now()/1000;
+      g.save();g.shadowColor=col;g.shadowBlur=8;g.strokeStyle=`rgba(${rgb},${.75+.2*Math.sin(t*1.5)})`;g.lineWidth=1.6;g.beginPath();[pr(I0,J1,0),pr(I1,J1,0),pr(I1,J0,0)].forEach(([x,y],k)=>k?g.lineTo(x,y):g.moveTo(x,y));g.stroke();
+      g.strokeStyle=`rgba(${rgb},.5)`;g.lineWidth=1;g.beginPath();[pr(I0,J1,-OFZ),pr(I1,J1,-OFZ),pr(I1,J0,-OFZ)].forEach(([x,y],k)=>k?g.lineTo(x,y):g.moveTo(x,y));g.stroke();g.restore();
+      // little step in front of the door
+      box(DOOR[0]+.15,J1,-OFZ,.8,.3,OFZ*.5,["#2b2440","#1a1530","#221c38"]);}));
+    // back + left walls (tall)
+    for(let u=I0;u<I1-.01;u+=1){const w=Math.min(1,I1-u);add(u+J0+w,RW(d,()=>offWall(u,J0,w,.1,TH2,col)));}
+    for(let u=J0;u<J1-.01;u+=1){const w=Math.min(1,J1-u);add(I0+u+.9,RW(d,()=>offWall(I0,u,.1,w,TH2,col)));}
+    // right wall (low glass) and front wall with a door gap
+    for(let u=J0;u<J1-.01;u+=1){const w=Math.min(1,J1-u);add(I1+u+w+.6,RW(d,()=>offWall(I1-.1,u,.1,w,LO,col)));}
+    const fr=[[I0,DOOR[0]],[DOOR[1],I1]];fr.forEach(([a,b])=>{for(let u=a;u<b-.01;u+=1){const w=Math.min(1,b-u);add(u+J1+w+.6,RW(d,()=>offWall(u,J1-.1,w,.1,LO,col)));}});
+    // door posts + a glowing door mat
+    add(DOOR[1]+J1+.7,RW(d,()=>{[DOOR[0],DOOR[1]-.08].forEach(a=>{box(a,J1-.1,0,.08,.1,LO+.35,["#3a3354","#241e3e","#2f2a4a"]);const [x,y]=pr(a+.04,J1-.05,LO+.35);glowAt(x,y,10,rgb,.6);});
+      const [mx,my]=pr((DOOR[0]+DOOR[1])/2,J1-.25,.01);g.fillStyle=`rgba(${rgb},.35)`;g.beginPath();g.ellipse(mx,my,14,5,0,0,7);g.fill();}));}
+
+  // ---- neon pieces from Stick's Floor 1 picture (Oct 22)
+  function brainIcon(x,cx,cy,r,col){x.strokeStyle=col;x.lineWidth=2;x.beginPath();x.arc(cx-r*.35,cy,r*.62,Math.PI*.5,Math.PI*1.5);x.arc(cx+r*.35,cy,r*.62,-Math.PI*.5,Math.PI*.5);x.closePath();x.stroke();
+    x.beginPath();x.moveTo(cx,cy-r*.62);x.lineTo(cx,cy+r*.62);x.moveTo(cx-r*.55,cy-r*.15);x.quadraticCurveTo(cx-r*.2,cy-r*.3,cx-r*.25,cy+r*.1);x.moveTo(cx+r*.55,cy+r*.15);x.quadraticCurveTo(cx+r*.2,cy+r*.3,cx+r*.25,cy-r*.1);x.stroke();}
+  function neonPanel(key,w,h,draw){return offCanvas(key,w,h,(x)=>{x.fillStyle="rgba(10,6,24,.92)";x.fillRect(0,0,w,h);x.shadowColor="#e879f9";x.shadowBlur=10;x.strokeStyle="#e879f9";x.lineWidth=2.5;x.strokeRect(3,3,w-6,h-6);draw(x);x.shadowBlur=0;});}
+  function focusSignD(i,j,night){const t=performance.now()/1000;
+    [[i+.15],[i+1.07]].forEach(([a])=>box(a,j+.12,0,.08,.08,.9,["#2b2a40","#17162a","#201f35"]));
+    box(i,j+.08,.9,1.3,.12,1.6,["#2b2440","#1a1530","#221c38"]);
+    const im=neonPanel("focus",80,96,x=>{x.font="900 17px Nunito,sans-serif";x.textAlign="center";x.fillStyle="#fff";x.fillText("FOCUS",40,28);brainIcon(x,40,62,22,"#f0abfc");});
+    wallImg(im,i+.05,i+1.25,.98,2.42,j+.205);const [gx,gy]=pr(i+.65,j+.3,1.7);glowAt(gx,gy,38,"232,121,249",.28+.06*Math.sin(t*2));}
+  function neon1010D(i,j,night){const t=performance.now()/1000,im=neonPanel("n1010",70,90,x=>{brainIcon(x,35,34,24,"#f0abfc");x.font="900 16px Nunito,sans-serif";x.textAlign="center";x.fillStyle="#fff";x.fillText("1010",35,78);});
+    box(i,j,1.0,.12,2.2,1.85,["#2b2440","#1a1530","#221c38"]);
+    // panel faces +i: draw the picture on the plane i = i+.13 along j
+    const W=im.width,Hh=im.height;let s0=pr(i+.13,j+2.15,2.8),e0=pr(i+.13,j+.05,2.8);if(e0[0]<s0[0]){const q=s0;s0=e0;e0=q;}
+    g.save();g.transform((e0[0]-s0[0])/W,(e0[1]-s0[1])/W,0,ZS*1.7/Hh,s0[0],s0[1]);g.drawImage(im,0,0);g.restore();
+    const [gx,gy]=pr(i+.3,j+1.1,1.9);glowAt(gx,gy,44,"232,121,249",.3+.06*Math.sin(t*1.7));}
+
+  // ---- computer layout (Oct 22, Stick's picture): office full screen, floating cards. Phones and the installed app keep their layout.
+  function deskOn(){return innerWidth>=1000&&innerHeight>=560&&!document.documentElement.classList.contains("pwa");}
+  (function deskSetup(){const hd=$("hdr");if(!hd||$("dkInfo"))return;const info=el("div");info.id="dkInfo";
+    info.innerHTML='<div class="r"><span class="px" data-icon="calendar"></span><span>Today <span id="dkClock">--</span></span></div><small id="dkNext"></small><div class="r"><span class="px" id="dkSky" data-icon="moon"></span><span id="dkWx"></span></div>';
+    hd.insertBefore(info,$("acts2"));paintIcons();
+    const sync=()=>{const on=deskOn();if(document.body.classList.contains("deskui")!==on){document.body.classList.toggle("deskui",on);[hd,document.querySelector(".tiles"),$("needs"),document.querySelector(".bottom .lvl"),$("dock"),$("pal")].forEach(e=>e&&e.classList.toggle("glass",on));setTimeout(()=>{try{resize();placeTags();}catch(e){}},30);}
+      if(!on)return;const c=$("clock"),n=$("nextRep"),w=$("wxT"),sk=$("skyIcon");if(c)$("dkClock").textContent=c.textContent;if(n)$("dkNext").textContent="Next report "+n.textContent;if(w)$("dkWx").textContent=w.textContent;
+      if(sk&&$("dkSky").dataset.icon!==sk.dataset.icon){$("dkSky").dataset.icon=sk.dataset.icon;paintIcons();}};
+    sync();setInterval(sync,1000);addEventListener("resize",sync);})();
+
+  // ---- department desks, drawn in the style of Stick's desk sheet (dark wood, purple screens, black chairs)
+  const DWD=["#4a3429","#2c1f19","#38281f"],DWD2=["#3a2a22","#231813","#2e2019"],DMT=["#1d1b2b","#0f0e18","#16152a"],DCH=["#26222f","#141119","#1c1824"];
+  function deskBody(i,j,wi,wj,h){shadowE(i+wi/2,j+wj/2,Math.max(wi,wj)*.45);
+    box(i+.05,j+.05,0,.5,wj-.1,h-.07,DWD2);box(i+wi-.55,j+.05,0,.5,wj-.1,h-.07,DWD2);box(i+.55,j+wj-.18,.2,wi-1.1,.08,h-.32,DWD2);
+    [.18,.42].forEach(z=>{[[i+.05],[i+wi-.55]].forEach(([a])=>poly([pr(a+.06,j+wj-.049,z),pr(a+.44,j+wj-.049,z),pr(a+.44,j+wj-.049,z+.16),pr(a+.06,j+wj-.049,z+.16)],"#231711"));});
+    [[i+.05],[i+wi-.55]].forEach(([a])=>{const [x,y]=pr(a+.25,j+wj-.04,.5);R(x-1,y,3,1,"#7c3aed");});
+    box(i,j,h-.07,wi,wj,.07,DWD);poly([pr(i,j+wj,h-.07),pr(i+wi,j+wj,h-.07),pr(i+wi,j+wj,h-.05),pr(i,j+wj,h-.05)],"rgba(168,85,247,.9)");}
+  function chairS(i,j){box(i+.2,j+.2,.06,.1,.1,.36,DMT);const [x,y]=pr(i+.25,j+.25,.05);g.fillStyle="#0c0b12";g.beginPath();g.ellipse(x,y,7,3,0,0,7);g.fill();
+    box(i,j,.42,.5,.5,.1,DCH);box(i,j+.44,.5,.5,.08,.62,DCH);poly([pr(i+.1,j+.521,.62),pr(i+.4,j+.521,.62),pr(i+.4,j+.521,.9),pr(i+.1,j+.521,.9)],"#2e2939");const [ax,ay]=pr(i+.25,j+.52,.98);R(ax-2,ay,4,1,"#7c3aed");}
+  function screenJ(a,b,J,z0,z1,kind,t){{const P=[pr(a,J,z0),pr(b,J,z0),pr(b,J,z1),pr(a,J,z1)],gr=g.createLinearGradient(P[3][0],P[3][1],P[1][0],P[1][1]);gr.addColorStop(0,"#4c1d95");gr.addColorStop(1,"#2e1065");poly(P,gr,"#8b5cf6");}const w=b-a,hz=z1-z0,f=(u,v)=>pr(a+u*w,J,z0+v*hz);
+    if(kind==="brain"){const [x,y]=f(.5,.5);g.strokeStyle="#c084fc";g.lineWidth=1;g.beginPath();g.ellipse(x-2,y,3,4,0,0,7);g.ellipse(x+2,y,3,4,0,0,7);g.stroke();glowAt(x,y,10,"168,85,247",.35);}
+    else if(kind==="chart"){for(let k=0;k<5;k++){const hh=.2+.6*Math.abs(Math.sin(k*1.7+t*.6));const [x,y]=f(.12+k*.17,.12),hp=Math.max(1,Math.round(hh*hz*ZS*.75));R(x,y-hp,2,hp,k%2?"#e9d5ff":"#c084fc");}}
+    else if(kind==="code"){for(let k=0;k<4;k++){const [x,y]=f(.12,.8-k*.2),[x2]=f(.12+.12*(2+((k*5+Math.floor(t*2))%6)),.8-k*.2);g.strokeStyle=k%2?"#c4b5fd":"#f5f3ff";g.lineWidth=1;g.beginPath();g.moveTo(x,y);g.lineTo(x2,y+(x2-x)*.5);g.stroke();}}
+    else {const [x,y]=f(.5,.55);R(x-4,y-1,8,2,"#a855f7");R(x-2,y-3,4,1,"#e9d5ff");}
+    const [gx,gy]=f(.5,.5);glowAt(gx,gy,16,"168,85,247",.18);}
+  function monJ(a,J,z,w,hz,kind,t){box(a+w/2-.05,J-.02,z,.1,.08,.18,DMT);box(a+w/2-.15,J-.06,z,.3,.14,.03,DMT);box(a,J-.04,z+.16,w,.05,hz+.08,["#3a3552","#24203a","#2e2a46"]);screenJ(a+.04,a+w-.04,J+.011,z+.2,z+hz+.2,kind,t);}
+  function wsDesk(i,j,mode){const t=performance.now()/1000,h=.78,wi=2.4,wj=1.0;deskBody(i,j,wi,wj,h);
+    if(mode==="chart"){monJ(i+.25,j+.15,h,.6,.42,"chart",t);monJ(i+.9,j+.12,h,.75,.5,"chart",t+1);monJ(i+1.7,j+.15,h,.5,.38,"code",t);
+      const [px,py]=pr(i+2.2,j+.75,h);R(px-2,py-4,5,4,"#3a3a50");g.fillStyle="#3e8f4f";g.beginPath();g.ellipse(px,py-7,4.5,4,0,0,7);g.fill();}
+    else{monJ(i+.2,j+.18,h,.62,.45,"code",t);monJ(i+.86,j+.12,h,.72,.52,"brain",t);monJ(i+1.62,j+.18,h,.62,.45,"chart",t);
+      box(i+2.0,j+.55,h,.18,.22,.28,DMT);const [lx,ly]=pr(i+2.09,j+.66,h+.28);glowAt(lx,ly,8,"52,211,153",.5);}
+    box(i+.85,j+.55,h,.7,.22,.03,["#1c1c28","#101018","#16161f"]);for(let k=0;k<6;k++){const [kx,ky]=pr(i+.9+k*.1,j+.66,h+.04);R(kx,ky,2,1,"#8b5cf6");}
+    chairS(i+.95,j+1.05);}
+  function researchDesk(i,j){const t=performance.now()/1000,h=.78;deskBody(i,j,2.4,1.0,h);
+    const tank=(a,b,r,hh)=>{const [x0,y0]=pr(a,b,h),[x1,y1]=pr(a,b,h+hh),rx=r*TW*.5;g.fillStyle="rgba(34,211,238,.18)";g.fillRect(x0-rx,y1,rx*2,y0-y1);g.strokeStyle="rgba(103,232,249,.85)";g.lineWidth=1;g.strokeRect(x0-rx+.5,y1,rx*2-1,y0-y1);
+      R(x0-rx,y1-2,rx*2,2,"#1d1b2b");R(x0-rx,y0-2,rx*2,3,"#1d1b2b");const p=(t*.7+a)%1;R(x0-1,y0-4-p*(y0-y1-6),2,2,"#a5f3fc");glowAt(x0,(y0+y1)/2,rx*2.4,"34,211,238",.25);};
+    tank(i+.55,j+.45,.28,.55);tank(i+1.2,j+.4,.42,.85);tank(i+1.85,j+.45,.28,.55);
+    box(i+.15,j+.65,h,.3,.22,.12,DMT);box(i+1.95,j+.7,h,.3,.2,.1,DMT);const [cx,cy]=pr(i+2.1,j+.8,h+.1);R(cx-2,cy-1,4,1,"#22d3ee");chairS(i+.95,j+1.05);}
+  function serverConsole(i,j){const t=performance.now()/1000,h=.8;deskBody(i,j,2.8,1.1,h);
+    box(i+.05,j+.02,h,2.7,.12,.95,DMT);for(let r=0;r<2;r++)for(let c=0;c<4;c++){const a=i+.14+c*.66;screenJ(a,a+.58,j+.141,h+.12+r*.42,h+.48+r*.42,(r+c)%3===0?"chart":(r+c)%3===1?"code":"dot",t+c);}
+    box(i+2.25,j+.2,0,.5,.5,h,DMT);for(let k=0;k<4;k++){const [x,y]=pr(i+2.75,j+.3+k*.1,.2+k*.14);R(x,y,1,1,(Math.floor(t*3)+k)%2?"#22c55e":"#7c3aed");}
+    box(i+.8,j+.6,h,.8,.24,.03,["#1c1c28","#101018","#16161f"]);chairS(i+1.0,j+1.15);}
+  function meetingTable(i,j){const t=performance.now()/1000,h=.72,wi=4.6,wj=1.7;
+    for(let k=0;k<4;k++){chairS(i+.35+k*1.05,j-.55);}
+    shadowE(i+wi/2,j+wj/2,2.2);box(i+.35,j+.3,0,.18,.18,h,DWD2);box(i+wi-.53,j+.3,0,.18,.18,h,DWD2);box(i+.35,j+wj-.48,0,.18,.18,h,DWD2);box(i+wi-.53,j+wj-.48,0,.18,.18,h,DWD2);
+    box(i,j,h,wi,wj,.08,DWD);poly([pr(i,j+wj,h),pr(i+wi,j+wj,h),pr(i+wi,j+wj,h+.02),pr(i,j+wj,h+.02)],"rgba(168,85,247,.85)");
+    [[.5,.35],[1.6,.3],[2.8,.4],[3.7,.3],[.9,1.1],[2.2,1.2],[3.4,1.1]].forEach(([a,b],k)=>{const [x,y]=pr(i+a,j+b,h+.09);R(x-3,y-1,6,3,k%2?"#e7e5e4":"#d6d3d1");R(x-2,y,3,1,"#7c3aed");});
+    const [ox,oy]=pr(i+wi/2,j+wj/2,h+.45+Math.sin(t*1.5)*.05);box(i+wi/2-.2,j+wj/2-.2,h+.08,.4,.4,.06,DMT);g.fillStyle="#7c3aed";g.beginPath();g.arc(ox,oy,6,0,7);g.fill();g.fillStyle="#c4b5fd";g.beginPath();g.arc(ox-2,oy-2,2,0,7);g.fill();
+    g.strokeStyle="rgba(196,181,253,.7)";g.beginPath();g.ellipse(ox,oy,10,3.5,0,0,7);g.stroke();glowAt(ox,oy,26,"168,85,247",.5+.15*Math.sin(t*2));
+    for(let k=0;k<4;k++){chairS(i+.35+k*1.05,j+wj-.05);}}
+  function breakTable(i,j){const h=.7;chairS(i+.4,j-.45);shadowE(i+.65,j+.65,.7);box(i+.55,j+.55,0,.2,.2,h,DMT);box(i,j,h,1.3,1.3,.07,DWD);
+    const [px,py]=pr(i+.65,j+.55,h+.07);R(px-2,py-4,5,4,"#3a3a50");g.fillStyle="#3e8f4f";g.beginPath();g.ellipse(px,py-7,4,4,0,0,7);g.fill();const [mx,my]=pr(i+.95,j+.95,h+.07);R(mx-2,my-4,4,4,"#a78bfa");chairS(i+.4,j+1.25);}
+  // ---- department zones on Floor 1: tinted floor, low dark walls with a neon top, a standing neon name sign
+  const ZONES1=[{n:"MEETING ROOM",i0:8,i1:15.5,j0:0,j1:5.6,c:"#a855f7",door:"j"},{n:"OPERATIONS",i0:16.5,i1:25,j0:0,j1:6.2,c:"#f59e0b",door:"j"},{n:"BREAK ROOM",i0:26,i1:36,j0:0,j1:7,c:"#f472b6",door:"j"},
+    {n:"IT & SYSTEMS",i0:0,i1:8.2,j0:6.6,j1:14.6,c:"#22c55e",door:"i"},{n:"DESIGN STUDIO",i0:27.4,i1:36,j0:8.6,j1:16.0,c:"#38bdf8",door:"i0"},
+    {n:"DATA LAB",i0:0,i1:8.6,j0:16.2,j1:26,c:"#a855f7",door:"i"},{n:"AI RESEARCH",i0:10,i1:18,j0:17,j1:24.4,c:"#22d3ee",door:"j"}];
+  function zoneSign(name,col){return offCanvas("zs"+name+col,130,30,(x,w,h)=>{x.fillStyle="rgba(8,6,20,.94)";x.fillRect(0,0,w,h);x.shadowColor=col;x.shadowBlur=8;x.strokeStyle=col;x.lineWidth=2.5;x.strokeRect(2,2,w-4,h-4);x.font="900 15px Nunito,sans-serif";x.textAlign="center";x.textBaseline="middle";x.fillStyle="#fff";x.fillText(name,w/2,h/2+1);});}
+  function zonesFloor1(add){const t=performance.now()/1000,LO=.62;
+    ZONES1.forEach(Z=>{const rgb=hexRgb(Z.c),{i0,i1,j0,j1}=Z;
+      add(.0012,()=>{poly([pr(i0,j0,.004),pr(i1,j0,.004),pr(i1,j1,.004),pr(i0,j1,.004)],`rgba(${rgb},.07)`);for(let a=Math.ceil(i0);a<i1;a+=2)poly([pr(a,j0,.005),pr(Math.min(i1,a+1),j0,.005),pr(Math.min(i1,a+1),j1,.005),pr(a,j1,.005)],"rgba(0,0,0,.08)");
+        g.save();g.shadowColor=Z.c;g.shadowBlur=6;g.strokeStyle=`rgba(${rgb},${.55+.15*Math.sin(t*1.3+i0)})`;g.lineWidth=1.3;g.beginPath();[pr(i0,j1,.01),pr(i1,j1,.01),pr(i1,j0,.01)].forEach(([x,y],k)=>k?g.lineTo(x,y):g.moveTo(x,y));g.stroke();g.restore();});
+      const seg=(a,b,fixed,alongI)=>{for(let u=a;u<b-.01;u+=1){const w=Math.min(1,b-u);if(alongI)add(u+fixed+w,()=>offWall(u,fixed-.08,w,.08,LO,Z.c));else add(fixed+u+w,()=>offWall(fixed-.08,u,.08,w,LO,Z.c));}};
+      const dm=Z.door==="j"?(i0+i1)/2:(j0+j1)/2;
+      // front wall (j=j1) and side wall (i=i1), with a door gap on one of them; inner sides only when not against the room wall
+      if(Z.door==="j"){seg(i0+.1,dm-.8,j1,true);seg(dm+.8,i1,j1,true);if(i1<GI-.5)seg(j0,j1,i1,false);}else if(Z.door==="i0"){seg(i0+.1,i1,j1,true);if(i1<GI-.5)seg(j0,j1,i1,false);}else{seg(i0+.1,i1,j1,true);seg(j0,dm-.8,i1,false);seg(dm+.8,j1,i1,false);}
+      if(j0>.5)seg(i0,i1,j0+.08,true);if(i0>.5){if(Z.door==="i0"){seg(j0,dm-.8,i0+.08,false);seg(dm+.8,j1,i0+.08,false);}else seg(j0,j1,i0+.08,false);}
+      // standing neon name sign at the front corner
+      add(i1+j1+.9,()=>{const a=i1-3.0,b=i1-.3,J=j1+.12;[a+.15,b-.2].forEach(u=>box(u,J-.05,0,.06,.06,1.25,DMT));box(a,J-.06,1.15,b-a,.06,.55,DMT);wallImg(zoneSign(Z.n,Z.c),a+.03,b-.03,1.18,1.68,J+.002);const [x,y]=pr((a+b)/2,J,1.4);glowAt(x,y,40,rgb,.22);});});}
+  // ---- window mode (Oct 22): every window covers only the office area so the bottom bar can switch windows
+  document.body.classList.add("winmode");
+  function winPlace(){const r0=stage.getBoundingClientRect(),dk=document.body.classList.contains("deskui");const r=dk?(()=>{const hb=$("hdr").getBoundingClientRect(),lb=(document.querySelector(".bottom .lvl")||$("hdr")).getBoundingClientRect(),bb=$("bottom").getBoundingClientRect();return{left:322,right:innerWidth-16,width:innerWidth-338,top:Math.max(16,Math.min(hb.top,lb.bottom+10)),bottom:bb.top-10};})():r0,hd=$("hdr").getBoundingClientRect(),top=dk?r.top:Math.max(r.top,hd.bottom>r.top+4&&hd.bottom<r.bottom?hd.bottom+6:r.top);[$("card"),document.getElementById("rlBox")].forEach(w=>{if(!w||w.hidden)return;
+      Object.assign(w.style,{left:(r.left+(innerWidth<761?6:0))+"px",top:top+"px",width:(r.width-(innerWidth<761?12:0))+"px",height:(r.bottom-top)+"px"});});
+    const k=openCard&&openCard.key,rl=document.getElementById("rlBox"),rlOn=rl&&!rl.hidden;
+    const sel=rlOn?null:!k?"dWork":k==="tasks"?"dTasks":k==="team"?"dTeam":null;
+    ["dWork","dTasks","dTeam"].forEach(id=>{const b=$(id);if(!b)return;const on=id===sel;b.classList.toggle("sel",on);if(on)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});}
+  addEventListener("resize",()=>setTimeout(winPlace,30));setInterval(()=>{try{winPlace();}catch(e){}},300);
+  // ---- each bottom square opens its own window
+  function tileWin(key,title,sub,look,render){opener(()=>card(key,title,sub,look,[{name:title,render(b){b.classList.add("tilewin");render(b);}}]));setTimeout(winPlace,0);}
+  function showBooksWin(){tileWin("books","Books total","Books live on Redemptio + each month of Wendy's books","#a855f7",b=>{
+    const bd=(hq&&hq.booksBreakdown)||{},tot=hq&&hq.booksTotal!=null?hq.booksTotal:stat("subjefe","in done");b.append(el("div","big",String(tot)),el("p","note","books counted"));
+    const ty=bd.types||{};if(Object.keys(ty).length){const r=el("div","typerow");[["Book","📘 Books"],["Pamphlet","📄 Pamphlets"],["Booklet","📒 Booklets"]].forEach(([k,l])=>{if(ty[k]==null)return;const sp=el("span");sp.append(el("b",null,String(ty[k])),document.createTextNode(l));r.append(sp);});b.append(r,el("p","note","Type split of the monthly books ("+Object.keys(bd.months||{}).join(", ")+"). The "+(bd.live??85)+" already live aren't split by type."));}
+    {const r=el("div","typerow"),sp=el("span");sp.append(el("b",null,String(stat("audiobook","in done"))),document.createTextNode("🎧 Audiobooks done"));r.append(sp);b.append(r);}
+    const t=el("table");const row=(a,v)=>{const tr=el("tr");tr.append(el("td",null,a),el("td","r",String(v)));t.append(tr);};
+    if(bd.live!=null)row("Already live on Redemptio",bd.live);Object.entries(bd.months||{}).forEach(([m,v])=>row(m,v));b.append(t);
+    if((bd.handAddedNotCounted||[]).length){const d=el("details","sec");const sm=el("summary");sm.append(el("span",null,"Hand-added (listed, not counted)"),el("span",null,String(bd.handAddedNotCounted.length)));const u=el("ul","list items");bd.handAddedNotCounted.forEach(x=>u.append(el("li",null,x)));d.append(sm,u);b.append(d);}
+    const go=el("button","btn sm","Open SubJefe's desk");go.type="button";go.onclick=()=>showWorker("subjefe",2);b.append(go);});}
+  function showAudioWin(){tileWin("audio","Audiobooks","What the Audiobook Agent has finished and what's next","#38bdf8",b=>{
+    b.append(el("div","big",String(stat("audiobook","in done"))),el("p","note","audiobooks in Done"));
+    const dr=drawers.audiobook;const secs=(dr&&dr.sections)||[];if(!secs.length)b.append(el("p","empty","Mr. Mind fills this in on his next report."));
+    const order=["In progress","Waiting in To Review","Done","To record"];secs.slice().sort((a,c)=>{const ia=order.indexOf(a.title),ic=order.indexOf(c.title);return(ia<0?9:ia)-(ic<0?9:ic);}).forEach((sc,ix)=>{
+      const d=el("details","sec");if(ix<2)d.open=true;const sm=el("summary");sm.append(el("span",null,sc.title||""),el("span",null,String((sc.items||[]).length)));const u=el("ul","list items");
+      (sc.items||[]).forEach(it=>{const li=el("li");li.append(el("span",null,typeof it==="string"?it:(it.label||it.title||it.name||"")));if(it&&(it.detail||it.note))li.append(el("small",null,it.detail||it.note));u.append(li);});d.append(sm,u);b.append(d);});
+    const go=el("button","btn sm","Open the Audiobook Agent's desk");go.type="button";go.onclick=()=>showWorker("audiobook",2);b.append(go);});}
+  function showIssueWin(st){const T={OPEN:["To fix","Problems a worker still has to fix","#ef4444","Nothing needs fixing. 🎉"],HOLD:["On hold","Waiting on someone. Mr. Mind doesn't nag about these","#2563eb","Nothing on hold."],DONE:["Completed","Fixed problems. A fixed problem never comes back","#22c55e","Nothing completed yet."]}[st];
+    tileWin("iss:"+st,T[0],T[1],T[2],b=>{const l=iss(st);b.append(el("div","big",String(l.length)));if(!l.length)b.append(el("div","empty",T[3]));l.forEach(i=>b.append(issueCard(i)));});}
   function NEEDNOW(){const L=(hq&&hq.needsYou)||[];let p="";try{p=new Intl.DateTimeFormat("en-CA",{timeZone:TZ}).format(new Date());}catch(e){}
     return L.filter(x=>!(x&&typeof x==="object"&&x.from&&String(x.from)>p)).map(x=>x&&typeof x==="object"?String(x.t||x.text||""):x);}
-  function moodOverlay(night){const need=(NEEDNOW()).length+iss("OPEN").length,t=performance.now()/1000;g.save();g.setTransform(KS,0,0,KS,0,0);
+  function moodOverlay(night){rlTick();const need=rlLive().length,t=performance.now()/1000;g.save();g.setTransform(KS,0,0,KS,0,0);
     if(night){g.fillStyle="rgba(6,3,22,.22)";g.fillRect(0,0,VW,VH);}if(need){g.fillStyle=`rgba(255,20,50,${.05+.04*Math.sin(t*2.4)})`;g.fillRect(0,0,VW,VH);}g.restore();}
   // ---- 6. gaming corner pieces
   function gamingTV(i,j){shadowE(i+1,j+.25,1);box(i+.85,j+.1,0,.3,.3,.9,["#2a2a3a","#1a1a26","#222232"]);box(i,j,.9,2.0,.18,1.15,["#111","#050505","#0a0a0a"]);
@@ -1529,7 +1895,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     const sx=GI/42,sy=GJ/21;STARS.forEach(([i0,j0,b,big],k)=>{if(viewFloor===1&&i0*sx<6.8&&j0*sy<4.8)return;const i=i0*sx,j=j0*sy,tw=.45+.55*Math.abs(Math.sin(t*(.6+b)+k));const [x,y]=pr(i,j,.005);if(big){g.globalAlpha=tw;R(x-1,y,3,1,"#fff");R(x,y-1,1,3,"#fff");glowAt(x,y,6,"200,220,255",.35*tw);g.globalAlpha=1;}else{g.globalAlpha=.25+.6*tw*b;R(x,y,1,1,k%9===0?"#a5f3fc":k%11===0?"#f5d0fe":"#e0e7ff");g.globalAlpha=1;}});
     const planet=(i,j,r,c1,c2,ring)=>{const [x,y]=pr(i,j,0);g.save();g.scale(1,.5);const yy=y*2;const gr=g.createRadialGradient(x-r*.35,yy-r*.35,1,x,yy,r);gr.addColorStop(0,c1);gr.addColorStop(1,c2);g.fillStyle=gr;g.beginPath();g.arc(x,yy,r,0,Math.PI*2);g.fill();
       if(ring){g.strokeStyle="rgba(250,220,180,.55)";g.lineWidth=2;g.beginPath();g.ellipse(x,yy,r*1.8,r*.55,-.35,0,Math.PI*2);g.stroke();}g.restore();};
-    planet(7.5*GI/42,10.5*GJ/21,14,"#fcd9a8","#b45309",true);planet(33.5*GI/42,10.8*GJ/21,9,"#bfdbfe","#1d4ed8",false);planet(12.2*GI/42,18.6*GJ/21,6,"#fbcfe8","#9d174d",false);
+    if(viewFloor!==1){planet(7.5*GI/42,10.5*GJ/21,14,"#fcd9a8","#b45309",true);planet(33.5*GI/42,10.8*GJ/21,9,"#bfdbfe","#1d4ed8",false);planet(12.2*GI/42,18.6*GJ/21,6,"#fbcfe8","#9d174d",false);}
     {const [x,y]=pr(26.5*GI/42,2.8*GJ/21+ (viewFloor===1?3:0),0);glowAt(x,y,18,"255,255,255",.18);R(x-1,y-1,3,3,"#fff");}
     const ss=(t%9)/1.2;if(ss<1){const i=(4+ss*30)*GI/42,j=(2+ss*14)*GJ/21+(viewFloor===1?2:0),[x,y]=pr(i,j,.01),[x2,y2]=pr(i-2.4,j-1.1,.01);const gr=g.createLinearGradient(x2,y2,x,y);gr.addColorStop(0,"rgba(255,255,255,0)");gr.addColorStop(1,"rgba(255,255,255,.9)");g.strokeStyle=gr;g.lineWidth=1.5;g.beginPath();g.moveTo(x2,y2);g.lineTo(x,y);g.stroke();}}
   function aquariumD(i,j){box(i,j,0,1.6,.6,.6,["#5a4a3a","#3a2e24","#4a3c2f"]);box(i,j,.6,1.6,.6,.8,["rgba(120,200,255,.55)","rgba(40,120,200,.75)","rgba(60,150,220,.7)"]);
@@ -1669,7 +2035,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     neonLine([pr(0,4.8,PZ),pr(6.8,4.8,PZ),pr(6.8,0,PZ)],RM.neon,1.3);
     // rugs: Stick's spot in the middle, red mats by the snacks and the lounge
     drawRugs(1);
-    if(tk==="halloween")rugGlow(17.0,11.6,22.0,15.0,"#5a2410","#ff8a1d");
+    if(tk==="halloween"){const H0=layout.hallo||{di:0,dj:0};rugGlow(17.0+H0.di,11.6+H0.dj,22.0+H0.di,15.0+H0.dj,"#5a2410","#ff8a1d");}
     if(tk==="christmas")snowEdge();
     // walls
     wallsAndBrick(RM);
@@ -1937,13 +2303,14 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     // Stick's desk in the middle of the floor
     
     const sea=seasonNow();
-    if(sea.k==="halloween"){[[21.4,12.4,0,"cauldron"],[17.6,12.3,0,"rip"],[21.7,14.0,0,"cat"],[18.3,13.1,1.5,true],[19.9,13.8,1.15,false],[21.0,12.7,.9,false],[18.8,14.4,.8,false],[2.0,6.6,1.2,false]].forEach(([i,j,s2,hat])=>add(i+j,()=>{if(typeof hat==="string"){const [x,y]=pr(i,j,0);if(hat==="cauldron"){saAt("01_31",x,y+3,20);if(!reduce){const p=(frame%8)/8;R(x-3+((frame*3)%6),y-20-p*10,2,2,"rgba(170,255,90,.8)");}glowAt(x,y-14,18,"140,255,80",.15);}else if(hat==="rip")saAt("01_30",x,y+2,15);else saAt("01_32",x,y+2,11);return;}bigPumpkin(i,j,s2,hat);}));
+    if(sea.k==="halloween"){const H0=layout.hallo||{di:0,dj:0};[[21.4,12.4,0,"cauldron"],[17.6,12.3,0,"rip"],[21.7,14.0,0,"cat"],[18.3,13.1,1.5,true],[19.9,13.8,1.15,false],[21.0,12.7,.9,false],[18.8,14.4,.8,false]].map(([i,j,a,b])=>[i+H0.di,j+H0.dj,a,b]).concat([[2.0,6.6,1.2,false]]).forEach(([i,j,s2,hat])=>add(i+j,()=>{if(typeof hat==="string"){const [x,y]=pr(i,j,0);if(hat==="cauldron"){saAt("01_31",x,y+3,20);if(!reduce){const p=(frame%8)/8;R(x-3+((frame*3)%6),y-20-p*10,2,2,"rgba(170,255,90,.8)");}glowAt(x,y-14,18,"140,255,80",.15);}else if(hat==="rip")saAt("01_30",x,y+2,15);else saAt("01_32",x,y+2,11);return;}bigPumpkin(i,j,s2,hat);}));
       [[7.5,.6],[13.2,16.2]].forEach(([i,j])=>add(i+j,()=>pumpkin(i,j,true)));
       add(9999,()=>{const t2=performance.now()/1000,gi=15.6+Math.sin(t2*.4)*2.6,gj=8.6+Math.cos(t2*.3)*1.4,[x,y]=pr(gi,gj,2.6+(reduce?0:Math.sin(t2*2)*.15));g.globalAlpha=.8;if(saAt("01_07",x,y+8,17,Math.sin(t2*.4)<0)){g.globalAlpha=1;return;}R(x-5,y-6,10,10,"#f5f2ff");R(x-4,y-7,8,1,"#f5f2ff");R(x-5,y+4,2,2,"#f5f2ff");R(x-1,y+4,2,2,"#f5f2ff");R(x+3,y+4,2,2,"#f5f2ff");R(x-3,y-3,2,2,"#170b2b");R(x+1,y-3,2,2,"#170b2b");g.globalAlpha=1;});}
     if(sea.k==="christmas"||(sea.k==="advent"&&sea.dec)){add(27+15.8,()=>xmasTree(27.0,15.8));add(2.9+16.1,()=>xmasTree(3.4,16.5));
       [[26.2,16.4,"#e2475a"],[27.4,14.9,"#5ec8ff"],[4.2,16.6,"#ffc94a"],[2.6,15.9,"#a3e635"],[4.6,3.0,"#e2475a"],[25.5,3.6,"#5ec8ff"]].forEach(([i,j,c])=>add(i+j+.3,()=>gift(i,j,c)));}
     decor().forEach(d=>{const s=DECOR[d.type]||DECOR.plant;add(d.i+d.j+(s.wi+s.wj)/2,()=>{ZB=zAt(d.i,d.j,1);drawDecorItem(d,night);ZB=0;});});
     // the team: Mr. Mind on his platform, everyone else in a glass cubicle, facing you
+    zonesFloor1(add);
     ds.forEach(d=>{
       const st=state(d.w),look=d.boss?"boss":d.w.look,own=issues.filter(x=>x.worker===d.w.id&&(x.status||"OPEN")==="OPEN").length,hold=issues.filter(x=>x.worker===d.w.id&&x.status==="HOLD").length,onRoll=(d.w.streak||0)>=3&&!own;
       if(d.boss){const bc=charOf(d.w);add(d.i+d.j+.4,plat(()=>{const an=animReady(bc);if(!an)chairFull(d.i+1,d.j-1.05);const [x,y]=pr(d.i+1.35,d.j-.5,.35);
@@ -1951,11 +2318,11 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
           deskBoss(d,needN);{const [mx,my]=pr(d.i+1.3,d.j+.2,1.3);glowAt(mx,my,24,"94,200,255",.25);}
           if(own){const [bx,by]=pr(d.i+.3,d.j+.8,.95);beacon(bx,by);}if(hold){const [nx,ny]=pr(d.i+2.4,d.j+.2,.95);R(nx-3,ny-9,7,7,"#ffe066");R(nx-1,ny-7,1,3,"#8a6d00");R(nx+1,ny-7,1,3,"#8a6d00");}
           workAnim(d,st);}));return;}
-      for(let u=d.i-.3;u<d.i+2.49;u+=1){const w=Math.min(1,d.i+2.5-u);add(u+d.j-1.65+w,()=>partitionSeg(u,d.j-1.65,w,.1,1.3));}
-      for(let u=d.j-1.65;u<d.j+.49;u+=1){const w=Math.min(1,d.j+.5-u);add(d.i-.45+u+.9,()=>partitionSeg(d.i-.45,u,.1,w,1.3));}
-      add(d.i+d.j+1.2,()=>{let fx2,fy2;const ro=awayOf(d);if(ro){chairFull(d.i+.85,d.j-1.05);[fx2,fy2]=pr(d.i+1.15,d.j-.6,.35);}else if(animReady(charOf(d.w))){[fx2,fy2]=pr(d.i+1.15,d.j-.62,0);drawAnim(charOf(d.w),st,fx2,fy2);fy2-=6;}else{chairFull(d.i+.85,d.j-1.05);[fx2,fy2]=pr(picChars()?d.i+1.0:d.i+1.2,d.j-.45,.35);person(g,fx2,fy2,look,st,frame,d.w.id,{sit:true});}if(onRoll)fire(fx2,fy2+4,34);
+      officeWalls(d,add);
+      
+      officeOf(d,(k,f)=>add(k,RW(d,f)));add(d.i+d.j+1.2,RW(d,()=>{let fx2,fy2;const ro=awayOf(d);if(ro){chairFull(d.i+.85,d.j-1.05);[fx2,fy2]=pr(d.i+1.15,d.j-.6,.35);}else if(animReady(charOf(d.w))){[fx2,fy2]=pr(d.i+1.15,d.j-.62,0);drawAnim(charOf(d.w),st,fx2,fy2);fy2-=6;}else{chairFull(d.i+.85,d.j-1.05);[fx2,fy2]=pr(picChars()?d.i+1.0:d.i+1.2,d.j-.45,.35);person(g,fx2,fy2,look,st,frame,d.w.id,{sit:true});}if(onRoll)fire(fx2,fy2+4,34);
         deskStaff(d,st);if(own){const [bx,by]=pr(d.i+2.0,d.j+.5,1.15);beacon(bx,by);}
-        if(hold){const [nx,ny]=pr(d.i+.35,d.j+.25,1.95);R(nx-3,ny-7,7,7,"#ffe066");R(nx-1,ny-5,1,3,"#8a6d00");R(nx+1,ny-5,1,3,"#8a6d00");if(hold>1)R(nx+3,ny-8,2,2,"#e2475a");}workAnim(d,st);});});
+        if(hold){const [nx,ny]=pr(d.i+.35,d.j+.25,1.95);R(nx-3,ny-7,7,7,"#ffe066");R(nx-1,ny-5,1,3,"#8a6d00");R(nx+1,ny-5,1,3,"#8a6d00");if(hold>1)R(nx+3,ny-8,2,2,"#e2475a");}workAnim(d,st);}));});
     }
     if(viewFloor===1)ds.forEach(d=>{const ro=awayOf(d);if(!ro||d.boss)return;add(ro.i+ro.j+.05,()=>{const [x,y]=pr(ro.i,ro.j,0);shadowE(ro.i,ro.j,.3);drawWalker(x,y,ro.dx,ro.dy,ro.moving,charOf(d.w));});});
     if(!player.sit&&player.floor===viewFloor)add(player.i+player.j+.05,()=>drawYou());
@@ -2017,17 +2384,16 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     statsBar();paintIcons();
   }
   let mottoI=0;
-  function mottos(){const tk=themeK(),base={default:"Better ideas together",halloween:"Better ideas together",christmas:"Good things take time"}[tk];
+  function mottos(){const tk=themeK(),base={default:"Better ideas together.",halloween:"Better ideas together.",christmas:"Good things take time"}[tk];
     const open=iss("OPEN").length,books=stat("subjefe","in done"),hot=workers.filter(w=>(w.streak||0)>=3).map(w=>w.short||w.name);
     return[base,books?books+" books ready for Redemptio":null,open?open+(open>1?" things":" thing")+" to fix":"Nothing to fix today",hot.length?hot.join(" + ")+" on fire":null,"Next report "+(($("nextRep")||{}).textContent||"soon")].filter(Boolean);}
   const mottoText=()=>{const l=mottos();return l[mottoI%l.length];};
   function nextMotto(tap){mottoI++;const m=$("mottoLbl");if(m){const t=mottoText();m.dataset.t=t;m.textContent=t;}if(tap)SFX.ding();}
-  setInterval(()=>nextMotto(false),9000);
   let youTag=null;
   function moveYouTag(){if(!youTag){youTag=el("div","tag you");youTag.append(tagIcon("crown"),document.createTextNode("You"));worldEl.append(youTag);paintIcons();}youTag.hidden=player.floor!==viewFloor;
     const H=HOME[player.floor];ZB=player.sit?0:zAt(player.i,player.j,player.floor);const [x,y]=player.sit?pr(H.desk.i+H.w/2,H.desk.j+1.3,0):pr(player.i,player.j,0);ZB=0;youTag.style.left=(x/WX*100)+"%";youTag.style.top=((y+3)/WY*100)+"%";}
   function statsBar(){const b=$("tiles");
-    const items=[["books","books",(hq&&hq.booksTotal!=null?hq.booksTotal:stat("subjefe","in done")),"Books total",()=>showWorker("subjefe",2)],["phones","phones",stat("audiobook","in done"),"Audiobooks",()=>showWorker("audiobook",2)],["fix","!",iss("OPEN").length,"To fix",()=>showProblems(0)],["hold","❚❚",iss("HOLD").length,"On hold",()=>showProblems(1)],["done","✓",iss("DONE").length,"Completed",()=>showProblems(2)]];
+    const items=[["books","books",(hq&&hq.booksTotal!=null?hq.booksTotal:stat("subjefe","in done")),"Books total",()=>showBooksWin()],["phones","phones",stat("audiobook","in done"),"Audiobooks",()=>showAudioWin()],["fix","!",iss("OPEN").length,"To fix",()=>showIssueWin("OPEN")],["hold","❚❚",iss("HOLD").length,"On hold",()=>showIssueWin("HOLD")],["done","✓",iss("DONE").length,"Completed",()=>showIssueWin("DONE")]];
     const sig=JSON.stringify(items.map(x=>x.slice(0,4)));if(b.dataset.s!==sig){b.dataset.s=sig;b.replaceChildren();
       items.forEach(([cls,ic,v,l,fn])=>{const d=el("button","tile t-"+cls);d.type="button";d.onclick=fn;d.setAttribute("aria-label",v+" "+l);const i=el("span","ic"+(ic.length<3?" c":""));i.setAttribute("aria-hidden","true");
         if(ic.length<3)i.textContent=ic;else{const p=el("span","px");p.dataset.icon=ic;i.append(p);}const tx=el("span","tx");tx.append(el("b",null,String(v)),el("small",null,l));d.append(i,tx);b.append(d);});paintIcons();}
@@ -2057,6 +2423,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
   let editMode=false,selected=null,drag=null,panS=null,panHold=null;
   function movables(){const out=[],fl=viewFloor;
     itemsOn(fl).filter(d=>d.type==="rug").forEach(d=>{const s=sizeOf(d);out.push({kind:"decor",id:d.id,i:d.i,j:d.j,wi:s.wi,wj:s.wj,box:screenBox({hit:[d.i,d.j,s.wi,s.wj,.05]})});});
+    if(fl===1&&themeK()==="halloween"){const H0=layout.hallo||{di:0,dj:0};out.push({kind:"hallo",id:"hallo",i:17+H0.di,j:11.6+H0.dj,wi:5,wj:3.4,box:screenBox({hit:[17+H0.di,11.6+H0.dj,5,3.4,.6]})});}
     if(fl===1)desks().forEach(d=>{const w=d.boss?2.6:2.2;out.push({kind:"desk",id:d.id,i:d.i,j:d.j,box:screenBox({hit:d.boss?[d.i,d.j-1.2,w,2.2,2.3]:[d.i-.4,d.j-1.6,w+.6,2.6,2.2]})});});
     else out.push({kind:"desk",id:"stick2",i:DESK.i,j:DESK.j,box:screenBox({hit:[DESK.i,DESK.j-1.2,5.6,2.3,2.3]})});
     itemsOn(fl).filter(d=>d.type!=="rug").forEach(d=>{const s=sizeOf(d);out.push({kind:"decor",id:d.id,i:d.i,j:d.j,wi:s.wi,wj:s.wj,box:screenBox({hit:[d.i,d.j,s.wi,s.wj,s.h||1]})});});
@@ -2066,7 +2433,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     const c=list.filter(m=>inBox(p,pad(boxOf(m))));const nr=isRug?c.filter(m=>!isRug(m)):c,pool=nr.length?nr:c;let best=null,bd=1e9;
     pool.forEach(m=>{const [x,y,w,h]=boxOf(m),cx=x+w/2,cy=y+h*.6,d=Math.hypot((p.x-cx)/Math.max(w,20),(p.y-cy)/Math.max(h,20));if(d<bd){bd=d;best=m;}});return best;}
   const rugOf=m=>m.kind==="decor"&&((allItems().find(x=>x.id===m.id)||{}).type==="rug");
-  const canRot=m=>{if(!m||m.kind!=="decor")return false;const d=allItems().find(x=>x.id===m.id);return!!d&&(d.type==="rug"||ROT_OK.has(d.type));};
+  const canRot=m=>{if(m&&m.kind==="desk")return true;if(!m||m.kind!=="decor")return false;const d=allItems().find(x=>x.id===m.id);return!!d&&(d.type==="rug"||ROT_OK.has(d.type));};
   function selectM(m){selected=m||null;$("palDel").hidden=!(m&&m.kind==="decor");$("palRot").hidden=!canRot(m);$("palRug").hidden=!(m&&m.kind==="decor"&&(allItems().find(x=>x.id===m.id)||{}).type==="rug");}
   const onDown=e=>{const p=toWorld(e);
     if(editMode){const m=pickNearest(movables(),p,x=>x.box,rugOf);
@@ -2097,20 +2464,22 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
   cv.addEventListener("pointermove",e=>{if(!panS||drag)return;const dx=e.clientX-panS.x,dy=e.clientY-panS.y;if(!panS.moved&&Math.hypot(dx,dy)<8)return;panS.moved=true;cv.style.cursor="grabbing";const r=cv.getBoundingClientRect(),k=VW/r.width;panHold={x:panS.cx-dx*k,y:panS.cy-dy*k};});
   cv.addEventListener("pointercancel",()=>{panS=null;cv.style.cursor="";});
   cv.addEventListener("pointermove",e=>{if(!editMode||!drag)return;const p=toWorld(e),q=unpr(p.x,p.y);const mw=drag.m.wi||2.2,mh=drag.m.wj||1,ni=Math.max(.05,Math.min(GI-mw,Math.round((q.i-drag.oi)*4)/4)),nj=Math.max((()=>{if(viewFloor!==2)return .05;const A=ALS.find(A=>ni>=A.i0&&ni+mw<=A.i1);return A?A.j0+.05:.05;})(),Math.min(GJ-mh,Math.round((q.j-drag.oj)*4)/4));
-    if(drag.m.kind==="desk"){layout.desks=layout.desks||{};layout.desks[drag.m.id]={i:ni,j:nj};syncHome();}else{if(!layout.items)layout.items=defaultDecor();const d=layout.items.find(d=>d.id===drag.m.id);if(d){d.i=ni;d.j=nj;}}
+    if(drag.m.kind==="hallo"){layout.hallo={di:ni-17,dj:nj-11.6};selected={id:"hallo",kind:"hallo"};placeTags();return;}
+    if(drag.m.kind==="desk"){layout.desks=layout.desks||{};layout.desks[drag.m.id]={...(layout.desks[drag.m.id]||{}),i:ni,j:nj};syncHome();}else{if(!layout.items)layout.items=defaultDecor();const d=layout.items.find(d=>d.id===drag.m.id);if(d){d.i=ni;d.j=nj;}}
     selected={id:drag.m.id,kind:drag.m.kind};placeTags();});
   cv.addEventListener("pointerup",()=>{if(drag){drag=null;saveLayout();}if(panS&&panS.moved)setTimeout(saveView,200);if(panS&&!pinch&&PTS.size<=1){const s0=panS;panS=null;cv.style.cursor="";if(!s0.moved){if(s0.edit)selectM(s0.pick);else if(!editMode)onDown({clientX:s0.x,clientY:s0.y,__tap:true,pointerId:0});}}});
-  function setEdit(on){editMode=on;stage.classList.toggle("edit",on);$("dock").hidden=on;$("pal").hidden=!on;$("help").hidden=!on;$("help").textContent=on?"Decorate: tap something to select it, then drag it to move it. Drag anywhere else to move the view. Use the floor buttons to switch floors. Tap something, then Remove to take it away. Add new things from the bar below.":"Tap the floor (or arrow keys / WASD) to walk. Walk up to someone and press E.";selected=null;$("palDel").hidden=true;$("palRot").hidden=true;if(on&&!canWrite)$("help").textContent+=" (Changes only stay on this screen: saving needs the owner.)";updatePrompt();}
+  function setEdit(on){if(on&&!editMode)EDSNAP=JSON.parse(JSON.stringify(layout));{const m=document.getElementById("palMore");if(m)m.hidden=true;}editMode=on;stage.classList.toggle("edit",on);$("dock").hidden=on;$("pal").hidden=!on;$("help").hidden=!on;$("help").textContent=on?"Decorate: tap something to select it, then drag it to move it. Drag anywhere else to move the view. Use the floor buttons to switch floors. Tap something, then Remove to take it away. Add new things from the bar below.":"Tap the floor (or arrow keys / WASD) to walk. Walk up to someone and press E.";selected=null;$("palDel").hidden=true;$("palRot").hidden=true;if(on&&!canWrite)$("help").textContent+=" (Changes only stay on this screen: saving needs the owner.)";updatePrompt();}
   $("palDone").onclick=()=>setEdit(false);
   document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>{if(!layout.items)layout.items=defaultDecor();if(layout.items.length>=120)return;const type=b.dataset.add,id=type+"_"+Date.now().toString(36),s=DECOR[type]||DECOR.plant;
     const it={id,type,f:viewFloor,i:Math.max(.5,Math.min(GI-(s.wi||1)-.5,GI/2-1)),j:Math.max(.5,Math.min(GJ-(s.wj||1)-.5,GJ/2))};if(type==="rug")Object.assign(it,{w:4,h:3,c:"purple"});
     layout.items.push(it);selected={id,kind:"decor"};$("palDel").hidden=false;$("palRot").hidden=!(type==="rug"||ROT_OK.has(type));$("palRug").hidden=type!=="rug";placeTags();saveLayout();});
   $("palDel").onclick=()=>{if(selected&&selected.kind==="decor"){layout.items=allItems().filter(d=>d.id!==selected.id);selected=null;$("palDel").hidden=true;$("palRug").hidden=true;$("palRot").hidden=true;saveLayout();}};
-  $("palRot").onclick=()=>{if(!selected||selected.kind!=="decor")return;if(!layout.items)layout.items=defaultDecor();const d=layout.items.find(x=>x.id===selected.id);if(!d)return;
+  $("palRot").onclick=()=>{if(selected&&selected.kind==="desk"){layout.desks=layout.desks||{};const cur=layout.desks[selected.id]||{};const dd=desks().find(x=>x.id===selected.id)||{};layout.desks[selected.id]={i:cur.i!=null?cur.i:dd.i,j:cur.j!=null?cur.j:dd.j,r:cur.r?0:1};placeTags();saveLayout();return;}
+    if(!selected||selected.kind!=="decor"){palHint("Tap an office or a piece of furniture first, then Rotate.");return;}if(!layout.items)layout.items=defaultDecor();const d=layout.items.find(x=>x.id===selected.id);if(!d)return;
     if(d.type==="rug"){const w=d.w||3;d.w=d.h||3;d.h=w;}else d.r=((d.r||0)+1)&3;const s2=sizeOf(d);d.i=Math.max(.05,Math.min(GI-s2.wi,d.i));d.j=Math.max((()=>{if(d.f!==2)return .05;const A=ALS.find(A=>d.i>=A.i0&&d.i+s2.wi<=A.i1);return A?A.j0+.05:.05;})(),Math.min(GJ-s2.wj,d.j));placeTags();saveLayout();};
   $("palRug").onclick=()=>{if(!selected)return;if(!layout.items)layout.items=defaultDecor();const d=layout.items.find(x=>x.id===selected.id);if(!d||d.type!=="rug")return;const K=Object.keys(RUGC);d.c=K[(K.indexOf(d.c)+1)%K.length];saveLayout();};
   $("palReset").onclick=()=>{if(!confirmReset){confirmReset=true;$("palReset").textContent="Sure? Tap again";setTimeout(()=>{confirmReset=false;$("palReset").textContent="Reset";},3000);return;}confirmReset=false;$("palReset").textContent="Reset";layout={v:3,items:null,desks:{},bedroomV:16};syncHome();selected=null;placeTags();saveLayout();};let confirmReset=false;
-  let saveT=null;function saveLayout(){if(!db||!canWrite)return;clearTimeout(saveT);saveT=setTimeout(async()=>{try{await db.doc("layout/main").set({v:3,items:layout.items||null,desks:layout.desks||{},bedroomV:layout.bedroomV||0,savedAt:new Date().toISOString()});}catch(e){}},400);}
+  let saveT=null;function saveLayout(){if(!db||!canWrite)return;clearTimeout(saveT);saveT=setTimeout(async()=>{try{await db.doc("layout/main").set({v:3,items:layout.items||null,desks:layout.desks||{},bedroomV:layout.bedroomV||0,...(layout.hallo?{hallo:layout.hallo}:{}),savedAt:new Date().toISOString()});}catch(e){}},400);}
 
   // keyboard
   const KM={ArrowLeft:"left",a:"left",A:"left",ArrowRight:"right",d:"right",D:"right",ArrowUp:"up",w:"up",W:"up",ArrowDown:"down",s:"down",S:"down"};
@@ -2137,7 +2506,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
 
   // ---------- cards ----------
   let lastFocus=null;
-  function card(key,title,sub,look,tabs,startTab){if($("card").hidden)fx.ding();
+  function card(key,title,sub,look,tabs,startTab){try{rlClose();}catch(e){}setTimeout(()=>{try{winPlace();}catch(e){}},0);if($("card").hidden)fx.ding();
     const keepTab=openCard&&openCard.key===key?openCard.tab:(startTab||0);
     if(!openCard)lastFocus=document.activeElement;
     $("cardTitle").textContent=title;$("cardSub").textContent=sub||"";
@@ -2342,9 +2711,9 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
     b.append(el("p",null,"Want another agent on the team? Tell Claude in a chat what the new worker should do and when. Once it exists as a scheduled task, Mr. Mind adds it to his list, reviews its work in every report, and it gets this desk."));
     b.append(el("p","note","Ideas: a Redemptio upload checker, a weekly Liguori recap."));}}]));}
 
-  $("dWork").onclick=()=>{closeCard();};$("dTasks").onclick=()=>showTasks(0);$("dTeam").onclick=showTeam;
-  $("bellBtn").onclick=()=>showTasks(0);$("setBtn").onclick=()=>showSettings(0);$("crownBtn").onclick=showUpgrades;
-  $("nYou").onclick=()=>showTasks(0);$("nProb").onclick=()=>showTasks(1);$("nFix").onclick=()=>showTasks(4);
+  $("dWork").onclick=()=>{closeCard();try{rlClose();}catch(e){}};$("dTasks").onclick=()=>showTasks(0);$("dTeam").onclick=showTeam;
+  $("bellBtn").onclick=()=>rlOpen("all");$("setBtn").onclick=()=>showSettings(0);$("crownBtn").onclick=showUpgrades;
+  $("nYou").onclick=()=>rlOpen("you");$("nProb").onclick=()=>rlOpen("prob");$("nFix").onclick=()=>rlOpen("fix");
   $("homeBtn").onclick=()=>{panHold=null;if(!player.sit)goHome();else setView(2);ZOOM=0;resize();placeTags();};
   $("fsBtn").onclick=async()=>{const on=!document.body.classList.contains("bigmode");document.body.classList.toggle("bigmode",on);try{if(on&&!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else if(!on&&document.fullscreenElement)await document.exitFullscreen();}catch(e){}setTimeout(()=>{resize();placeTags();},60);};
   document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement)document.body.classList.remove("bigmode");setTimeout(()=>{resize();placeTags();},60);});
@@ -2380,7 +2749,7 @@ body[data-season="christmas"] .hdr h1 span{color:#ff5d6c;text-shadow:0 0 10px rg
       db.collection("issues").onSnapshot(s=>{issues=s.docs.map(d=>({id:d.id,...d.data()}));rerender();},()=>{});
       db.collection("drawers").onSnapshot(s=>{drawers={};s.docs.forEach(d=>drawers[d.id]=d.data());rerender();},()=>{});
       db.doc("prefs/main").onSnapshot(d=>{if(d.exists){const v=JSON.parse(JSON.stringify(d.data()));prefs={...PREF0,...v,outfits:v.outfits||{}};try{localStorage.setItem("hq_prefs",JSON.stringify(prefs));}catch(e){}applyTheme();rerender();}},()=>{});
-      db.doc("layout/main").onSnapshot(d=>{if(drag)return;if(d.exists){const v=JSON.parse(JSON.stringify(d.data()));if(v.v===3)layout={v:3,items:v.items||null,desks:v.desks||{},bedroomV:v.bedroomV||0};else if(v.desks)layout={v:3,items:null,desks:Object.fromEntries(Object.entries(v.desks).filter(([k])=>k!=="open"))};syncHome();}ensureBedroom();placeTags();},()=>{});
+      db.doc("layout/main").onSnapshot(d=>{if(drag)return;if(d.exists){const v=JSON.parse(JSON.stringify(d.data()));if(v.v===3)layout={v:3,items:v.items||null,desks:v.desks||{},bedroomV:v.bedroomV||0,...(v.hallo?{hallo:v.hallo}:{})};else if(v.desks)layout={v:3,items:null,desks:Object.fromEntries(Object.entries(v.desks).filter(([k])=>k!=="open"))};syncHome();}ensureBedroom();placeTags();},()=>{});
     } else $("sub").textContent="Open this page in Claude while signed in to see your team.";
     sample=await claude.use("sample");
     mcp=await claude.use("mcp");
