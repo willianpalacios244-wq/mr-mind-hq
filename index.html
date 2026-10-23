@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v44";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v45";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -498,6 +498,10 @@ body.hudedit .hudrs::after{content:"⤡";display:grid;place-items:center;height:
 #hudBar button{font:900 13px var(--f-display);border-radius:9px;border:2px solid #1b1405;background:#1b1405;color:var(--gold);padding:5px 12px;cursor:pointer}#hudBar button.l{background:transparent;color:#1b1405}
 
 
+/* Oct 23: computer look — Workspace / Tasks / Team fill their box evenly */
+body.deskui #dock{display:flex!important;align-items:stretch!important;gap:6px!important;padding:6px!important}
+body.deskui #dock > button{flex:1 1 0!important;height:auto!important;min-height:56px;margin:0!important;justify-content:center!important;align-items:center!important}
+body.deskui #dock > button + button::before{left:-4px;top:10px;bottom:10px}
 /* Oct 23: computer look — the button column folds; ☰ shows/hides the rest, the house always stays */
 #dkTog{display:none}
 body.deskui #dkTog{display:grid;place-items:center;font:900 18px var(--f-display);color:var(--ink);position:relative}
@@ -1519,7 +1523,9 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
       if(db&&canWrite){try{await db.doc("fixes/"+f.id).update({status:to,decidedAt:new Date().toISOString(),decidedIn:"HQ"});}catch(e){throw new Error("couldn't save");}}
       f.status=to;await rlLog({type:"fix",action:to,n:f.n});}
     rlSave();rlUpdate();rlRender();}
-  let rlChip=null,rlBox=null,rlT=0,rlTab="all",rlChat=[],rlBusy=false;
+  let rlChip=null,rlBox=null,rlT=0,rlTab="all",rlChat=[],rlBusy=false,rlArea="work";
+  /* Oct 23 (Stick): School and Work are two separate lists */
+  const rlAreaOf=a=>(a.who||[]).includes("schoolwork")?"school":"work";
   function rlInit(){if(rlChip)return;rlChip=document.createElement("button");rlChip.type="button";rlChip.id="rlChip";rlChip.hidden=true;
     rlChip.style.cssText="position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:4;display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:14px;border:1.5px solid #ef4444;background:rgba(40,6,14,.9);color:#fff;font:800 11.5px var(--f-display);cursor:pointer;box-shadow:0 0 16px rgba(239,68,68,.6);white-space:nowrap";
     stage.append(rlChip);rlChip.onclick=()=>rlOpen("all");
@@ -1529,13 +1535,14 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     const sc=document.createElement("div");sc.id="rlScrim";sc.hidden=true;sc.style.cssText="position:fixed;inset:0;background:rgba(5,4,13,.6);z-index:16";sc.onclick=rlClose;document.body.append(sc);
     addEventListener("keydown",e=>{if(e.key==="Escape"&&!rlBox.hidden)rlClose();});
     // the bell and the 3 "Needs attention" rows open their own window here
-    try{$("bellBtn").onclick=()=>rlOpen("all");$("nYou").onclick=()=>rlOpen("you");$("nProb").onclick=()=>rlOpen("prob");$("nFix").onclick=()=>rlOpen("fix");}catch(e){}}
-  function rlOpen(tab){rlInit();try{if(openCard)closeCard();}catch(e){}rlTab=tab||"all";rlBox.hidden=false;document.getElementById("rlScrim").hidden=false;rlRender();try{winPlace();}catch(e){}}
+    try{$("bellBtn").onclick=()=>rlOpen("all");$("nYou").onclick=()=>rlOpen("all","work");$("nProb").onclick=()=>rlOpen("all","school");$("nFix").onclick=()=>rlOpen("fix");}catch(e){}}
+  function rlOpen(tab,area){if(area)rlArea=area;else{try{const A=rlItems();if(!A.some(a=>rlAreaOf(a)===rlArea)&&A.length)rlArea=rlAreaOf(A[0]);}catch(e){}}rlInit();try{if(openCard)closeCard();}catch(e){}rlTab=tab||"all";rlBox.hidden=false;document.getElementById("rlScrim").hidden=false;rlRender();try{winPlace();}catch(e){}}
   function rlClose(){if(!rlBox)return;rlBox.hidden=true;document.getElementById("rlScrim").hidden=true;}
-  function rlRender(){if(!rlBox||rlBox.hidden)return;const all=rlItems(),live=rlLive();const keepIn=rlBox.querySelector("#rlSay");const draft=keepIn?keepIn.value:"";rlBox.innerHTML="";
+  function rlRender(){if(!rlBox||rlBox.hidden)return;const ALL=rlItems(),all=ALL.filter(a=>rlAreaOf(a)===rlArea),live=rlLive().filter(a=>rlAreaOf(a)===rlArea);const keepIn=rlBox.querySelector("#rlSay");const draft=keepIn?keepIn.value:"";rlBox.innerHTML="";
     const T={all:"All",you:"Need you",prob:"Problems",fix:"Fix ideas"},TT={all:"🔔 Alerts",you:"🙋 Things that need you",prob:"❗ Problems",fix:"💡 Fix ideas to approve"};
     const h=el("div");h.style.cssText="display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1.5px solid #7f1d1d";const hb=el("b",null,TT[rlTab]);hb.style.cssText="font:900 18px var(--f-display)";
     const x=el("button",null,"✕");x.type="button";x.setAttribute("aria-label","Close");x.style.cssText="margin-left:auto;background:none;border:1.5px solid #7f1d1d;color:#fff;border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:16px";x.onclick=rlClose;h.append(hb);try{h.append(winOp());}catch(e){}h.append(x);x.style.marginLeft="8px";rlBox.append(h);
+    const ar=el("div");ar.style.cssText="display:flex;gap:6px;padding:10px 14px 0";[["work","💼 Work"],["school","🎓 School"]].forEach(([k,t])=>{const n=ALL.filter(a=>rlAreaOf(a)===k).length,b=el("button",null,t+" "+n);b.type="button";const on=k===rlArea;b.style.cssText=`flex:1;font:900 14px var(--f-display);padding:8px 10px;border-radius:10px;cursor:pointer;border:1.5px solid ${on?(k==="school"?"#a855f7":"#38bdf8"):"#3b2a5a"};background:${on?(k==="school"?"rgba(168,85,247,.28)":"rgba(56,189,248,.22)"):"transparent"};color:#fff`;b.onclick=()=>{rlArea=k;rlRender();};ar.append(b);});rlBox.append(ar);
     const tabs=el("div");tabs.style.cssText="display:flex;gap:6px;padding:8px 14px 0;flex-wrap:wrap";
     Object.keys(T).forEach(k=>{const n=k==="all"?all.length:all.filter(a=>a.cat===k).length;const b=el("button",null,`${T[k]} ${n}`);b.type="button";b.style.cssText=`font:800 13px var(--f-display);padding:5px 11px;border-radius:999px;cursor:pointer;border:1.5px solid ${k===rlTab?"#ef4444":"#4c1d2a"};background:${k===rlTab?"#ef4444":"transparent"};color:#fff`;b.onclick=()=>{rlTab=k;rlRender();};tabs.append(b);});rlBox.append(tabs);
     const body=el("div");body.style.cssText="flex:1;min-height:0;overflow:auto;padding:10px 14px;display:flex;flex-direction:column;gap:8px";rlBox.append(body);
@@ -2553,8 +2560,9 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
       items.forEach(([cls,ic,v,l,fn])=>{const d=el("button","tile t-"+cls);d.type="button";d.onclick=fn;d.setAttribute("aria-label",v+" "+l);const i=el("span","ic"+(ic.length<3?" c":""));i.setAttribute("aria-hidden","true");
         if(ic.length<3)i.textContent=ic;else{const p=el("span","px");p.dataset.icon=ic;i.append(p);}const tx=el("span","tx");tx.append(el("b",null,String(v)),el("small",null,l));d.append(i,tx);b.append(d);});paintIcons();}
     const nY=NEEDNOW().length,nP=iss("OPEN").length,nF=waiting().length;
-    $("nYouN").textContent=nY;$("nYouL").textContent=nY===1?"needs you":"need you";$("nYou").classList.toggle("zero",!nY);
-    $("nProbN").textContent=nP;$("nProbL").textContent=nP===1?"problem":"problems";$("nProb").classList.toggle("zero",!nP);
+    let aW=[],aS=[];try{const A=rlItems().filter(a=>a.cat!=="fix");aW=A.filter(a=>rlAreaOf(a)==="work");aS=A.filter(a=>rlAreaOf(a)==="school");}catch(e){}
+    $("nYouN").textContent=aW.length;$("nYouL").textContent=" work";$("nYou").classList.toggle("zero",!aW.length);$("nYouN").style.color=aW.some(a=>a.cat==="prob")?"#f87171":"";{const ci=$("nYou").querySelector(".ci");if(ci&&!ci.dataset.a){ci.dataset.a=1;ci.innerHTML="💼";ci.style.background="#0e7490";}}
+    $("nProbN").textContent=aS.length;$("nProbL").textContent=" school";$("nProb").classList.toggle("zero",!aS.length);$("nProbN").style.color=aS.some(a=>a.cat==="prob")?"#f87171":"#e9d5ff";{const ci=$("nProb").querySelector(".ci");if(ci&&!ci.dataset.a){ci.dataset.a=1;ci.innerHTML="🎓";ci.style.background="#7e22ce";}}
     $("nFix").hidden=!nF;$("nFixN").textContent=nF;$("nFixL").textContent=nF===1?"fix idea to approve":"fix ideas to approve";
     const p=points(),lv=level(),prev=lv?UNL[lv-1].p:0,nx=UNL[lv];
     $("lvN").textContent=String(lv+1);$("lvXP").textContent=nx?`· ${p}/${nx.p} XP`:`· ${p} XP · max`;const pc=nx?Math.round((p-prev)/(nx.p-prev)*100):100;
@@ -2868,7 +2876,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
 
   $("dWork").onclick=()=>{closeCard();try{rlClose();}catch(e){}};$("dTasks").onclick=()=>showTasks(0);$("dTeam").onclick=showTeam;
   $("bellBtn").onclick=()=>rlOpen("all");$("setBtn").onclick=()=>showSettings(0);$("crownBtn").onclick=showUpgrades;
-  $("nYou").onclick=()=>rlOpen("you");$("nProb").onclick=()=>rlOpen("prob");$("nFix").onclick=()=>rlOpen("fix");
+  $("nYou").onclick=()=>rlOpen("all","work");$("nProb").onclick=()=>rlOpen("all","school");$("nFix").onclick=()=>rlOpen("fix");
   $("homeBtn").onclick=()=>{/* Oct 23: the house always works — straight back to your seat on your floor, camera reset */const fl=homeFloor();keys.clear&&keys.clear();panHold=null;player.route=[];player.ti=null;player.pending=null;player.moving=false;sitDown(fl);setView(fl);ZOOM=0;resize();placeTags();try{beep(660,.08,"triangle",.03);}catch(_){}};
   $("fsBtn").onclick=async()=>{const on=!document.body.classList.contains("bigmode");document.body.classList.toggle("bigmode",on);try{if(on&&!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else if(!on&&document.fullscreenElement)await document.exitFullscreen();}catch(e){}setTimeout(()=>{resize();placeTags();},60);};
   document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement)document.body.classList.remove("bigmode");setTimeout(()=>{resize();placeTags();},60);});
