@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v46";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v47";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -525,6 +525,49 @@ body.deskui .help{left:380px!important}
 .fix .pdet{margin-top:6px;display:grid;gap:6px;padding:8px 10px;border-radius:10px;background:rgba(10,8,30,.55);border:1px solid rgba(124,77,255,.25)}
 .fix .pdet[hidden]{display:none}
 .fix .prow{display:grid;gap:2px;font-size:13px;line-height:1.35}.fix .prow b{font-size:12px;opacity:.85}
+
+/* Oct 23: the Brain chat window (texting) */
+#bcBox{position:fixed;z-index:40;left:50%;top:50%;transform:translate(-50%,-50%);width:min(420px,calc(100vw - 20px));height:min(560px,calc(100vh - 140px));display:flex;flex-direction:column;background:rgba(14,10,36,calc(var(--winA,.9)*1));border:2px solid #a78bfa;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 26px -6px #a78bfa;color:var(--ink);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+#bcBox[hidden]{display:none}
+#bcBox .bch{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1.5px solid rgba(167,139,250,.4);font:900 16px var(--f-display)}
+#bcBox .bcx{margin-left:auto;background:none;border:1.5px solid rgba(167,139,250,.6);color:#fff;border-radius:8px;width:34px;height:34px;cursor:pointer}
+#bcBox .bclog{flex:1;min-height:0;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+#bcBox .bcb{max-width:82%;padding:8px 11px;border-radius:14px;font-size:14px;line-height:1.35;white-space:pre-wrap;display:grid;gap:3px}
+#bcBox .bcb small{font-size:10.5px;opacity:.6}
+#bcBox .bcb.me{align-self:flex-end;background:#7c3aed;border-bottom-right-radius:4px}
+#bcBox .bcb.cl{align-self:flex-start;background:rgba(255,255,255,.08);border:1px solid rgba(167,139,250,.35);border-bottom-left-radius:4px}
+#bcBox .bcst{margin:0 12px 4px;font-size:12px;opacity:.8}
+#bcBox .sayrow{padding:10px 12px 12px;border-top:1.5px solid rgba(167,139,250,.3)}
+
+/* Oct 23 b: Brain window style */
+#bcBox{border:0;background:linear-gradient(180deg,rgba(30,20,70,calc(var(--winA,.9)*1)),rgba(12,9,32,calc(var(--winA,.9)*1)));box-shadow:0 14px 44px rgba(0,0,0,.65),0 0 0 1.5px rgba(167,139,250,.7),0 0 34px -6px #8b5cf6;border-radius:20px;overflow:hidden}
+#bcBox .bch{padding:12px 14px;gap:10px;border-bottom:1px solid rgba(167,139,250,.25)}
+#bcBox .bcav{width:40px;height:40px;flex:0 0 40px;border-radius:50%;display:grid;place-items:center;font-size:22px;background:radial-gradient(circle at 35% 30%,#c4b5fd,#7c3aed 60%,#3b0764);box-shadow:0 0 16px #8b5cf6;animation:bcpulse 2.4s ease-in-out infinite}
+@keyframes bcpulse{50%{box-shadow:0 0 26px #a78bfa}}
+#bcBox .bctt{display:grid;line-height:1.15;min-width:0}
+#bcBox .bctt b{font:900 17px var(--f-display)}
+#bcBox .bcsub{font:600 12px var(--f-body,system-ui);color:#a7f3d0;opacity:.9}
+#bcBox .bctalk{display:flex;align-items:center;gap:10px;margin:10px 12px 2px;padding:10px 12px;border-radius:14px;text-decoration:none;color:#fff;background:linear-gradient(90deg,#7c3aed,#db2777);box-shadow:0 6px 18px -6px #db2777}
+#bcBox .bctalk:active{transform:scale(.98)}
+#bcBox .bcti{font-size:22px}
+#bcBox .bctalk span:nth-child(2){display:grid;flex:1;line-height:1.2}
+#bcBox .bctalk b{font:900 15px var(--f-display)}
+#bcBox .bctalk small{font-size:12px;opacity:.85}
+#bcBox .bcar{font-size:26px;opacity:.9}
+#bcBox .bcempty{margin:auto 0;text-align:center;display:grid;gap:8px;justify-items:center;padding:8px}
+#bcBox .bcempty p{margin:0;opacity:.8;font-size:14px;max-width:300px}
+#bcBox .bcbig{font-size:46px;filter:drop-shadow(0 0 14px #8b5cf6)}
+#bcBox .bcchips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:4px}
+#bcBox .bcchip{background:rgba(167,139,250,.14);border:1px solid rgba(167,139,250,.55);color:#e9d5ff;border-radius:999px;padding:7px 12px;font:700 13px var(--f-body,system-ui);cursor:pointer}
+#bcBox .bcb.me{background:linear-gradient(135deg,#8b5cf6,#6d28d9);box-shadow:0 4px 12px -4px #7c3aed}
+#bcBox .bcb.cl{background:rgba(255,255,255,.07)}
+#bcBox .bcst{display:flex;align-items:center;gap:6px}
+#bcBox .bcst[hidden]{display:none}
+#bcBox .bcdots{width:30px;height:8px;background:radial-gradient(circle,#c4b5fd 3px,transparent 3.5px) 0 0/10px 8px repeat-x;animation:bcdot 1s steps(3) infinite}
+@keyframes bcdot{0%{width:10px}100%{width:40px}}
+#bcBox .sayrow{display:flex;gap:8px;align-items:center}
+#bcBox .sayrow .say{flex:1;border-radius:999px;padding:11px 16px}
+#bcBox .bcgo{width:44px;height:44px;flex:0 0 44px;border-radius:50%;border:0;color:#fff;font-size:18px;cursor:pointer;background:linear-gradient(135deg,#8b5cf6,#db2777);box-shadow:0 4px 14px -4px #db2777}
 /* Oct 22: windows open over the office, bottom bar stays usable */
 body.winmode #scrim,body.winmode #rlScrim{display:none!important}
 body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!important;max-width:none!important;border-radius:14px!important;box-shadow:0 0 0 2px #05040d,0 0 30px -10px var(--violet)!important;z-index:16!important}
@@ -1572,7 +1615,8 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     rlChat.slice(-6).forEach(m=>{const b=el("div","bub "+(m.role==="user"?"me":"them"),m.content);log.append(b);});if(rlChat.length)chat.append(log);
     const row=el("div","sayrow"),inp=el("input","say");inp.id="rlSay";inp.value=draft;inp.placeholder='Tell me in your words: "the Sonnet switch is done", "remind me Monday"…';inp.setAttribute("aria-label","Tell the alerts what to do");
     const send=el("button","btn go",rlBusy?"…":"Send");send.type="button";send.disabled=rlBusy;row.append(inp,send);chat.append(row);
-    if(!sample)chat.append(el("p","note","Talking works when this page is open in Claude and you're signed in."));
+    if(mcp){const fast=el("button","btn sm yes","⚡ Send straight to Mr. Mind (starts now)");fast.type="button";fast.onclick=async()=>{const v=inp.value.trim();if(!v){inp.focus();return;}if(fast.dataset.sure!=="1"){fast.dataset.sure="1";fast.textContent="Sure? tap again";return;}fast.disabled=true;try{await mmNow(v);rlChat.push({role:"user",content:v},{role:"assistant",content:"⚡ Sent to Mr. Mind — he's starting now. You'll get his answer by email and here in a few minutes."});inp.value="";}catch(e){rlChat.push({role:"assistant",content:"(Couldn't start Mr. Mind: "+((e&&e.message)||"error")+")"});}rlRender();};chat.append(fast);}
+    if(!sample){const op=el("a","btn sm yes","💬 Open HQ in Claude to talk to Mr. Mind now");op.href="https://claude.ai/artifact/5FVAfUVcsxJMcTWzuXWvXi";op.target="_blank";op.rel="noopener";op.style.cssText="text-align:center;text-decoration:none";chat.append(op,el("p","note","In the app, messages can't reach Mr. Mind directly. HQ in Claude can start him right away."));}
     send.onclick=()=>rlAsk(inp.value);inp.addEventListener("keydown",e=>{if(e.key==="Enter")rlAsk(inp.value);});
     // light controls
     const lc=el("div","acts");lc.style.cssText="padding:0 14px 12px";
@@ -1580,7 +1624,11 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     const b2=el("button","btn sm",RLS.mode==="off"?"💡 Turn the light back on":"Turn the light off for good");b2.type="button";b2.onclick=()=>{RLS.mode=RLS.mode==="off"?"on":"off";if(RLS.mode==="on")RLS.muted=[];rlSave();rlUpdate();rlRender();};
     lc.append(b1,b2);chat.append(lc);rlBox.append(chat);
     const li=log.lastChild;if(li)log.scrollTop=log.scrollHeight;}
-  async function rlAsk(q){q=(q||"").trim();if(!q||rlBusy)return;if(!sample){rlChat.push({role:"user",content:q},{role:"assistant",content:"(Talking needs this page open in Claude.)"});rlRender();return;}
+  async function mmNow(req){/* Oct 23 (Stick): talk to Mr. Mind fast — starts his run right now with Stick's words */
+    if(!mcp)throw new Error("needs the live HQ open in Claude");const w=(workers||[]).find(x=>x.id==="mrmind");const tid=(w&&w.taskId)||"trig_014GsVwEnZUpbyDnzPa8Gtj8";
+    const t=new Date().toLocaleString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit",weekday:"short"});
+    await mcp.callTool(SERVER,"fire_trigger",{trigger_id:tid,text:"STICK SAYS (typed in HQ, "+t+"): "+req});try{await rlLog({type:"ask",action:"MR_MIND_NOW",item:req});}catch(e){}return "Mr. Mind is starting now";}
+  async function rlAsk(q){q=(q||"").trim();if(!q||rlBusy)return;if(!sample){rlChat.push({role:"user",content:q},{role:"assistant",content:"To talk to Mr. Mind right away, tap \"Open HQ in Claude\" below and send it there."});rlRender();return;}
     rlBusy=true;rlChat.push({role:"user",content:q});const ans={role:"assistant",content:"…"};rlChat.push(ans);rlRender();const did=[];
     const find=k=>rlItems().find(a=>a.key===String(k));
     const tools=[
@@ -1590,8 +1638,9 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
       {name:"problem_fixed",description:"Mark an open problem as fixed/done. Input: key.",inputSchema:{type:"object",properties:{key:{type:"string"}},required:["key"]},execute:async i=>{const a=find(i.key);if(!a||a.cat!=="prob")throw new Error("no problem with that key");await rlAct(a,"done");did.push("✅ "+a.kind);return "done";}},
       {name:"problem_on_hold",description:"Put an open problem on hold. Input: key and waiting_on (who we wait for).",inputSchema:{type:"object",properties:{key:{type:"string"},waiting_on:{type:"string"}},required:["key"]},execute:async i=>{const a=find(i.key);if(!a||a.cat!=="prob")throw new Error("no problem with that key");await rlAct(a,"hold",String(i.waiting_on||"Stick"));did.push("⏸ "+a.kind);return "on hold";}},
       {name:"decide_fix",description:"Approve or decline a fix idea. Input: key and decision APPROVED or DECLINED.",inputSchema:{type:"object",properties:{key:{type:"string"},decision:{type:"string",enum:["APPROVED","DECLINED"]}},required:["key","decision"]},execute:async i=>{const a=find(i.key);if(!a||a.cat!=="fix")throw new Error("no fix idea with that key");await rlAct(a,String(i.decision)==="APPROVED"?"approve":"decline");did.push((String(i.decision)==="APPROVED"?"👍 ":"👎 ")+a.kind);return "saved";}},
+      {name:"ask_mr_mind_now",description:"Send Stick's request straight to Mr. Mind: it starts Mr. Mind's run RIGHT NOW (he answers by email + HQ in a few minutes). Use it for anything that needs real work: fix a problem, change how a worker works, check or move files, re-run a worker, explain a problem in detail. Input: request = Stick's words, cleaned up but complete.",inputSchema:{type:"object",properties:{request:{type:"string"}},required:["request"]},execute:async i=>{const r=String(i.request||q).slice(0,1500);await mmNow(r);did.push("⚡ Sent to Mr. Mind — he's starting now (answer in a few minutes by email + HQ)");return "Mr. Mind's run started with the request";}},
       {name:"red_light",description:"Control the red alert light: mode stop (until something new), off (for good) or on.",inputSchema:{type:"object",properties:{mode:{type:"string",enum:["stop","off","on"]}},required:["mode"]},execute:i=>{const m=String(i.mode);if(m==="stop"){RLS.muted=rlItems().map(a=>a.key);}else if(m==="off"){RLS.mode="off";}else{RLS.mode="on";RLS.muted=[];}rlSave();rlUpdate();did.push("light: "+m);return "ok";}}];
-    const prompt=`You are the Alerts helper inside "Mr. Mind HQ", Stick Rivera's pixel office for his AI worker agents (Mr. Mind is the boss; workers: SubJefe, Daily Check-in, Audiobook Agent, School Work). Stick talks casually and may misspell words. Understand what he means and use the tools to do it: call list_items first, then act ONLY on the items he clearly means. If it's unclear which item, ask a short question instead of guessing. Never invent items. After acting, answer in 1-3 short plain sentences saying exactly what you changed. Mr. Mind reads every change on his next run.\nToday (Chicago): ${rlDay()}.\nRecent chat: ${JSON.stringify(rlChat.slice(-7,-2))}\nStick says: ${q}`;
+    const prompt=`You are the Alerts helper inside "Mr. Mind HQ", Stick Rivera's pixel office for his AI worker agents (Mr. Mind is the boss; workers: SubJefe, Daily Check-in, Audiobook Agent, School Work). Stick talks casually and may misspell words. Understand what he means and use the tools to do it: call list_items first, then act ONLY on the items he clearly means. If he asks for real work (fix something, change a worker, check files, re-run a worker, "why is this happening"), call ask_mr_mind_now with his request instead of saying you can't. If it's unclear which item, ask a short question instead of guessing. Never invent items. After acting, answer in 1-3 short plain sentences saying exactly what you changed. Mr. Mind reads every change on his next run.\nToday (Chicago): ${rlDay()}.\nRecent chat: ${JSON.stringify(rlChat.slice(-7,-2))}\nStick says: ${q}`;
     try{const ctl=new AbortController();const r=await sample(prompt,{cache:false,modelTier:"default",signal:ctl.signal,tools,onText:({text})=>{ans.content=text;const L=rlBox&&rlBox.querySelector(".bub.them:last-child");if(L)L.textContent=text;}});ans.content=(r&&r.text)||ans.content;}
     catch(e){ans.content=e&&e.code==="not_granted"?"(Allow Claude for this page and try again.)":e&&e.code==="rate_limited"?"(Too many messages, wait a moment.)":(e&&e.text)||"(I couldn't do that just now. Try the buttons above.)";}
     if(did.length&&!/✅|⏰|⏸|👍|👎/.test(ans.content))ans.content+="\n"+did.join("\n");rlBusy=false;rlRender();setTimeout(()=>{const i=rlBox&&rlBox.querySelector("#rlSay");if(i)i.focus();},0);}
@@ -1859,6 +1908,34 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     const ap=()=>{document.body.classList.toggle("dkfold",fold);t.firstChild.textContent=fold?"☰":"✕";t.setAttribute("aria-expanded",String(!fold));};ap();
     t.onclick=e=>{e.stopPropagation();fold=!fold;try{localStorage.setItem("hq_dkfold",fold?"1":"0");}catch(e){}ap();};
     setInterval(()=>{const n=$("bellN"),d=t.querySelector(".dot");if(d)d.hidden=!(fold&&n&&!n.hidden&&n.textContent!=="0");},800);})();
+
+  // ---- 🧠 The Brain = Stick's main Claude chat (Oct 23): text it like a phone; the main chat answers into HQ db chat/main
+  let BCHAT={messages:[]},bcBox=null,bcBusy=false;const BC_TRIG="trig_01L1a2hDw6CUdQEakDSk9S8m";
+  function bcRender(){if(!bcBox||bcBox.hidden)return;const L=bcBox.querySelector(".bclog");if(!L)return;const M=(BCHAT.messages||[]).slice(-40);L.replaceChildren();
+    if(!M.length){const e=el("div","bcempty");e.append(el("div","bcbig","🧠"),el("p",null,"Text me like a phone. I can fix things, check your agents and answer right here."));const ch=el("div","bcchips");["What's broken?","How are my agents?","What's due this week?","Fix problem #"].forEach(q=>{const c=el("button","bcchip",q);c.type="button";c.onclick=()=>{if(q.endsWith("#")){const i=bcBox.querySelector(".say");i.value=q;i.focus();}else bcSend(q);};ch.append(c);});e.append(ch);L.append(e);}
+    M.forEach(m=>{const b=el("div","bcb "+(m.role==="stick"?"me":"cl"));b.append(el("div",null,m.text||""));const t=el("small",null,(m.role==="stick"?((m===M[M.length-1])?"✓ Sent":"✓✓ Seen"):"🧠 Claude")+" · "+(m.at?new Date(m.at).toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit"}):""));b.append(t);L.append(b);});
+    const last=M[M.length-1];const st=bcBox.querySelector(".bcst");if(st){st.hidden=!(last&&last.role==="stick");st.replaceChildren(el("span","bcdots"),document.createTextNode(" Claude is waking up… about 2 min"));const sb=bcBox.querySelector(".bcsub");if(sb)sb.textContent="your main brain · "+(last&&last.role==="stick"?"💭 working":"ready");}
+    L.scrollTop=L.scrollHeight;}
+  async function bcSend(text){text=(text||"").trim();if(!text||bcBusy)return;
+    if(!(db&&canWrite&&mcp)){toastMsg("Open HQ in Claude to text the brain.");return;}
+    bcBusy=true;const msg={id:"m"+Date.now().toString(36),role:"stick",text,at:new Date().toISOString()};
+    const M=(BCHAT.messages||[]).concat([msg]).slice(-200);BCHAT={...BCHAT,messages:M,status:"waiting"};bcRender();
+    try{await db.doc("chat/main").set({messages:M,status:"waiting",updated:msg.at});
+      const t=new Date().toLocaleString("en-US",{timeZone:"America/Chicago",weekday:"short",hour:"numeric",minute:"2-digit"});
+      await mcp.callTool(SERVER,"fire_trigger",{trigger_id:BC_TRIG,text:"🧠 HQ BRAIN CHAT — Stick texted from Mr. Mind HQ ("+t+", msg "+msg.id+"): \""+text.slice(0,3000)+"\" → answer him in HQ db chat/main (add a message with role \"claude\")."});}
+    catch(e){toastMsg("Couldn't send: "+((e&&e.message)||"error"));}
+    bcBusy=false;}
+  function showBrainChat(){try{if(openCard)closeCard();}catch(_){}
+    if(!bcBox){bcBox=el("div","win bcwin");bcBox.id="bcBox";bcBox.hidden=true;
+      const h=el("div","bch");const av=el("div","bcav","🧠"),tt=el("div","bctt");tt.append(el("b",null,"Claude"),el("small","bcsub","your main brain · ready"));h.append(av,tt);try{h.append(winOp());}catch(e){}const x=el("button","bcx","✕");x.type="button";x.setAttribute("aria-label","Close");x.onclick=()=>{bcBox.hidden=true;};h.append(x);
+      const L=el("div","bclog"),st=el("p","note bcst");st.hidden=true;
+      const row=el("div","sayrow"),inp=el("input","say");inp.placeholder="Text the brain · answer in ~2 min";inp.setAttribute("aria-label","Message to Claude");const go=el("button","bcgo","➤");go.setAttribute("aria-label","Send");go.type="button";
+      const send=()=>{const v=inp.value;inp.value="";bcSend(v);};go.onclick=send;inp.addEventListener("keydown",e=>{if(e.key==="Enter")send();});row.append(inp,go);
+      const tk=el("a","bctalk");tk.href="https://claude.ai/code/session_017tdmRTmeXbR7NHMLcKBegE";tk.target="_blank";tk.rel="noopener";tk.append(el("span","bcti","💬"),(()=>{const d=el("span");d.append(el("b",null,"Talk now · instant"),el("small",null,"Opens your main chat to type or talk"));return d;})(),el("span","bcar","›"));bcBox.append(h,tk,L,st,row);
+      if(!(window.claude&&claude.use)){const op=el("a","btn sm yes","💬 Open HQ in Claude to text the brain");op.href="https://claude.ai/artifact/5FVAfUVcsxJMcTWzuXWvXi";op.target="_blank";op.rel="noopener";op.style.cssText="text-align:center;text-decoration:none;margin:0 12px 12px";bcBox.append(op);}
+      document.body.append(bcBox);}
+    bcBox.hidden=false;bcRender();try{winPlace();}catch(e){}setTimeout(()=>{const i=bcBox.querySelector(".say");if(i)i.focus();},50);}
+  window.hqBrainChat=showBrainChat;window.__bcSet=m=>{BCHAT={messages:m};bcRender();};
   // ---- window mode (Oct 22): every window covers only the office area so the bottom bar can switch windows
   document.body.classList.add("winmode");
   function winPlace(){const r0=stage.getBoundingClientRect(),dk=document.body.classList.contains("deskui");const r=dk?(()=>{const hb=$("hdr").getBoundingClientRect(),lb=(document.querySelector(".bottom .lvl")||$("hdr")).getBoundingClientRect(),bb=$("bottom").getBoundingClientRect();return{left:376,right:innerWidth-16,width:innerWidth-392,top:Math.max(16,Math.min(hb.top,lb.bottom+10)),bottom:bb.top-10};})():r0,hd=$("hdr").getBoundingClientRect(),top=dk?r.top:Math.max(r.top,hd.bottom>r.top+4&&hd.bottom<r.bottom?hd.bottom+6:r.top);[$("card"),document.getElementById("rlBox")].forEach(w=>{if(!w||w.hidden)return;
@@ -2364,7 +2441,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   function interactables2(){return[
     {id:"bdoor",label:"Office door",at:[AL.i0+.9,-2.25],wall:["L",-2.9,-1.6,0,2.75,AL.i0],open:()=>toastMsg("🚪 Your office.")},{id:"odoor",label:"Open my room",at:[AO.i0+.9,-2.25],wall:["L",-2.9,-1.6,0,2.75,AO.i0],open:()=>toastMsg("🚪 Your room. Rest up, Mr. Mind keeps watch.")},
     {id:"robo",label:"Robo, the helper robot",at:[BOT.i+.7,BOT.j+.7],hit:[BOT.i-.4,BOT.j-.4,.8,.8,2.6],open:()=>{beep(988,.06,"square",.03);beep(1480,.08,"square",.03,.08);toastMsg(BOT.paper>0?"🤖 Beep! A new report from Mr. Mind just came in.":["🤖 Beep boop! All systems running.","🤖 I am Robo. I bring you the news when a report comes in.","🤖 Patrolling the floor. Everything looks good, boss."][(Math.random()*3)|0]);}},
-    {id:"brainholo",label:"The Brain · how the team is doing",at:[BRC[0],BRC[1]+3.2],hit:[BRC[0]-2.2,BRC[1]-2.2,4.4,4.4,6],open:()=>showTeam()},
+    {id:"brainholo",label:"🧠 Text Claude, your main brain",at:[BRC[0],BRC[1]+3.2],hit:[BRC[0]-2.2,BRC[1]-2.2,4.4,4.4,6],open:()=>showBrainChat()},
     {id:"mydesk",label:"Sit at my desk",at:STAND,hit:[DESK.i,DESK.j-1.2,5.6,2.3,2.3],open:()=>{if(player.sit&&player.floor===2)showTasks(0);else sitDown(2);}},
     {id:"elev2",label:"Take the elevator down to the team",at:ELEV[2],wall:["L",11.8,13.8,0,3.12],open:()=>goTo(10.5,8.4,null,1)},
     ...(B=>B?[{id:"shelf2",label:"Browse my reports shelf",at:[B.i+.8,B.j+1.1],hit:[B.i,B.j,1.8,.45,2.3],open:()=>showWorker("mrmind",2)}]:[])(itemOf(2,"bookshelf")),
@@ -2907,7 +2984,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   addEventListener("resize",()=>{clearTimeout(window.__rz);window.__rz=setTimeout(()=>{resize();placeTags();},120);});
   document.querySelectorAll("#floors button").forEach(b=>b.onclick=()=>setView(+b.dataset.f));
   applyTheme();resize();setView(viewFloor);renderHQ();requestAnimationFrame(tick);
-  {const h=el("div","minihint","You're at your desk · tap the floor to walk around");h.style.left="50%";h.style.bottom="14px";h.style.transform="translateX(-50%)";stage.append(h);setTimeout(()=>{h.style.opacity=0;},6000);setTimeout(()=>h.remove(),7000);}
+  {const h=el("div","minihint","You're at your desk · tap the floor to walk around");h.style.left="50%";h.style.bottom="72px";h.style.transform="translateX(-50%)";stage.append(h);setTimeout(()=>{h.style.opacity=0;},6000);setTimeout(()=>h.remove(),7000);}
   setInterval(()=>{renderHQ();placeTags();},30000);
   const rerender=()=>{fx.data();placeTags();renderHQ();refreshCard();};
 
@@ -2919,6 +2996,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
       const user=await claude.use("user");canWrite=user?!!(await user.isOwner()):false;
       db.collection("workers").onSnapshot(s=>{workers=s.docs.map(d=>({id:d.id,...d.data()}));rerender();},()=>{});
       db.doc("hq/state").onSnapshot(d=>{hq=d.exists?d.data():null;rerender();},()=>{});
+      try{db.doc("chat/main").onSnapshot(d=>{BCHAT=d.exists?(d.data()||{messages:[]}):{messages:[]};bcRender();},()=>{});}catch(e){}
   try{db.doc("questions/answers").onSnapshot(d=>{qAns=d.exists?(d.data()||{}):{};if(openCard&&openCard.rebuild)openCard.rebuild();},()=>{});}catch(e){}
   try{db.doc("spider/decisions").onSnapshot(d=>{spiderDec=d.exists?(d.data()||{}):{};if(openCard&&openCard.key==="spider"&&openCard.rebuild)openCard.rebuild();},()=>{});}catch(e){}
       db.collection("fixes").onSnapshot(s=>{fixes=s.docs.map(d=>({id:d.id,...d.data()}));rerender();},()=>{});
