@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v49";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v50";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -87,7 +87,7 @@
     document.addEventListener("visibilitychange",()=>{if(!document.hidden)load();});setInterval(load,5*60e3);load();});
   if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 })();
-</script><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}@media (max-width:760px){:root{padding-bottom:0!important}}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+</script><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}@media (max-width:760px){:root{padding-bottom:0!important}}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Mr. Mind HQ</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -582,6 +582,14 @@ body.deskui .help{left:380px!important}
 html,body{-webkit-text-size-adjust:100%;touch-action:manipulation}
 body,canvas,#stage,button,a,img{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,[contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+
+/* Oct 23 g: app mode for the Brain window */
+#bcBox .bcapp{display:none;padding:10px 14px 14px;border-top:1px solid rgba(167,139,250,.25);text-align:center}
+#bcBox .bcapp p{margin:0 0 8px;font-size:13px;opacity:.85}
+#bcBox .bcopen{display:inline-block;padding:9px 16px;border-radius:999px;border:1.5px solid #a78bfa;color:#e9d5ff;text-decoration:none;font-weight:800}
+#bcBox.noapi .bcapp{display:block}
+#bcBox.noapi .sayrow,#bcBox.noapi .bcst{display:none}
+@media (pointer:coarse){.win input,.win textarea,#bcBox .say{font-size:calc(16px / min(1, var(--wz,1) * var(--wfit,1)))!important}}
 /* Oct 22: windows open over the office, bottom bar stays usable */
 body.winmode #scrim,body.winmode #rlScrim{display:none!important}
 body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!important;max-width:none!important;border-radius:14px!important;box-shadow:0 0 0 2px #05040d,0 0 30px -10px var(--violet)!important;z-index:16!important}
@@ -1925,8 +1933,8 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
 
   // ---- 🧠 The Brain = Stick's main Claude chat (Oct 23): text it like a phone; the main chat answers into HQ db chat/main
   let BCHAT={messages:[]},bcBox=null,bcBusy=false;const BC_TRIG="trig_01L1a2hDw6CUdQEakDSk9S8m";
-  function bcRender(){if(!bcBox||bcBox.hidden)return;const L=bcBox.querySelector(".bclog");if(!L)return;const M=(BCHAT.messages||[]).slice(-40);L.replaceChildren();
-    if(!M.length){const e=el("div","bcempty");e.append(el("div","bcbig","🧠"),el("p",null,"Text me like a phone. I can fix things, check your agents and answer right here."));const ch=el("div","bcchips");["What's broken?","How are my agents?","What's due this week?","Fix problem #"].forEach(q=>{const c=el("button","bcchip",q);c.type="button";c.onclick=()=>{if(q.endsWith("#")){const i=bcBox.querySelector(".say");i.value=q;i.focus();}else bcSend(q);};ch.append(c);});e.append(ch);L.append(e);}
+  function bcRender(){if(!bcBox||bcBox.hidden)return;bcBox.classList.toggle("noapi",!(db&&canWrite&&mcp));const L=bcBox.querySelector(".bclog");if(!L)return;const M=(BCHAT.messages||[]).slice(-40);L.replaceChildren();
+    if(!M.length){const e=el("div","bcempty");e.append(el("div","bcbig","🧠"),el("p",null,"Text me like a phone. I can fix things, check your agents and answer right here."));const ch=el("div","bcchips");["What's broken?","How are my agents?","What's due this week?","Fix problem #"].forEach(q=>{const c=el("button","bcchip",q);c.type="button";c.onclick=()=>{if(bcBox.classList.contains("noapi")){window.open("https://claude.ai/code/session_017tdmRTmeXbR7NHMLcKBegE","_blank");return;}if(q.endsWith("#")){const i=bcBox.querySelector(".say");i.value=q;i.focus();}else bcSend(q);};ch.append(c);});e.append(ch);L.append(e);}
     M.forEach(m=>{const b=el("div","bcb "+(m.role==="stick"?"me":"cl"));b.append(el("div",null,m.text||""));const t=el("small",null,(m.role==="stick"?((m===M[M.length-1])?"✓ Sent":"✓✓ Seen"):"🧠 Claude")+" · "+(m.at?new Date(m.at).toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit"}):""));b.append(t);L.append(b);});
     const last=M[M.length-1];const st=bcBox.querySelector(".bcst");if(st){st.hidden=!(last&&last.role==="stick");st.replaceChildren(el("span","bcdots"),document.createTextNode(" Claude is waking up… about 2 min"));const sb=bcBox.querySelector(".bcsub");if(sb)sb.textContent="your main brain · "+(last&&last.role==="stick"?"💭 working":"ready");}
     L.scrollTop=L.scrollHeight;if(!bcBox.hidden)bcMarkSeen();}
@@ -1949,7 +1957,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
       const row=el("div","sayrow"),inp=el("input","say");inp.placeholder="Text the brain · answer in ~2 min";inp.setAttribute("aria-label","Message to Claude");const go=el("button","bcgo","➤");go.setAttribute("aria-label","Send");go.type="button";
       const send=()=>{const v=inp.value;inp.value="";bcSend(v);};go.onclick=send;inp.addEventListener("keydown",e=>{if(e.key==="Enter")send();});row.append(inp,go);
       const tk=el("a","bctalk");tk.href="https://claude.ai/code/session_017tdmRTmeXbR7NHMLcKBegE";tk.target="_blank";tk.rel="noopener";tk.append(el("span","bcti","💬"),(()=>{const d=el("span");d.append(el("b",null,"Talk now · instant"),el("small",null,"Opens your main chat to type or talk"));return d;})(),el("span","bcar","›"));bcBox.append(h,tk,L,st,row);
-      if(!(window.claude&&claude.use)){const op=el("a","btn sm yes","💬 Open HQ in Claude to text the brain");op.href="https://claude.ai/artifact/5FVAfUVcsxJMcTWzuXWvXi";op.target="_blank";op.rel="noopener";op.style.cssText="text-align:center;text-decoration:none;margin:0 12px 12px";bcBox.append(op);}
+      {const ap=el("div","bcapp");ap.append(el("p",null,"In the phone app, texts can't reach me. Tap 💬 Talk now above (instant), or open HQ in Claude to text the brain."));const op=el("a","bcopen","🧠 Open HQ in Claude");op.href="https://claude.ai/artifact/5FVAfUVcsxJMcTWzuXWvXi";op.target="_blank";op.rel="noopener";ap.append(op);bcBox.append(ap);}
       document.body.append(bcBox);}
     bcBox.hidden=false;bcRender();try{winPlace();}catch(e){}setTimeout(()=>{const i=bcBox.querySelector(".say");if(i)i.focus();},50);}
   window.hqBrainChat=showBrainChat;window.__bcSet=m=>{BCHAT={messages:m};bcRender();};
