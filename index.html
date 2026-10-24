@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v45";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v46";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -518,6 +518,13 @@ body.deskui .hdr{overflow:visible!important}
 body.deskui .hdr .acts2{position:absolute!important;left:calc(100% + 10px)!important;top:0!important;flex-direction:column!important;gap:8px!important;padding:6px!important;background:rgba(14,10,36,.80)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1.5px solid rgba(124,77,255,.55)!important;border-radius:14px!important;box-shadow:0 8px 24px rgba(0,0,0,.35)!important}
 body.deskui .hdr .acts2 .ibtn{width:40px!important;height:40px!important}
 body.deskui .help{left:380px!important}
+
+/* Oct 23: plain-language problem cards, details fold away */
+.fix .ptitle{font-weight:800;line-height:1.3}
+.fix .pmore{margin-top:6px;background:none;border:1px solid rgba(124,77,255,.45);color:var(--ink);border-radius:8px;padding:3px 10px;font:800 12px var(--f-display);cursor:pointer}
+.fix .pdet{margin-top:6px;display:grid;gap:6px;padding:8px 10px;border-radius:10px;background:rgba(10,8,30,.55);border:1px solid rgba(124,77,255,.25)}
+.fix .pdet[hidden]{display:none}
+.fix .prow{display:grid;gap:2px;font-size:13px;line-height:1.35}.fix .prow b{font-size:12px;opacity:.85}
 /* Oct 22: windows open over the office, bottom bar stays usable */
 body.winmode #scrim,body.winmode #rlScrim{display:none!important}
 body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!important;max-width:none!important;border-radius:14px!important;box-shadow:0 0 0 2px #05040d,0 0 30px -10px var(--violet)!important;z-index:16!important}
@@ -1504,8 +1511,8 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     raw.forEach((x,ix)=>{const o=x&&typeof x==="object";if(o&&x.from&&String(x.from)>p)return;const t=o?String(x.t||x.text||""):String(x);
       let who=o&&x.who?[].concat(x.who):RLWHO.filter(([r])=>r.test(t)).map(([,id])=>id);who=[...new Set(who)];
       out.push({key:"N:"+t.slice(0,60),cat:"you",kind:"Reminder for you",t,who:who.length?who:["you"],raw:x});});
-    iss("OPEN").forEach(i=>out.push({key:"I:"+(i.id||i.n),cat:"prob",kind:"Problem #"+(i.n||"?"),t:i.title||i.problem||"",who:[i.worker||"?"],ref:i}));
-    waiting().forEach(f=>out.push({key:"F:"+(f.id||f.n),cat:"fix",kind:"Fix idea #"+(f.n||"?"),t:(f.problem||"")+(f.fix?" → My fix: "+f.fix:""),who:[f.worker||"mrmind"],ref:f}));
+    iss("OPEN").forEach(i=>out.push({key:"I:"+(i.id||i.n),cat:"prob",kind:"Problem #"+(i.n||"?"),t:(i.plain||i.title||i.problem||"")+(i.plain&&i.next?" → "+i.next:""),who:[i.worker||"?"],ref:i}));
+    waiting().forEach(f=>out.push({key:"F:"+(f.id||f.n),cat:"fix",kind:"Fix idea #"+(f.n||"?"),t:(f.plain||f.problem||"")+((f.fixPlain||f.fix)?" → My fix: "+(f.fixPlain||f.fix):""),who:[f.worker||"mrmind"],ref:f}));
     return out.filter(a=>!RLS.hidden.includes(a.key));}
   function rlLive(){if(RLS.mode==="off")return [];return rlItems().filter(a=>a.cat!=="fix"&&!RLS.muted.includes(a.key));}
   // ---- actions (same saves as the Tasks window; Mr. Mind reads them on his next run)
@@ -2790,11 +2797,16 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   function today(){return new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",timeZone:"America/Chicago"});}
   function ownIssues(x){return issues.filter(i=>i.worker===x.id&&(i.status||"OPEN")==="OPEN");}
   function blockedBy(x){return issues.filter(i=>i.worker!==x.id&&(i.status||"OPEN")==="OPEN"&&(i.affects||[]).includes(x.id));}
+  const PMORE=new Set();
   function issueCard(i){
     const st=i.status||"OPEN",d=el("div","fix "+st),top=el("div","top");
     top.append(el("span",null,`#${i.n} · ${wname(i.worker)}`),el("span",null,ISTAT[st]));
-    d.append(top,el("div",null,i.title||""));
-    if(i.detail)d.append(el("div","plan",i.detail));
+    d.append(top,el("div","ptitle",i.plain||i.title||""));
+    if(i.plain&&i.what)d.append(el("div","plan",i.what));
+    { const rows=[["💡 What it means",i.plain?null:i.detail],["❓ Why it's happening",i.why],["📍 Where it comes from",i.where],["🛠️ Why you should fix it",i.whyFix],["🚫 What's blocked because of it",i.blocked],["➡️ What happens next",i.next],["🔧 Technical",i.plain?[i.title,i.detail].filter(Boolean).join(" · "):null]].filter(r=>r[1]);
+      if(rows.length){const box=el("div","pdet");box.hidden=!PMORE.has("i"+i.n);rows.forEach(([h,t])=>{const r=el("div","prow");r.append(el("b",null,h),el("span",null,t));box.append(r);});
+        const mb=el("button","pmore",box.hidden?"▸ More":"▾ Less");mb.type="button";mb.onclick=e=>{e.stopPropagation();box.hidden=!box.hidden;mb.textContent=box.hidden?"▸ More":"▾ Less";box.hidden?PMORE.delete("i"+i.n):PMORE.add("i"+i.n);};
+        d.append(mb,box);} }
     if(st==="HOLD")d.append(el("div","plan","⏸ Waiting on "+(i.waitingOn||"someone")+(i.holdSince?" · since "+i.holdSince:"")));
     if(st==="DONE")d.append(el("div","plan","✅ Done"+(i.doneAt?" "+i.doneAt:"")+(i.doneNote?" · "+i.doneNote:"")));
     if((i.affects||[]).length&&st!=="DONE")d.append(el("div","plan","Also holds up: "+i.affects.map(wname).join(", ")+" (shown only here)"));
@@ -2853,7 +2865,9 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
 
   function fixCard(f){
     const d=el("div","fix "+(f.status||"WAITING")),top=el("div","top");top.append(el("span",null,`#${f.n} · ${f.worker||""}`),el("span",null,f.status||"WAITING"));
-    const plan=el("div","plan");plan.append(el("b",null,"My fix: "),document.createTextNode(f.fix||""));d.append(top,el("div",null,f.problem||""),plan);
+    const plan=el("div","plan");plan.append(el("b",null,"My fix: "),document.createTextNode(f.fixPlain||f.fix||""));d.append(top,el("div","ptitle",f.plain||f.problem||""),plan);
+    if(f.plain||f.fixPlain){const box=el("div","pdet");box.hidden=!PMORE.has("f"+f.n);[["❓ Why",f.why],["🔧 Technical",[f.problem,f.fix].filter(Boolean).join(" → ")]].filter(r=>r[1]).forEach(([h,t])=>{const r=el("div","prow");r.append(el("b",null,h),el("span",null,t));box.append(r);});
+      const mb=el("button","pmore",box.hidden?"▸ More":"▾ Less");mb.type="button";mb.onclick=e=>{e.stopPropagation();box.hidden=!box.hidden;mb.textContent=box.hidden?"▸ More":"▾ Less";box.hidden?PMORE.delete("f"+f.n):PMORE.add("f"+f.n);};d.append(mb,box);}
     if(f.result)d.append(el("div","plan",f.result));
     if((f.status||"WAITING")==="WAITING"&&canWrite&&db){const acts=el("div","acts"),y=el("button","btn yes","Approve"),n=el("button","btn no","Decline");y.type=n.type="button";
       const decide=to=>{busy=true;acts.replaceChildren(el("span",null,to==="APPROVED"?`Approve fix #${f.n}?`:`Decline fix #${f.n}?`));const ok=el("button","btn "+(to==="APPROVED"?"yes":"no"),"Yes"),c=el("button","btn","Cancel");ok.type=c.type="button";
