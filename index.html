@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v48";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v49";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -576,6 +576,12 @@ body.deskui .help{left:380px!important}
 #bcBox .bcsub{white-space:nowrap}
 #bcBox .bch .winreset{margin-left:auto}
 #bcBox .bch .winreset~.bcx{margin-left:6px}
+
+/* Oct 23 f: iPhone zooms into any text box under 16px; long-press selects everything + shows the copy bubble */
+@media (pointer:coarse){input,textarea,select{font-size:16px!important}}
+html,body{-webkit-text-size-adjust:100%;touch-action:manipulation}
+body,canvas,#stage,button,a,img{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,[contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 /* Oct 22: windows open over the office, bottom bar stays usable */
 body.winmode #scrim,body.winmode #rlScrim{display:none!important}
 body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!important;max-width:none!important;border-radius:14px!important;box-shadow:0 0 0 2px #05040d,0 0 30px -10px var(--violet)!important;z-index:16!important}
@@ -3098,4 +3104,4 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   const setH=()=>document.documentElement.style.setProperty("--hdrH",hdr.offsetHeight+"px");setH();if(window.ResizeObserver)new ResizeObserver(setH).observe(hdr);})();
 </script>
 
-</body></html>
+<script>document.addEventListener("contextmenu",e=>{if(!(e.target.closest&&e.target.closest("input,textarea")))e.preventDefault();});</script></body></html>
