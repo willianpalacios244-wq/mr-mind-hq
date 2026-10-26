@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v50";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v51";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -29,10 +29,10 @@
     const arr=a=>(a||[]).map(x=>({id:String(x.id!=null?x.id:x.n),d:x}));
     store.col.workers=arr(d.workers);store.col.fixes=arr(d.fixes);store.col.issues=arr(d.issues);
     store.col.drawers=Object.entries(d.drawers||{}).map(([id,v])=>({id,d:v}));
-    store.doc["hq/state"]=d.hq||null;if(d.graph)store.doc["graph/main"]=d.graph;
+    store.doc["hq/state"]=d.hq||null;if(d.graph)store.doc["graph/main"]=d.graph;store.doc["reports/latest"]=d.reports||null;
     store.doc["layout/main"]=newer(LS.get("app_layout_main"),d.layout||null)||null;
     store.doc["prefs/main"]=newer(LS.get("app_prefs_main"),d.prefs||null)||null;
-    ["workers","fixes","issues","drawers"].forEach(fireCol);["hq/state","graph/main","layout/main","prefs/main"].forEach(p=>store.doc[p]!=null&&fireDoc(p));
+    ["workers","fixes","issues","drawers"].forEach(fireCol);["hq/state","graph/main","layout/main","prefs/main","reports/latest"].forEach(p=>store.doc[p]!=null&&fireDoc(p));
     if(navigator.setAppBadge){let td="";try{td=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Chicago"}).format(new Date());}catch(e){}const k=((d.hq&&d.hq.needsYou)||[]).filter(x=>!(x&&typeof x==="object"&&x.from&&String(x.from)>td)).length;k?navigator.setAppBadge(k).catch(()=>{}):navigator.clearAppBadge().catch(()=>{});}}
   let lastSync=null,syncErr=null;
   async function load(){
@@ -590,6 +590,21 @@ input,textarea,[contenteditable="true"]{-webkit-user-select:text;user-select:tex
 #bcBox.noapi .bcapp{display:block}
 #bcBox.noapi .sayrow,#bcBox.noapi .bcst{display:none}
 @media (pointer:coarse){.win input,.win textarea,#bcBox .say{font-size:calc(16px / min(1, var(--wz,1) * var(--wfit,1)))!important}}
+
+/* Oct 26: Reports window + row */
+#rpBox{position:fixed;z-index:40;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(20,30,50,calc(var(--winA,.9)*1)),rgba(10,12,30,calc(var(--winA,.9)*1)));box-shadow:0 14px 44px rgba(0,0,0,.65),0 0 0 1.5px rgba(34,211,238,.6);border-radius:20px;overflow:hidden;color:var(--ink);left:10px;top:120px;width:calc(100vw - 20px);height:70vh}
+#rpBox[hidden]{display:none}
+#rpBox .bch{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid rgba(34,211,238,.25);flex-wrap:wrap;row-gap:6px}
+#rpBox .bch .winop{order:5;flex-basis:100%}
+#rpBox .bcav{width:40px;height:40px;flex:0 0 40px;border-radius:50%;display:grid;place-items:center;font-size:21px;background:radial-gradient(circle at 35% 30%,#a5f3fc,#0e7490 65%,#083344);box-shadow:0 0 14px #22d3ee}
+#rpBox .bctt{display:grid;line-height:1.15}#rpBox .bctt b{font:900 17px var(--f-display)}#rpBox .bcsub{font:600 12px var(--f-body,system-ui);color:#a5f3fc;white-space:nowrap}
+#rpBox .bcx{margin-left:auto;background:none;border:1.5px solid rgba(34,211,238,.6);color:#fff;border-radius:8px;width:34px;height:34px;cursor:pointer}
+#rpBox .bch .winreset{margin-left:auto}#rpBox .bch .winreset~.bcx{margin-left:6px}
+#rpBox .rptabs{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;flex:0 0 auto}
+#rpBox .rptab{white-space:nowrap;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.45);color:#cffafe;border-radius:999px;padding:6px 11px;font:700 12.5px var(--f-body,system-ui);cursor:pointer}
+#rpBox .rptab.on{background:#0e7490;border-color:#22d3ee;color:#fff}
+#rpBox .rpfr{flex:1;min-height:0;width:100%;border:0;background:#fff}
+.rpdot{width:9px;height:9px;border-radius:50%;background:#facc15;box-shadow:0 0 8px #facc15;margin-left:auto;margin-right:4px;align-self:center}
 /* Oct 22: windows open over the office, bottom bar stays usable */
 body.winmode #scrim,body.winmode #rlScrim{display:none!important}
 body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!important;max-width:none!important;border-radius:14px!important;box-shadow:0 0 0 2px #05040d,0 0 30px -10px var(--violet)!important;z-index:16!important}
@@ -629,6 +644,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
       <button class="nrow" id="nYou" type="button"><span class="ci" style="background:#7c3aed"><span class="px" data-icon="userW" aria-hidden="true"></span></span><span><b id="nYouN">0</b><span id="nYouL">need you</span></span><span class="go" aria-hidden="true">›</span></button>
       <button class="nrow" id="nProb" type="button"><span class="ci" style="background:#ef4444">!</span><span><b id="nProbN" style="color:#f87171">0</b><span id="nProbL">problems</span></span><span class="go" aria-hidden="true">›</span></button>
       <button class="nrow" id="nFix" type="button" hidden><span class="ci" style="background:#f59e0b">?</span><span><b id="nFixN">0</b><span id="nFixL">fix ideas to approve</span></span><span class="go" aria-hidden="true">›</span></button>
+      <button class="nrow" id="nRep" type="button" hidden><span class="ci" style="background:#0e7490">📰</span><span><b id="nRepT">Report</b> <span id="nRepL"></span></span><span class="rpdot" id="nRepDot" hidden></span><span class="go" aria-hidden="true">›</span></button>
     </aside>
     <div class="panel lvl"><span class="cr" aria-hidden="true"><span class="px" data-icon="crown"></span></span><span class="l">Level <b id="lvN">1</b><small id="lvXP"></small></span><div class="bar" id="lvBar" role="progressbar" aria-label="Progress to the next office upgrade" aria-valuemin="0" aria-valuemax="100"><i id="lvFill"></i></div><button class="crownb" id="crownBtn" type="button" aria-label="Office upgrades" title="Office upgrades"><span class="px" data-icon="crown" aria-hidden="true"></span></button></div>
     <nav class="panel nav" id="dock" aria-label="Main">
@@ -1865,7 +1881,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   // ---- window size + position (Oct 23): smaller by default, drag the title bar to move, drag the corner to resize, saved on this device
   const PAGEK=["work","tasks","team"];let PAGEPREV=null,WAREA=null,WDRAG=null;
   const winKey=()=>"hq_winr2_"+(innerWidth<761?"phone":"desk");let WINM=null,WINMK=null;
-  const wkey=w=>w.id==="card"?((openCard&&openCard.key)||"card"):w.id==="bcBox"?"brain":"alerts";
+  const wkey=w=>w.id==="card"?((openCard&&openCard.key)||"card"):w.id==="bcBox"?"brain":w.id==="rpBox"?"reports":"alerts";
   function winMap(){const k=winKey();if(WINMK!==k){WINMK=k;try{WINM=JSON.parse(localStorage.getItem(k)||"null")||{};}catch(e){WINM={};}}return WINM;}
   function winGeom(A,key){const ph=A.w<560,R=winMap()[key];let w,h,x,y;
     if(R){w=R.w*A.w;h=R.h*A.h;x=A.l+R.x*A.w;y=A.t+R.y*A.h;}
@@ -1961,9 +1977,31 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
       document.body.append(bcBox);}
     bcBox.hidden=false;bcRender();try{winPlace();}catch(e){}setTimeout(()=>{const i=bcBox.querySelector(".say");if(i)i.focus();},50);}
   window.hqBrainChat=showBrainChat;window.__bcSet=m=>{BCHAT={messages:m};bcRender();};
+
+  // ---- 📰 Reports (Oct 26): Mr. Mind's reports live in HQ + the app; email only for something really important
+  let RPT={items:[]},rpBox=null,rpSel=null;
+  function rpSeen(){try{return localStorage.getItem("rpSeen")||"";}catch(e){return "";}}
+  function rpRow(){const r=document.getElementById("nRep");if(!r)return;const it=(RPT.items||[])[0];r.hidden=!it;if(!it)return;
+    document.getElementById("nRepT").textContent=it.title.split(" · ")[0];
+    const t=it.at?new Date(it.at):null;document.getElementById("nRepL").textContent=t?"· "+t.toLocaleString("en-US",{timeZone:"America/Chicago",weekday:"short",hour:"numeric",minute:"2-digit"}):"";
+    document.getElementById("nRepDot").hidden=(rpSeen()===it.id);r.onclick=()=>showReports();}
+  function rpRender(){if(!rpBox||rpBox.hidden)return;const L=RPT.items||[];const tabs=rpBox.querySelector(".rptabs"),fr=rpBox.querySelector("iframe");tabs.replaceChildren();
+    if(!L.length){fr.srcdoc="<p style='font:15px system-ui;color:#555;padding:16px'>No reports yet.</p>";return;}
+    if(!rpSel||!L.some(x=>x.id===rpSel))rpSel=L[0].id;
+    L.forEach(x=>{const b=el("button","rptab"+(x.id===rpSel?" on":""),x.title.replace(" report",""));b.type="button";b.onclick=()=>{rpSel=x.id;rpRender();};tabs.append(b);});
+    const it=L.find(x=>x.id===rpSel);fr.srcdoc='<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><base target="_blank"><style>body{margin:0;padding:12px;font:15px/1.45 -apple-system,system-ui,sans-serif;background:#fff;color:#1f1d2b;word-wrap:break-word}img,table{max-width:100%}table{border-collapse:collapse;display:block;overflow-x:auto}td,th{padding:4px 6px}</style>'+(it.html||"");
+    if(it.id===L[0].id){try{localStorage.setItem("rpSeen",it.id);}catch(e){}const d=document.getElementById("nRepDot");if(d)d.hidden=true;}}
+  function showReports(){try{if(openCard)closeCard();}catch(_){}
+    if(!rpBox){rpBox=el("div","win rpwin");rpBox.id="rpBox";rpBox.hidden=true;
+      const h=el("div","bch");h.append(el("div","bcav rpav","📰"),(()=>{const t=el("div","bctt");t.append(el("b",null,"Mr. Mind reports"),el("small","bcsub","morning · midday · evening"));return t;})());try{h.append(winOp());}catch(e){}
+      const x=el("button","bcx","✕");x.type="button";x.setAttribute("aria-label","Close");x.onclick=()=>{rpBox.hidden=true;};h.append(x);
+      const tabs=el("div","rptabs"),fr=document.createElement("iframe");fr.setAttribute("sandbox","allow-popups allow-popups-to-escape-sandbox");fr.title="Report";fr.className="rpfr";
+      rpBox.append(h,tabs,fr);document.body.append(rpBox);}
+    rpBox.hidden=false;rpRender();try{winPlace();}catch(e){}}
+  window.hqReports=showReports;window.__rpSet=L=>{RPT={items:L};rpRow();rpRender();};
   // ---- window mode (Oct 22): every window covers only the office area so the bottom bar can switch windows
   document.body.classList.add("winmode");
-  function winPlace(){const r0=stage.getBoundingClientRect(),dk=document.body.classList.contains("deskui");const r=dk?(()=>{const hb=$("hdr").getBoundingClientRect(),lb=(document.querySelector(".bottom .lvl")||$("hdr")).getBoundingClientRect(),bb=$("bottom").getBoundingClientRect();return{left:376,right:innerWidth-16,width:innerWidth-392,top:Math.max(16,Math.min(hb.top,lb.bottom+10)),bottom:bb.top-10};})():r0,hd=$("hdr").getBoundingClientRect(),top=dk?r.top:Math.max(r.top,hd.bottom>r.top+4&&hd.bottom<r.bottom?hd.bottom+6:r.top);[$("card"),document.getElementById("rlBox"),document.getElementById("bcBox")].forEach(w=>{if(!w||w.hidden)return;
+  function winPlace(){const r0=stage.getBoundingClientRect(),dk=document.body.classList.contains("deskui");const r=dk?(()=>{const hb=$("hdr").getBoundingClientRect(),lb=(document.querySelector(".bottom .lvl")||$("hdr")).getBoundingClientRect(),bb=$("bottom").getBoundingClientRect();return{left:376,right:innerWidth-16,width:innerWidth-392,top:Math.max(16,Math.min(hb.top,lb.bottom+10)),bottom:bb.top-10};})():r0,hd=$("hdr").getBoundingClientRect(),top=dk?r.top:Math.max(r.top,hd.bottom>r.top+4&&hd.bottom<r.bottom?hd.bottom+6:r.top);[$("card"),document.getElementById("rlBox"),document.getElementById("bcBox"),document.getElementById("rpBox")].forEach(w=>{if(!w||w.hidden)return;
       const A={l:r.left+(innerWidth<761?6:0),t:top,w:r.width-(innerWidth<761?12:0),h:r.bottom-top};WAREA=A;
       if(w.id==="card"&&openCard&&PAGEK.includes(openCard.key)){w.classList.add("pagewin");w.style.setProperty("--wfit","1");Object.assign(w.style,{left:A.l+"px",top:A.t+"px",width:A.w+"px",height:A.h+"px"});
         if(PAGEPREV!==openCard.key){const d=PAGEK.indexOf(openCard.key)-PAGEK.indexOf(PAGEPREV||"work");w.classList.remove("slideL","slideR");void w.offsetWidth;w.classList.add(d>=0?"slideL":"slideR");PAGEPREV=openCard.key;}return;}
@@ -3073,6 +3111,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
       const user=await claude.use("user");canWrite=user?!!(await user.isOwner()):false;
       db.collection("workers").onSnapshot(s=>{workers=s.docs.map(d=>({id:d.id,...d.data()}));rerender();},()=>{});
       db.doc("hq/state").onSnapshot(d=>{hq=d.exists?d.data():null;rerender();},()=>{});
+      try{db.doc("reports/latest").onSnapshot(d=>{RPT=d.exists?(d.data()||{items:[]}):{items:[]};rpRow();rpRender();},()=>{});}catch(e){}
       try{db.doc("chat/main").onSnapshot(d=>{BCHAT=d.exists?(d.data()||{messages:[]}):{messages:[]};bcRender();},()=>{});}catch(e){}
   try{db.doc("questions/answers").onSnapshot(d=>{qAns=d.exists?(d.data()||{}):{};if(openCard&&openCard.rebuild)openCard.rebuild();},()=>{});}catch(e){}
   try{db.doc("spider/decisions").onSnapshot(d=>{spiderDec=d.exists?(d.data()||{}):{};if(openCard&&openCard.key==="spider"&&openCard.rebuild)openCard.rebuild();},()=>{});}catch(e){}
