@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v58";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v59";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3188,6 +3188,8 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   // Oct 28: also on the computer app (github.io, installed as an app) - the camera works there. Never on phones (touch screens).
   if(!matchMedia("(pointer:fine)").matches||innerWidth<700)return;
   const GH=/github\.io$/.test(location.hostname);
+  // Stick (Oct 28): the computer app opens on the LEFT monitor (the Mac helper moves the window)
+  if(GH){try{if(sessionStorage.getItem("hxLeft")!=="1"){sessionStorage.setItem("hxLeft","1");setTimeout(()=>fetch("http://127.0.0.1:8765/left",{method:"POST"}).catch(()=>{}),800);}}catch(e){}}
   const $=id=>document.getElementById(id),mk=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;};
   // ---------- 🖐️ LOCK ----------
   let seen=false;try{seen=sessionStorage.getItem("hxOpen")==="1";}catch(e){}
