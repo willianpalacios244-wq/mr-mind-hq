@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v61";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v62";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3248,13 +3248,15 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   const T=mk("div");T.id="hxTalk";T.hidden=true;const hd=mk("div","row");hd.append(mk("b",null,"🧠 Mr. Mind (voice)"));const cx=mk("button",null,"✕");cx.type="button";cx.onclick=()=>{T.hidden=true;try{speechSynthesis.cancel();}catch(e){}};hd.append(cx);
   const log=mk("div"),f=mk("form"),inp=mk("input");inp.placeholder="Type here, or press M to talk";f.append(inp);T.append(hd,log,f);document.body.append(T,mic);   // GitHub app: answers from HQ data on the page (no Claude there), anything else -> Talk now
   // Voice (Oct 28): best voice on this computer (Premium/Enhanced/Natural first), or the one Stick picks in the panel
+  // 🇪🇸 Spanish (Stick, Oct 28): say "habla en español" / "in Spanish" -> listens + answers in Spanish; "in English" -> back
+  let LANG="en";try{LANG=localStorage.getItem("hxLang")||"en";}catch(e){}
   let VO=null;const vsel=document.createElement("select");vsel.title="Voice";vsel.setAttribute("aria-label","Voice");vsel.style.cssText="max-width:150px;background:#020617;color:#e2e8f0;border:1px solid #334155;border-radius:6px;font:12px system-ui;margin-left:auto;margin-right:6px";
-  const rank=v=>(/premium|enhanced|natural|neural/i.test(v.name)?0:/google us english|samantha|ava|zoe|evan|nathan|aria|jenny|guy/i.test(v.name)?1:2)+(v.lang==="en-US"?0:.5);
-  function voices(){let L=[];try{L=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));}catch(e){}if(!L.length)return;L.sort((a,b)=>rank(a)-rank(b));
-    let saved="";try{saved=localStorage.getItem("hxVoice")||"";}catch(e){}VO=L.find(v=>v.name===saved)||L[0];
+  const rank=v=>(/premium|enhanced|natural|neural/i.test(v.name)?0:/google us english|google español|samantha|ava|zoe|evan|nathan|aria|jenny|guy|paulina|m[oó]nica|jorge|juan/i.test(v.name)?1:2)+(/^(en-US|es-US|es-MX)$/.test(v.lang)?0:.5);
+  function voices(){let L=[];try{L=speechSynthesis.getVoices().filter(v=>(LANG==="es"?/^es/i:/^en/i).test(v.lang));}catch(e){}if(!L.length)return;L.sort((a,b)=>rank(a)-rank(b));
+    let saved="";try{saved=localStorage.getItem(LANG==="es"?"hxVoiceEs":"hxVoice")||"";}catch(e){}VO=L.find(v=>v.name===saved)||L[0];
     vsel.replaceChildren(...L.slice(0,25).map(v=>{const o=document.createElement("option");o.value=v.name;o.textContent=v.name.replace(/ \(.*?\)$/,"")+(/premium|enhanced|natural|neural/i.test(v.name)?" ★":"");o.selected=v===VO;return o;}));}
   try{voices();speechSynthesis.onvoiceschanged=voices;}catch(e){}
-  vsel.onchange=()=>{try{VO=speechSynthesis.getVoices().find(v=>v.name===vsel.value)||VO;localStorage.setItem("hxVoice",vsel.value);}catch(e){}say("Hi Stick, this is my new voice.");};
+  vsel.onchange=()=>{try{VO=speechSynthesis.getVoices().find(v=>v.name===vsel.value)||VO;localStorage.setItem(LANG==="es"?"hxVoiceEs":"hxVoice",vsel.value);}catch(e){}say(LANG==="es"?"Hola Stick, esta es mi nueva voz.":"Hi Stick, this is my new voice.");};
   hd.insertBefore(vsel,cx);
   const say=(t,done)=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[*#_`>|]/g,"").replace(/\p{Extended_Pictographic}/gu,"").replace(/\s\.\.\.\s/g,". "));if(VO)u.voice=VO;u.rate=1;u.pitch=1;
     let fired=false;const fin=()=>{if(!fired){fired=true;done&&done();}};u.onend=fin;u.onerror=fin;speechSynthesis.speak(u);}catch(e){done&&done();}};
@@ -3283,38 +3285,45 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
 
   // ---------- 🧭 VOICE NAVIGATION + TALK TO A WORKER (Stick, Oct 28) ----------
   let TALKTO=null;   // a worker Stick is talking to by voice (null = Mr. Mind)
-  function findWorker(n){const W=(window.__HQX&&window.__HQX.w())||[];const al={mrmind:["mr mind","mister mind","boss","jefe"],subjefe:["subjefe","sub jefe","sub chief","subhead","sub hefe"],audio:["audiobook","audio book","audio"],checkin:["check-in","check in","checkin","daily"],school:["school"],scout:["scout","web scout"]};
+  function findWorker(n){const W=(window.__HQX&&window.__HQX.w())||[];const al={mrmind:["mr mind","mister mind","boss","jefe"],subjefe:["subjefe","sub jefe","sub chief","subhead","sub hefe","sub heffe","sub-chef","sub chef","sub jeff","sub jay","so hefe","sub hefa","subhefe","soup hefe","subjeffe","sub jefa","el subjefe"],audio:["audiobook","audio book","audio"],checkin:["check-in","check in","checkin","daily"],school:["school"],scout:["scout","web scout"]};
+    const c=n.replace(/[^a-z]/g,"");if(/sub(je|he|che|jay|jeff)|souphe|sohef/.test(c)){const sj=W.find(w=>/subjefe/i.test(w.name||w.id||""));if(sj)return sj;}
+    if(/audiolibro|audio libro/.test(n)){const a=W.find(w=>/audio/i.test(w.name||""));if(a)return a;}if(/escuela|tarea/.test(n)){const a=W.find(w=>/school/i.test(w.name||""));if(a)return a;}
     let best=null;W.forEach(w=>{const nm=(w.name||"").toLowerCase(),lk=(w.look||w.id||"").toLowerCase();const keys=[nm,...(al[lk]||[]),...(nm.split(/\s+/).filter(x=>x.length>3))];if(keys.some(k=>k&&n.includes(k)))best=best||w;});return best;}
   function nav(q){const n=" "+q.toLowerCase().replace(/[.,!?]/g," ").replace(/\s+/g," ")+" ",U=window.__HQX&&window.__HQX.ui;if(!U)return null;
     const has=(...w)=>w.some(x=>n.includes(x)),go=(f,t)=>{try{f();}catch(e){}return t;};
-    if(TALKTO&&has(" back to mr mind"," back to mister mind"," stop talking to"," talk to mr mind"," talk to mister mind"," done talking")){const w=TALKTO;TALKTO=null;md.textContent="";mode();return "Okay, back to me. "+w.name+" is back at work.";}
-    if(has(" close "," close it"," close that"," close the window"," close everything"," hide it")&&q.split(/\s+/).length<=5)return go(U.close,"Closed.");
-    if(has(" spider"," attic"))return go(()=>{U.floor(3);setTimeout(U.spider,450);},"Going up to the attic to see the Spider.");
-    if(has(" my floor"," my office"," floor two"," floor 2"," second floor"," upstairs"))return go(()=>U.floor(2),"Here's your floor.");
-    if(has(" floor one"," floor 1"," first floor"," downstairs"," team floor"," workers floor"))return go(()=>U.floor(1),"Here's the team floor.");
-    const talk=n.match(/ (?:talk|speak|chat) (?:to|with) (.+)$/)||n.match(/^ ?(?:ask|let me talk to|i want to talk to) (.+)$/);
-    if(talk){const w=findWorker(talk[1]);if(w){TALKTO=w;try{U.worker(w.id);}catch(e){}md.textContent="🗣️ talking to "+w.name;return w.name+" here. What do you need?";}}
-    if(has(" workers"," my team"," the team"," my agents"," all agents"))return go(U.team,"Here's your team.");
-    if(has(" show ", " open ", " let me see ", " see ", " pull up ", " go to ")){
-      const w=findWorker(n);if(w)return go(()=>U.worker(w.id),"Here's "+w.name+".");
-      if(has(" task"))return go(U.tasks,"Here are your tasks.");
-      if(has(" report"))return go(U.reports,"Here are your reports.");
-      if(has(" fix"))return go(U.fixes,"Here are the fixes waiting for you.");
-      if(has(" problem"," issue"))return go(U.problems,"Here are the problems.");
-      if(has(" audiobook"," audio book"))return go(U.audio,"Here are your audiobooks.");
-      if(has(" book"))return go(U.books,"Here are your books.");
-      if(has(" need"))return go(U.needs,"Here's what needs you.");
-      if(has(" upgrade"," level"," reward"))return go(U.upgrades,"Here are your upgrades.");
-      if(has(" setting"))return go(U.settings,"Here are the settings.");
-      if(has(" brain"," chat"))return go(U.brain,"Here's the brain chat.");
-      if(has(" scout"," news"))return go(U.scout,"Here's the web scout.");
-      if(has(" home"," my desk"))return go(U.home,"Going to your desk.");}
+    // language switch
+    if(has(" en español"," en espanol"," habla español"," habla espanol"," in spanish"," speak spanish")){LANG="es";try{localStorage.setItem("hxLang","es");}catch(e){}voices();return "Listo, ahora hablamos en español.";}
+    if(has(" in english"," en inglés"," en ingles"," speak english"," habla inglés"," habla ingles")){LANG="en";try{localStorage.setItem("hxLang","en");}catch(e){}voices();return "Okay, back to English.";}
+    const ES=LANG==="es",T2=(en,es)=>ES?es:en;
+    const open1=(f,t)=>go(()=>{U.close();setTimeout(f,120);},t);   // only one window at a time (Stick, Oct 28)
+    if(TALKTO&&has(" back to mr mind"," back to mister mind"," stop talking to"," talk to mr mind"," talk to mister mind"," done talking"," regresa"," volver con"," con mr mind"," con mister mind")){const w=TALKTO;TALKTO=null;md.textContent="";mode();return T2("Okay, back to me. "+w.name+" is back at work.","Listo, de vuelta conmigo. "+w.name+" regresó a trabajar.");}
+    if(has(" close "," close it"," close that"," close the window"," close everything"," hide it"," cierra"," cerrar"," ciérralo")&&q.split(/\s+/).length<=5)return go(U.close,T2("Closed.","Cerrado."));
+    if(has(" spider"," attic"," araña"," arana"," ático"," atico"))return go(()=>{U.close();U.floor(3);setTimeout(U.spider,450);},T2("Going up to the attic to see the Spider.","Subiendo al ático a ver a la Araña."));
+    if(has(" my floor"," my office"," floor two"," floor 2"," second floor"," upstairs"," mi piso"," mi oficina"," segundo piso"," arriba"))return go(()=>{U.close();U.floor(2);},T2("Here's your floor.","Aquí está tu piso."));
+    if(has(" floor one"," floor 1"," first floor"," downstairs"," team floor"," workers floor"," primer piso"," abajo"," piso uno"))return go(()=>{U.close();U.floor(1);},T2("Here's the team floor.","Aquí está el piso del equipo."));
+    const talk=n.match(/ (?:talk|speak|chat) (?:to|with) (.+)$/)||n.match(/^ ?(?:ask|let me talk to|i want to talk to|habla con|hablar con|quiero hablar con|pásame a|pasame a) (.+)$/);
+    if(talk){const w=findWorker(talk[1]);if(w){TALKTO=w;U.close();setTimeout(()=>{try{U.worker(w.id);}catch(e){}},120);md.textContent="🗣️ "+T2("talking to ","hablando con ")+w.name;return T2(w.name+" here. What do you need?",w.name+" aquí. ¿Qué necesitas?");}}
+    if(has(" workers"," my team"," the team"," my agents"," all agents"," team "," mi equipo"," el equipo"," trabajadores"," mis agentes"))return go(()=>{U.close();U.floor(1);setTimeout(U.team,300);},T2("Here's your team.","Aquí está tu equipo."));
+    if(has(" show ", " open ", " let me see ", " see ", " pull up ", " go to ", " muéstrame"," muestrame"," abre "," enséñame"," ensename"," quiero ver"," ver mis"," ver mi"," ver los"," ver el")){
+      const w=findWorker(n);if(w)return open1(()=>U.worker(w.id),T2("Here's ","Aquí está ")+w.name+".");
+      if(has(" task"," tarea"))return open1(U.tasks,T2("Here are your tasks.","Aquí están tus tareas."));
+      if(has(" report"," informe"))return open1(U.reports,T2("Here are your reports.","Aquí están tus reportes."));
+      if(has(" fix"," arreglo"))return open1(U.fixes,T2("Here are the fixes waiting for you.","Aquí están los arreglos que esperan tu OK."));
+      if(has(" problem"," issue"))return open1(U.problems,T2("Here are the problems.","Aquí están los problemas."));
+      if(has(" audiobook"," audio book"," audiolibro"))return open1(U.audio,T2("Here are your audiobooks.","Aquí están tus audiolibros."));
+      if(has(" book"," libro"))return open1(U.books,T2("Here are your books.","Aquí están tus libros."));
+      if(has(" need"," pendiente"))return open1(U.needs,T2("Here's what needs you.","Esto es lo que te necesita."));
+      if(has(" upgrade"," level"," reward"," nivel"," premio"))return open1(U.upgrades,T2("Here are your upgrades.","Aquí están tus mejoras."));
+      if(has(" setting"," ajuste"," configuración"," configuracion"))return open1(U.settings,T2("Here are the settings.","Aquí está la configuración."));
+      if(has(" brain"," chat"," cerebro"))return open1(U.brain,T2("Here's the brain chat.","Aquí está el chat del cerebro."));
+      if(has(" scout"," news"," noticias"))return open1(U.scout,T2("Here's the web scout.","Aquí está el explorador."));
+      if(has(" home"," my desk"," mi escritorio"))return open1(U.home,T2("Going to your desk.","Vamos a tu escritorio."));}
     return null;}
   let PEND=null;
   async function ask(q){q=(q||"").trim();if(!q||busy)return;busy=true;T.hidden=false;
     const y=mk("p","y","You: "+q),a=mk("p","a","…");log.append(y,a);T.scrollTop=T.scrollHeight;
     if(PEND){const act=PEND;PEND=null;
-      if(/^(yes|yeah|yep|yup|sure|do it|go ahead|confirm|correct|ok(ay)?|right|please)\b/i.test(q)){
+      if(/^(yes|yeah|yep|yup|sure|do it|go ahead|confirm|correct|ok(ay)?|right|please|s[ií]|claro|dale|hazlo|correcto|de acuerdo|va)\b/i.test(q)){
         try{const r=await fetch(HELPER+"/do",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(act)});const j=await r.json();a.textContent=j.text||j.error||"Done.";}
         catch(e){a.textContent="I couldn't reach the Mac helper, so nothing changed.";}}
       else a.textContent="Okay, I didn't change anything.";
@@ -3324,7 +3333,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     const S=window.__HQX&&window.__HQX.s();
     const now=new Date().toLocaleString("en-US",{timeZone:"America/Chicago"});
     const who=TALKTO?("You are "+TALKTO.name+", one of Stick Rivera's AI worker agents (your job: "+(TALKTO.role||"")+"; last run: "+(TALKTO.lastRun||"?")+", result: "+(TALKTO.lastResult||"?")+"). Talk in first person as "+TALKTO.name+", warm and short. Mr. Mind is your boss."):"";
-    const prompt=(who?who+" ":"")+"You are Mr. Mind, Stick Rivera's boss AI agent (Liguori Publications: Redemptio books, audiobooks, his agents; he also studies at Jefferson College). He is TALKING to you out loud, so answer in 1-3 short spoken sentences, plain words, no lists, no emoji. Use ONLY the data below; if it isn't there, say you don't see it in HQ and he can ask the main chat. Never read passwords or codes. Now (Chicago): "+now+"\n\n"+ctx()+"\n\nStick says: "+q;
+    const prompt=(LANG==="es"?"ANSWER IN SPANISH (Latin American, plain and friendly). ":"")+(who?who+" ":"")+"You are Mr. Mind, Stick Rivera's boss AI agent (Liguori Publications: Redemptio books, audiobooks, his agents; he also studies at Jefferson College). He is TALKING to you out loud, so answer in 1-3 short spoken sentences, plain words, no lists, no emoji. Use ONLY the data below; if it isn't there, say you don't see it in HQ and he can ask the main chat. Never read passwords or codes. Now (Chicago): "+now+"\n\n"+ctx()+"\n\nStick says: "+q;
     const promptH=prompt.replace("Use ONLY the data below; if it isn't there, say you don't see it in HQ and he can ask the main chat.","Use the data below. If you need more, you may READ files in his folders (Desktop/Mr. Mind, Books that Need AudioRecording, Books that Need to Go on Redemptio, School Work) - keep it quick; never open app_secrets. ACTIONS: if he asks to approve or decline a fix, add a reminder, or mark a reminder done, do NOT say it is done: ask ONE short confirm question (like 'Approve fix 23, are you sure?') and put on the LAST line exactly: ACTION: {\"type\":\"approve_fix\",\"id\":\"23\"} (types: approve_fix, decline_fix with id; add_reminder, done_reminder with text). Anything else that changes things (run agents, move or delete files, emails): say he needs the main chat.");
     // Option D (Oct 28): computer app -> the voice helper on Stick's Mac (Claude Code with his own login). If it's off: basic answers.
     if(GH||!S){if(HELP!==false){try{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),95000);a.textContent="🧠 thinking…";
@@ -3341,9 +3350,9 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   // CONVERSATION MODE (Oct 28): one click on 🎙️ = keep talking. After each answer it listens again by itself.
   // Stop: say "stop" / "bye" / "that's all" / "thank you", click 🎙️ again, press Esc, or close the panel.
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,convo=false;
-  const STOP=/^(stop|bye|goodbye|that'?s all|that is all|thanks?( you)?|thank you( that'?s it)?|never ?mind|nothing|cancel|i'?m done|done)[.!]?$/i;
+  const STOP=/^(stop|bye|goodbye|that'?s all|that is all|thanks?( you)?|thank you( that'?s it)?|never ?mind|nothing|cancel|i'?m done|done|para|alto|gracias|nada|olv[ií]dalo|cancela|eso es todo)[.!]?$/i;
   // "bye" / "okay we're done for now" (Stick, Oct 28) -> close the app (computer app: Mac helper quits it), else lock HQ
-  const BYE=/\b(bye|goodbye|good bye|see you|good night|we'?re done|we are done|done for (now|today)|that'?s all for (now|today)|close (the )?app|shut (it )?down)\b/i;
+  const BYE=/\b(bye|goodbye|good bye|see you|good night|we'?re done|we are done|done for (now|today)|that'?s all for (now|today)|close (the )?app|shut (it )?down|adi[oó]s|hasta luego|nos vemos|ya terminamos|eso es todo por (hoy|ahora)|buenas noches|cierra la app)\b/i;
   async function closeApp(){endConvo();T.hidden=true;try{$("hxLk").click();}catch(e){}   // lock FIRST, so it is never left open unlocked
     try{window.close();}catch(e){}await new Promise(r=>setTimeout(r,400));
     if(GH){try{await fetch(HELPER+"/close",{method:"POST"});}catch(e){}}}
@@ -3352,7 +3361,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   function endConvo(){convo=false;if(rec){try{rec.abort();}catch(e){}}rec=null;mic.classList.remove("on");}
   cx.addEventListener("click",endConvo);
   function listen(){if(!convo||rec)return;
-    rec=new SR();rec.lang="en-US";rec.interimResults=true;rec.maxAlternatives=1;let fin="";
+    rec=new SR();rec.lang=LANG==="es"?"es-US":"en-US";rec.interimResults=true;rec.maxAlternatives=1;let fin="";
     const live=mk("p","y","🎙️ Listening…");log.append(live);T.scrollTop=T.scrollHeight;mic.classList.add("on");
     rec.onresult=e=>{let t="";for(const r of e.results)t+=r[0].transcript;fin=t;live.textContent="🎙️ "+t;};
     rec.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed"||e.error==="audio-capture"){live.remove();try{localStorage.setItem("hxMicBlocked","1");}catch(_){}endConvo();dict();}
