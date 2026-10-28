@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v56";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v57";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3165,6 +3165,10 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
 #hxLock.ok .hxRing b{color:#ffd7a8;text-shadow:0 0 14px #f97316}
 @keyframes hxSpin{to{transform:rotate(360deg)}}
 #hxLock .hxMsg{min-height:22px;text-align:center;max-width:520px;padding:0 16px}
+#hxLock .hxPin input{width:190px;text-align:center;letter-spacing:8px;font:600 20px ui-monospace,Menlo,monospace;padding:9px 12px;border-radius:999px;border:1px solid #38bdf8;background:rgba(2,6,23,.7);color:#e0f2fe;outline:none}
+#hxLock .hxPin input::placeholder{letter-spacing:1px;font:14px system-ui;color:#7dd3fc}
+#hxLock .hxPin.bad{animation:hxShake .4s}
+@keyframes hxShake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 #hxLock .hxBtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 #hxLock button{font:600 15px system-ui;padding:10px 18px;border-radius:999px;border:1px solid #38bdf8;background:rgba(14,165,233,.12);color:#e0f2fe;cursor:pointer}
 #hxLock button:hover{background:rgba(14,165,233,.28)}
@@ -3190,36 +3194,46 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   const lk=mk("button",null,"🔒");lk.id="hxLk";lk.type="button";lk.title="Lock HQ";lk.setAttribute("aria-label","Lock HQ");document.body.append(lk);
   lk.onclick=()=>{if(!$("hxLock"))showLock();};
   if(!seen)showLock();
+  // Oct 28 (Stick): the camera starts BY ITSELF when HQ opens -> raise your hand, no clicks. Backup = 6-digit passcode (only its hash is here).
+  const PH="a45ccc0bed5669f94484fbcfc3416df5ebec53dd758853c26dbaff727dda1d7d";
+  async function hashOk(c){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("mrmind-hq-v1:"+c));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")===PH;}catch(e){return false;}}
   function showLock(){
     const L=mk("div");L.id="hxLock";L.append(mk("div","grid"));
     const R=mk("div","hxRing");R.append(mk("i"),mk("i"),mk("i"));const RB=mk("b",null,"SYSTEM\nLOCKED");RB.style.whiteSpace="pre";R.append(RB);
-    const msg=mk("div","hxMsg","Raise an open hand ✋ to the camera to unlock Mr. Mind HQ");
-    const bt=mk("div","hxBtns"),bc=mk("button",null,"✋ Use camera"),bu=mk("button",null,"🔓 Unlock");bc.type=bu.type="button";bt.append(bc,bu);
+    const msg=mk("div","hxMsg","Starting the camera… raise an open hand ✋");
+    const pf=mk("form","hxPin"),pin=document.createElement("input");pin.type="password";pin.inputMode="numeric";pin.maxLength=6;pin.autocomplete="off";pin.placeholder="or type passcode";pin.setAttribute("aria-label","Passcode");pf.append(pin);
     const v=document.createElement("video");v.id="hxCam";v.playsInline=true;v.muted=true;
-    L.append(R,msg,bt,v);document.body.append(L);
+    L.append(R,msg,pf,v);document.body.append(L);
     let stream=null,done=false;
-    const unlock=()=>{if(done)return;done=true;L.classList.add("ok");RB.textContent="ACCESS\nGRANTED";msg.textContent="Welcome back, Stick.";
+    const unlock=()=>{if(done)return;done=true;L.classList.add("ok");RB.textContent="ACCESS\nGRANTED";msg.textContent="Welcome back, Stick.";pf.remove();
       try{const u=new SpeechSynthesisUtterance("Welcome back, Stick.");speechSynthesis.speak(u);}catch(e){}
       try{sessionStorage.setItem("hxOpen","1");}catch(e){}
       if(stream)stream.getTracks().forEach(t=>t.stop());
       setTimeout(()=>{L.classList.add("out");setTimeout(()=>L.remove(),700);},1100);};
-    bu.onclick=unlock;addEventListener("keydown",function k(e){if(e.key==="Escape"){removeEventListener("keydown",k);unlock();}});
+    let tries=0,hold=0;
+    const check=async()=>{const c=pin.value.trim();if(c.length<6)return;
+      if(await hashOk(c))unlock();else{tries++;pin.value="";pf.classList.remove("bad");void pf.offsetWidth;pf.classList.add("bad");msg.textContent="Wrong passcode"+(tries>=3?" — wait a few seconds":"");hold=performance.now()+2500;if(tries>=3){pin.disabled=true;setTimeout(()=>{pin.disabled=false;tries=0;pin.focus();},5000);}}};
+    pin.addEventListener("input",()=>{pin.value=pin.value.replace(/\D/g,"").slice(0,6);if(pin.value.length===6)check();});
+    pf.onsubmit=e=>{e.preventDefault();check();};
+    // typing digits anywhere goes into the passcode box
+    addEventListener("keydown",function k(e){if(done){removeEventListener("keydown",k);return;}if(/^\d$/.test(e.key)&&document.activeElement!==pin){pin.focus();}});
     const load=src=>new Promise((ok,no)=>{const s=document.createElement("script");s.src=src;s.crossOrigin="anonymous";s.onload=ok;s.onerror=no;document.head.append(s);});
-    bc.onclick=async()=>{bc.disabled=true;msg.textContent="Starting the camera…";
+    (async()=>{
       try{stream=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480},audio:false});}
-      catch(e){msg.textContent="The camera isn't allowed on this page here. Click 🔓 Unlock (or allow the camera in your browser and reload).";bc.disabled=false;return;}
-      v.srcObject=stream;v.style.display="block";await v.play();
+      catch(e){msg.textContent="Camera isn't available here — type your passcode.";pin.focus();return;}
+      if(done){stream.getTracks().forEach(t=>t.stop());return;}
+      v.srcObject=stream;v.style.display="block";try{await v.play();}catch(e){}
       const BASE="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/";
-      try{await load(BASE+"hands.js");}catch(e){msg.textContent="Hand tracking couldn't load. Click 🔓 Unlock.";return;}
+      try{if(!window.Hands)await load(BASE+"hands.js");}catch(e){msg.textContent="Hand tracking couldn't load — type your passcode.";pin.focus();return;}
       const hands=new window.Hands({locateFile:f=>BASE+f});hands.setOptions({maxNumHands:1,modelComplexity:0,minDetectionConfidence:.6,minTrackingConfidence:.5});
       let openSince=0;
-      hands.onResults(r=>{const lm=r.multiHandLandmarks&&r.multiHandLandmarks[0];
+      hands.onResults(r=>{if(done||performance.now()<hold)return;const lm=r.multiHandLandmarks&&r.multiHandLandmarks[0];
         if(!lm){openSince=0;msg.textContent="Raise an open hand ✋";return;}
         const up=[[8,6],[12,10],[16,14],[20,18]].filter(([t,p])=>lm[t].y<lm[p].y).length;
         if(up>=4){if(!openSince)openSince=performance.now();const pct=Math.min(100,Math.round((performance.now()-openSince)/7));msg.textContent="Hand found… "+pct+"%";if(pct>=100)unlock();}
         else{openSince=0;msg.textContent="Open your hand all the way ✋";}});
-      msg.textContent="Show your open hand ✋";
-      const tick=async()=>{if(done)return;try{await hands.send({image:v});}catch(e){}requestAnimationFrame(tick);};tick();};
+      msg.textContent="Raise an open hand ✋";
+      const tick=async()=>{if(done)return;try{await hands.send({image:v});}catch(e){}requestAnimationFrame(tick);};tick();})();
   }
   // ---------- 🎙️ TALK ----------
   const mic=mk("button",null,"🎙️");mic.id="hxMic";mic.type="button";mic.title="Talk to Mr. Mind";mic.setAttribute("aria-label","Talk to Mr. Mind");
