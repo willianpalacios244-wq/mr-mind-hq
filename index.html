@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v64";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v65";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3247,6 +3247,24 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   const mic=mk("button",null,"🎙️");mic.id="hxMic";mic.type="button";mic.title="Talk to Mr. Mind";mic.setAttribute("aria-label","Talk to Mr. Mind");
   const T=mk("div");T.id="hxTalk";T.hidden=true;const hd=mk("div","row");hd.append(mk("b",null,"🧠 Mr. Mind (voice)"));const cx=mk("button",null,"✕");cx.type="button";cx.onclick=()=>{T.hidden=true;try{speechSynthesis.cancel();}catch(e){}};hd.append(cx);
   const log=mk("div"),f=mk("form"),inp=mk("input");inp.placeholder="Type here, or press M to talk";f.append(inp);T.append(hd,log,f);document.body.append(T,mic);   // GitHub app: answers from HQ data on the page (no Claude there), anything else -> Talk now
+  // 🔵 ORB (Oct 28, like the "Ultron" video): blue + moves with Stick's voice while listening, purple while thinking,
+  // orange + pulses with each word while answering, slow breathing when idle.
+  const orb=document.createElement("canvas");orb.width=720;orb.height=240;orb.style.cssText="width:100%;height:120px;display:block;margin:-4px 0 4px";T.insertBefore(orb,log);
+  let OS="idle",boost=0,an=null,abuf=null,lvl=0;
+  async function micLevel(){if(an||!navigator.mediaDevices)return;try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});const ac=new (window.AudioContext||window.webkitAudioContext)();an=ac.createAnalyser();an.fftSize=512;abuf=new Uint8Array(an.fftSize);ac.createMediaStreamSource(st).connect(an);}catch(e){an=null;}}
+  const COL={idle:[56,189,248],listen:[56,189,248],think:[168,85,247],speak:[249,115,22]};let cc=[56,189,248];
+  function drawOrb(ts){requestAnimationFrame(drawOrb);if(T.hidden)return;const g=orb.getContext("2d"),W=orb.width,H=orb.height,cx=W/2,cy=H/2,t=ts/1000;
+    let amp=0;if(OS==="listen"&&an){an.getByteTimeDomainData(abuf);let sum=0;for(const v of abuf){const x=(v-128)/128;sum+=x*x;}amp=Math.min(1,Math.sqrt(sum/abuf.length)*6);}
+    if(OS==="speak"){boost*=.9;amp=.25+boost*.75+Math.abs(Math.sin(t*9))*.12;}if(OS==="think")amp=.25+.15*Math.sin(t*6);if(OS==="idle")amp=.08+.06*Math.sin(t*1.6);
+    lvl+=(amp-lvl)*.25;const tc=COL[OS]||COL.idle;cc=cc.map((c,i)=>c+(tc[i]-c)*.08);const [r,gg,b]=cc.map(Math.round),rgb=(a)=>`rgba(${r},${gg},${b},${a})`;
+    g.clearRect(0,0,W,H);const R=48+lvl*38;
+    const glow=g.createRadialGradient(cx,cy,R*.2,cx,cy,R*2.4);glow.addColorStop(0,rgb(.55));glow.addColorStop(.45,rgb(.18));glow.addColorStop(1,rgb(0));g.fillStyle=glow;g.fillRect(0,0,W,H);
+    const core=g.createRadialGradient(cx-R*.3,cy-R*.3,R*.1,cx,cy,R);core.addColorStop(0,"rgba(255,255,255,.95)");core.addColorStop(.35,rgb(.95));core.addColorStop(1,rgb(.35));
+    g.beginPath();for(let i=0;i<=64;i++){const a=i/64*Math.PI*2,w=1+Math.sin(a*5+t*3)*.05*lvl+Math.sin(a*3-t*2)*.04*lvl;g.lineTo(cx+Math.cos(a)*R*w,cy+Math.sin(a)*R*w);}g.fillStyle=core;g.fill();
+    g.lineWidth=3;for(let k=0;k<3;k++){g.beginPath();const rr=R+18+k*16+lvl*10,st=t*(k%2?-1:1)*(.6+k*.3);g.strokeStyle=rgb(.55-k*.15);g.arc(cx,cy,rr,st,st+Math.PI*(1.1-k*.2));g.stroke();}
+    g.fillStyle=rgb(.9);for(let k=0;k<14;k++){const a=k/14*Math.PI*2+t*.7,rr=R+40+Math.sin(t*2+k)*10+lvl*20;g.beginPath();g.arc(cx+Math.cos(a)*rr*1.8,cy+Math.sin(a)*rr*.7,1.8+lvl*1.5,0,7);g.fill();}
+    g.font="600 22px system-ui";g.textAlign="center";g.fillStyle="rgba(226,232,240,.75)";g.fillText({idle:"",listen:LANG==="es"?"escuchando…":"listening…",think:LANG==="es"?"pensando…":"thinking…",speak:""}[OS]||"",cx,H-10);}
+  requestAnimationFrame(drawOrb);
   // Voice (Oct 28): best voice on this computer (Premium/Enhanced/Natural first), or the one Stick picks in the panel
   // 🇪🇸 Spanish (Stick, Oct 28): say "habla en español" / "in Spanish" -> listens + answers in Spanish; "in English" -> back
   let LANG="en";try{LANG=localStorage.getItem("hxLang")||"en";}catch(e){}
@@ -3260,8 +3278,8 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   hd.insertBefore(vsel,cx);
   const lb=mk("button",null,"EN");lb.type="button";lb.title="English / Español";lb.style.cssText="margin-right:6px;border:1px solid #38bdf8;border-radius:6px;background:#082f49;color:#e0f2fe;font:700 11px system-ui;padding:3px 7px;cursor:pointer";
   lb.onclick=()=>{const t=setLang(LANG==="es"?"en":"es");say(t);};hd.insertBefore(lb,vsel);setTimeout(()=>{lb.textContent=LANG==="es"?"ES":"EN";},0);
-  const say=(t,done)=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[*#_`>|]/g,"").replace(/\p{Extended_Pictographic}/gu,"").replace(/\s\.\.\.\s/g,". "));if(VO)u.voice=VO;u.rate=1;u.pitch=1;
-    let fired=false;const fin=()=>{if(!fired){fired=true;done&&done();}};u.onend=fin;u.onerror=fin;speechSynthesis.speak(u);}catch(e){done&&done();}};
+  const say=(t,done)=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[*#_`>|]/g,"").replace(/\p{Extended_Pictographic}/gu,"").replace(/\s\.\.\.\s/g,". "));if(VO)u.voice=VO;u.rate=1;u.pitch=1;OS="speak";boost=1;u.onboundary=()=>{boost=1;};
+    let fired=false;const fin=()=>{if(!fired){fired=true;OS="idle";done&&done();}};u.onend=fin;u.onerror=fin;speechSynthesis.speak(u);}catch(e){done&&done();}};
   const ctx=()=>{const X=window.__HQX;if(!X)return"";const strip=h=>String(h||"").replace(/<style[\s\S]*?<\/style>/g,"").replace(/<[^>]+>/g," ").replace(/\s+/g," ");
     let r="";try{const R=X.r();if(R&&R.items&&R.items[0])r=strip(R.items[0].title)+": "+strip(R.items[0].html).slice(0,7000);}catch(e){}
     let h="";try{h=JSON.stringify({hq:X.h(),workers:(X.w()||[]).map(w=>({name:w.name,role:w.role,lastRun:w.lastRun,lastResult:w.lastResult})),fixesWaiting:(X.f()||[]).filter(x=>/WAIT/i.test(x.status||"")).map(x=>x.title||x.id),openIssues:(X.i()||[]).filter(x=>!/DONE|COMPLETED/i.test(x.status||"")).map(x=>x.title||x.id)}).slice(0,9000);}catch(e){}
@@ -3306,7 +3324,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     if(has(" spider"," attic"," araña"," arana"," ático"," atico"))return go(()=>{U.close();U.floor(3);setTimeout(U.spider,450);},T2("Going up to the attic to see the Spider.","Subiendo al ático a ver a la Araña."));
     if(has(" my floor"," my office"," floor two"," floor 2"," second floor"," upstairs"," mi piso"," mi oficina"," segundo piso"," arriba"))return go(()=>{U.close();U.floor(2);},T2("Here's your floor.","Aquí está tu piso."));
     if(has(" floor one"," floor 1"," first floor"," downstairs"," team floor"," workers floor"," primer piso"," abajo"," piso uno"))return go(()=>{U.close();U.floor(1);},T2("Here's the team floor.","Aquí está el piso del equipo."));
-    const fo=n.match(/ (?:open|show me|show|abre|abrir|muéstrame|muestrame) (?:the |my |la |el |mi )?(?:folder|carpeta) (?:for |of |de |del |de la )?(.+?) ?$/)||n.match(/ (?:open|abre) (?:the |my |la |el |mi )?(.+?) (?:folder|carpeta) ?$/);
+    const fo=n.match(/ (?:open|show me|show|abre|abrir|muéstrame|muestrame) (?:the |my |la |el |mi )?(?:folder|carpeta) (?:for |of |de |del |de la )?(.+?) ?$/)||n.match(/ (?:open|abre|show me|show|pull up|let me see) (?:the |my |la |el |mi )?(.+?) (?:folder|carpeta) ?$/);
     if(fo&&GH){const name=fo[1].trim();fetch(HELPER+"/do",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"open_folder",text:name})}).then(r=>r.json()).then(j=>{const m=mk("p","a",j.text||"");log.append(m);say(j.text||"");T.scrollTop=T.scrollHeight;}).catch(()=>{});return T2("Opening the "+name+" folder…","Abriendo la carpeta "+name+"…");}
     const talk=n.match(/ (?:talk|speak|chat) (?:to|with) (.+)$/)||n.match(/^ ?(?:ask|let me talk to|i want to talk to|habla con|hablar con|quiero hablar con|pásame a|pasame a) (.+)$/);
     if(talk){const w=findWorker(talk[1]);if(w){TALKTO=w;HIST=[];U.close();setTimeout(()=>{try{U.worker(w.id);}catch(e){}},120);md.textContent="🗣️ "+T2("talking to ","hablando con ")+w.name;return T2(w.name+" here. What do you need?",w.name+" aquí. ¿Qué necesitas?");}}
@@ -3343,7 +3361,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     say(t,()=>{speaking=false;if(intr)return;try{br&&br.abort();}catch(_){}setTimeout(again,br?250:0);});
     setTimeout(startBarge,700);}   // small delay so it doesn't hear its own first words
   let PEND=null;
-  async function ask(q){q=(q||"").trim();if(!q||busy)return;busy=true;T.hidden=false;LASTQ=q;
+  async function ask(q){q=(q||"").trim();if(!q||busy)return;busy=true;T.hidden=false;LASTQ=q;OS="think";
     const y=mk("p","y","You: "+q),a=mk("p","a","…");log.append(y,a);T.scrollTop=T.scrollHeight;
     if(PEND){const act=PEND;PEND=null;
       if(/^(yes|yeah|yep|yup|sure|do it|go ahead|confirm|correct|ok(ay)?|right|please|s[ií]|claro|dale|hazlo|correcto|de acuerdo|va)\b/i.test(q)){
@@ -3385,12 +3403,12 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   cx.addEventListener("click",endConvo);
   function listen(){if(!convo||rec)return;
     rec=new SR();rec.lang=LANG==="es"?"es-US":"en-US";rec.interimResults=true;rec.maxAlternatives=1;let fin="";
-    const live=mk("p","y","🎙️ Listening…");log.append(live);T.scrollTop=T.scrollHeight;mic.classList.add("on");
+    const live=mk("p","y","🎙️ Listening…");log.append(live);T.scrollTop=T.scrollHeight;mic.classList.add("on");OS="listen";micLevel();
     rec.onresult=e=>{let t="";for(const r of e.results)t+=r[0].transcript;fin=t;live.textContent="🎙️ "+t;};
     rec.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed"||e.error==="audio-capture"){live.remove();try{localStorage.setItem("hxMicBlocked","1");}catch(_){}endConvo();dict();}
       else if(e.error==="no-speech"){live.remove();}else live.textContent="I didn't catch that.";};
     rec.onend=()=>{rec=null;mic.classList.remove("on");const q=fin.trim();
-      if(!q){if(live.isConnected)live.remove();if(convo){convo=false;log.append(mk("p","a","(Stopped listening. Click 🎙️ or press M to talk again.)"));T.scrollTop=T.scrollHeight;}return;}
+      if(!q){OS="idle";if(live.isConnected)live.remove();if(convo){convo=false;log.append(mk("p","a","(Stopped listening. Click 🎙️ or press M to talk again.)"));T.scrollTop=T.scrollHeight;}return;}
       live.remove();if(BYE.test(q)&&q.split(/\s+/).length<=7){convo=false;log.append(mk("p","y","You: "+q));HIST=[];say(LANG==="es"?"Adiós Stick, hablamos luego.":"Bye Stick, talk soon.",closeApp);return;}
       if(STOP.test(q)){convo=false;log.append(mk("p","y","You: "+q));say("Okay, I'm here if you need me.");return;}ask(q);};
     try{rec.start();}catch(e){rec=null;mic.classList.remove("on");}}
