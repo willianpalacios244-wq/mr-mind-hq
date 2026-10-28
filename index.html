@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v59";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v60";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3192,7 +3192,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   if(GH){try{if(sessionStorage.getItem("hxLeft")!=="1"){sessionStorage.setItem("hxLeft","1");setTimeout(()=>fetch("http://127.0.0.1:8765/left",{method:"POST"}).catch(()=>{}),800);}}catch(e){}}
   const $=id=>document.getElementById(id),mk=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;};
   // ---------- 🖐️ LOCK ----------
-  let seen=false;try{seen=sessionStorage.getItem("hxOpen")==="1";}catch(e){}
+  let seen=false;try{seen=!GH&&sessionStorage.getItem("hxOpen")==="1";}catch(e){}   // computer app: ALWAYS locked when it opens (Stick, Oct 28)
   const lk=mk("button",null,"🔒");lk.id="hxLk";lk.type="button";lk.title="Lock HQ";lk.setAttribute("aria-label","Lock HQ");document.body.append(lk);
   lk.onclick=()=>{if(!$("hxLock"))showLock();};
   if(!seen)showLock();
@@ -3229,12 +3229,16 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
       v.srcObject=stream;v.style.display="block";try{await v.play();}catch(e){}
       const BASE="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/";
       try{if(!window.Hands)await load(BASE+"hands.js");}catch(e){msg.textContent="Hand tracking couldn't load — type your passcode.";pin.focus();return;}
-      const hands=new window.Hands({locateFile:f=>BASE+f});hands.setOptions({maxNumHands:1,modelComplexity:0,minDetectionConfidence:.6,minTrackingConfidence:.5});
+      const hands=new window.Hands({locateFile:f=>BASE+f});hands.setOptions({maxNumHands:1,modelComplexity:1,minDetectionConfidence:.8,minTrackingConfidence:.7});
       let openSince=0;
       hands.onResults(r=>{if(done||performance.now()<hold)return;const lm=r.multiHandLandmarks&&r.multiHandLandmarks[0];
         if(!lm){openSince=0;msg.textContent="Raise an open hand ✋";return;}
-        const up=[[8,6],[12,10],[16,14],[20,18]].filter(([t,p])=>lm[t].y<lm[p].y).length;
-        if(up>=4){if(!openSince)openSince=performance.now();const pct=Math.min(100,Math.round((performance.now()-openSince)/7));msg.textContent="Hand found… "+pct+"%";if(pct>=100)unlock();}
+        // stricter (Oct 28): a real open hand held UP - 4 fingers straight up, thumb out, palm big enough, held ~1.2 s
+        const d=(a,b)=>Math.hypot(lm[a].x-lm[b].x,lm[a].y-lm[b].y),palm=d(0,9);
+        const sc=(r.multiHandedness&&r.multiHandedness[0]&&r.multiHandedness[0].score)||0;
+        const up=[[8,6,5],[12,10,9],[16,14,13],[20,18,17]].filter(([t,p,m])=>lm[t].y<lm[p].y&&lm[p].y<lm[m].y&&d(t,0)>d(p,0)*1.15).length;
+        const thumb=d(4,17)>d(3,17)&&d(4,5)>palm*.35, upright=lm[9].y<lm[0].y-palm*.6;
+        if(up>=4&&thumb&&upright&&palm>.12&&sc>.85){if(!openSince)openSince=performance.now();const pct=Math.min(100,Math.round((performance.now()-openSince)/12));msg.textContent="Hand found… "+pct+"%";if(pct>=100)unlock();}
         else{openSince=0;msg.textContent="Open your hand all the way ✋";}});
       msg.textContent="Raise an open hand ✋";
       const tick=async()=>{if(done)return;try{await hands.send({image:v});}catch(e){}requestAnimationFrame(tick);};tick();})();
@@ -3308,10 +3312,9 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   const STOP=/^(stop|bye|goodbye|that'?s all|that is all|thanks?( you)?|thank you( that'?s it)?|never ?mind|nothing|cancel|i'?m done|done)[.!]?$/i;
   // "bye" / "okay we're done for now" (Stick, Oct 28) -> close the app (computer app: Mac helper quits it), else lock HQ
   const BYE=/\b(bye|goodbye|good bye|see you|good night|we'?re done|we are done|done for (now|today)|that'?s all for (now|today)|close (the )?app|shut (it )?down)\b/i;
-  async function closeApp(){endConvo();T.hidden=true;try{window.close();}catch(e){}
-    await new Promise(r=>setTimeout(r,400));
-    if(GH){try{await fetch(HELPER+"/close",{method:"POST"});return;}catch(e){}}
-    try{$("hxLk").click();}catch(e){}}
+  async function closeApp(){endConvo();T.hidden=true;try{$("hxLk").click();}catch(e){}   // lock FIRST, so it is never left open unlocked
+    try{window.close();}catch(e){}await new Promise(r=>setTimeout(r,400));
+    if(GH){try{await fetch(HELPER+"/close",{method:"POST"});}catch(e){}}}
   const dict=()=>{log.append(mk("p","a","🎙️ Your Mac can listen for me: click the box below, start Dictation (🌐/Fn twice on the Mac keyboard, or the Dictation shortcut you set), talk, then press Enter. I'll answer out loud."));T.scrollTop=T.scrollHeight;inp.focus();};
   function again(){if(convo&&!T.hidden)setTimeout(listen,350);}
   function endConvo(){convo=false;if(rec){try{rec.abort();}catch(e){}}rec=null;mic.classList.remove("on");}
