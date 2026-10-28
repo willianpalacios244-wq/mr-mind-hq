@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v67";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v68";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3268,8 +3268,8 @@ body.hxA #hxTalk{display:none!important}
   // 🔵 ORB (Oct 28, like the "Ultron" video): blue + moves with Stick's voice while listening, purple while thinking,
   // orange + pulses with each word while answering, slow breathing when idle.
   const orb=document.createElement("canvas");orb.width=720;orb.height=240;orb.style.cssText="width:100%;height:120px;display:block;margin:-4px 0 4px";T.insertBefore(orb,log);
-  let OS="idle",boost=0,an=null,abuf=null,lvl=0;
-  async function micLevel(){if(an||!navigator.mediaDevices)return;try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});const ac=new (window.AudioContext||window.webkitAudioContext)();an=ac.createAnalyser();an.fftSize=512;abuf=new Uint8Array(an.fftSize);ac.createMediaStreamSource(st).connect(an);}catch(e){an=null;}}
+  let OS="idle",boost=0,an=null,abuf=null,lvl=0,MS=null;
+  async function micLevel(){if(an||!navigator.mediaDevices)return;try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});MS=st;const ac=new (window.AudioContext||window.webkitAudioContext)();an=ac.createAnalyser();an.fftSize=512;abuf=new Uint8Array(an.fftSize);ac.createMediaStreamSource(st).connect(an);}catch(e){an=null;}}
   const COL={idle:[56,189,248],listen:[56,189,248],think:[168,85,247],speak:[249,115,22]};let cc=[56,189,248];
   function drawOrb(ts){requestAnimationFrame(drawOrb);if(T.hidden)return;const g=orb.getContext("2d"),W=orb.width,H=orb.height,cx=W/2,cy=H/2,t=ts/1000;
     let amp=0;if(OS==="listen"&&an){an.getByteTimeDomainData(abuf);let sum=0;for(const v of abuf){const x=(v-128)/128;sum+=x*x;}amp=Math.min(1,Math.sqrt(sum/abuf.length)*6);}
@@ -3316,9 +3316,9 @@ body.hxA #hxTalk{display:none!important}
     if(has("fix"))return{text:F.filter(x=>/WAIT/i.test(x.status||"")).length?"Fixes waiting for your OK: "+F.filter(x=>/WAIT/i.test(x.status||"")).map(x=>x.title||x.id).join(" ... "):(sec("🔧 Fixes")||"No fixes are waiting for you.")};
     if(has("hello","hi ","hey","good morning","good afternoon","how are"))return{text:"Hey Stick. "+(H.headline||"All good here.")};
     return{text:"That one needs the main chat. I copied your question: tap Open Talk now and paste it.",say:"That one needs the main chat. I copied your question, just paste it.",talk:true};}
-  const HELPER="http://127.0.0.1:8765";let HELP=null;const md=mk("small",null,"");md.style.cssText="color:#94a3b8;margin-left:8px;font-size:11px";hd.firstChild.after(md);
-  function mode(){md.textContent=GH?(HELP?"🟢 smart (Mac helper)":"⚪ basic (Mac helper off)"):"🟢 smart (Claude)";}
-  async function ping(){if(!GH){mode();return;}try{const ac=new AbortController();setTimeout(()=>ac.abort(),2500);const r=await fetch(HELPER+"/health",{signal:ac.signal});const j=await r.json();HELP=!!(r.ok&&j.ok);}catch(e){HELP=false;}mode();}
+  const HELPER="http://127.0.0.1:8765";let HELP=null,HELPW=false;const md=mk("small",null,"");md.style.cssText="color:#94a3b8;margin-left:8px;font-size:11px";hd.firstChild.after(md);
+  function mode(){md.textContent=GH?(HELP?("🟢 smart"+(HELPW?" · 🎧 Whisper":"")):"⚪ basic (Mac helper off)"):"🟢 smart (Claude)";}
+  async function ping(){if(!GH){mode();return;}try{const ac=new AbortController();setTimeout(()=>ac.abort(),2500);const r=await fetch(HELPER+"/health",{signal:ac.signal});const j=await r.json();HELP=!!(r.ok&&j.ok);HELPW=!!(HELP&&j.whisper);}catch(e){HELP=false;HELPW=false;}mode();}
   let busy=false;
 
   // ---------- 🧭 VOICE NAVIGATION + TALK TO A WORKER (Stick, Oct 28) ----------
@@ -3375,7 +3375,7 @@ body.hxA #hxTalk{display:none!important}
     const startBarge=()=>{if(!speaking||intr)return;try{br=new SR();br.lang=LANG==="es"?"es-US":"en-US";br.interimResults=true;
       br.onresult=e=>{let x="";for(const r of e.results)x+=r[0].transcript;fin=x;
         if(!intr&&words(x).length>=2&&!isEcho(x,t)){intr=true;speaking=false;try{speechSynthesis.cancel();}catch(_){}mic.classList.add("on");}};
-      br.onerror=()=>{};br.onend=()=>{br=null;if(intr){mic.classList.remove("on");const q=fin.trim();if(q)ask(q);else again();}else if(speaking)setTimeout(startBarge,150);};
+      br.onerror=()=>{};br.onend=()=>{br=null;if(intr){mic.classList.remove("on");const q=fixWords(fin.trim());if(q)ask(q);else again();}else if(speaking)setTimeout(startBarge,150);};
       br.start();}catch(e){br=null;}};
     say(t,()=>{speaking=false;if(intr)return;try{br&&br.abort();}catch(_){}setTimeout(again,br?250:0);});
     setTimeout(startBarge,700);}   // small delay so it doesn't hear its own first words
@@ -3451,7 +3451,7 @@ body.hxA #hxTalk{display:none!important}
     try{const r=await S(prompt,{cache:false,modelTier:"quick",onText:({text})=>{a.textContent=text;T.scrollTop=T.scrollHeight;}});a.textContent=(r.text||a.textContent).replace(/\n?ACTION:[^\n]*$/,"").trim();sayB(a.textContent);}
     catch(e){a.textContent=e&&e.code==="not_granted"?"I need your OK to use Claude on this page. Allow it and try again.":e&&e.code==="rate_limited"?"Too many questions at once, give me a second.":"I couldn't answer just now.";convo=false;}
     busy=false;}
-  f.onsubmit=e=>{e.preventDefault();const q=inp.value;inp.value="";ask(q);};
+  f.onsubmit=e=>{e.preventDefault();const q=fixWords(inp.value);inp.value="";ask(q);};
   // CONVERSATION MODE (Oct 28): one click on 🎙️ = keep talking. After each answer it listens again by itself.
   // Stop: say "stop" / "bye" / "that's all" / "thank you", click 🎙️ again, press Esc, or close the panel.
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,convo=false;
@@ -3463,19 +3463,52 @@ body.hxA #hxTalk{display:none!important}
     if(GH){try{await fetch(HELPER+"/close",{method:"POST"});}catch(e){}}}
   const dict=()=>{log.append(mk("p","a","🎙️ Your Mac can listen for me: click the box below, start Dictation (🌐/Fn twice on the Mac keyboard, or the Dictation shortcut you set), talk, then press Enter. I'll answer out loud."));T.scrollTop=T.scrollHeight;inp.focus();};
   function again(){if(convo&&!T.hidden)setTimeout(listen,350);}
-  function endConvo(){try{asst(false);}catch(e){}convo=false;if(rec){try{rec.abort();}catch(e){}}rec=null;mic.classList.remove("on");}
+  function endConvo(){try{asst(false);}catch(e){}convo=false;try{if(wrec&&wrec.state==="recording")wrec.stop();}catch(e){}if(rec){try{rec.abort();}catch(e){}}rec=null;mic.classList.remove("on");}
   cx.addEventListener("click",endConvo);
-  function listen(){if(!convo||rec)return;
-    rec=new SR();rec.lang=LANG==="es"?"es-US":"en-US";rec.interimResults=true;rec.maxAlternatives=1;let fin="";
+  // 🔤 #2 NAME FIXER (Oct 28): words the listener often gets wrong -> the right ones
+  const FIXES=[[/\b(sub|sob|soup|so) ?(hefe|heffe|hefa|hey fay|hay fay|jeff[ae]?|chef|jay|jefa|j[eé]fe|haffe)\b/gi,"SubJefe"],[/\bsubject\b(?= (agent|folder|report|run))/gi,"SubJefe"],
+    [/\b(mr|mister|mr\.)\s*(mine|mined|minds|mint|mynd|mind's)\b/gi,"Mr. Mind"],[/\bmaster mind\b/gi,"Mr. Mind"],[/\b(dar see|darcy|d arcy|dharsi|darsey|dorsey)\b/gi,"D'Arcy"],
+    [/\b(roll ?heiser|roll ?hiser|rolle?heizer|roll ?heisser|rollheiser)\b/gi,"Rolheiser"],[/\b(kay|k|kaye) (murphy|mur dee|murdie|murty|merdy)\b/gi,"Kay Murdy"],
+    [/\b(redemption|redemptive|redempt io)\b(?= (app|book|books|sheet|month|list))/gi,"Redemptio"],[/\bre ?demptio\b/gi,"Redemptio"],[/\b(pretty|preity|preeti|pre[ -]?thee)\b(?=('s| said| say| says| asked| wants| meeting| call| message|$))/gi,"Preethi"],
+    [/\b(lake|ligouri|liguory|ligori|liguria)\b(?= (publications|books))/gi,"Liguori"],[/\b(audio ?book|audible) agent\b/gi,"Audiobook Agent"],[/\b(web|wen) (scout|scouts|scoot)\b/gi,"Web Scout"],
+    [/\b(check ?in|chicken)\b(?= agent)/gi,"Check-in"],[/\bthe spy ?der\b/gi,"the spider"],[/\bh ?q\b/gi,"HQ"],[/\bhidden graces?\b/gi,"Hidden Graces"],[/\bday ?breaks?\b/gi,"Daybreaks"]];
+  const fixWords=t=>{let x=String(t||"");FIXES.forEach(([r,v])=>{x=x.replace(r,v);});return x.replace(/\s+/g," ").trim();};
+  // 🎯 #3 BEST OF 5: the listener gives 5 guesses; pick the one that matches HQ's own words best
+  const VOC=["mr. mind","subjefe","audiobook","check-in","school","spider","floor","office","team","workers","tasks","reports","fixes","problems","books","audiobooks","approve","decline","reminder","folder","open","show","talk","close","bye","stop","english","spanish","november","d'arcy","rolheiser","murdy","preethi","wendy","kathy","redemptio","hidden graces","equipo","tareas","carpeta","muéstrame","habla","adiós"];
+  const vscore=t=>{const x=fixWords(t).toLowerCase();return VOC.reduce((n,w)=>n+(x.includes(w)?2:0),0);};
+  function bestAlt(res){let best=res[0].transcript,bs=-1;for(let k=0;k<res.length;k++){const tr=res[k].transcript,sc=vscore(tr)+(res[k].confidence||0)+(k===0?.5:0);if(sc>bs){bs=sc;best=tr;}}return best;}
+  // what to do with what Stick said (shared by Chrome listening and Whisper)
+  function heard(q0,live){OS="idle";const q=fixWords(q0);
+    if(!q){if(convo)asst(false);if(live&&live.isConnected)live.remove();if(convo){convo=false;log.append(mk("p","a","(Stopped listening. Click 🎙️ or press M to talk again.)"));T.scrollTop=T.scrollHeight;}return;}
+    if(live)live.remove();if(BYE.test(q)&&q.split(/\s+/).length<=7){convo=false;log.append(mk("p","y","You: "+q));HIST=[];say(LANG==="es"?"Adiós Stick, hablamos luego.":"Bye Stick, talk soon.",closeApp);return;}
+    if(STOP.test(q)){convo=false;log.append(mk("p","y","You: "+q));capAns(LANG==="es"?"Aquí estoy si me necesitas.":"Okay, I'm here if you need me.");say(LANG==="es"?"Aquí estoy si me necesitas.":"Okay, I'm here if you need me.",()=>asst(false));return;}ask(q);}
+  // 🎧 #4 WHISPER (Oct 28): record the sentence, the Mac helper's Whisper writes it down (English or Spanish, picks by itself)
+  let wrec=null;
+  async function listenW(){if(!convo||rec||wrec)return;await micLevel();if(!MS||!an){HELPW=false;return listen();}
+    const live=mk("p","y","🎙️ Listening…");log.append(live);T.scrollTop=T.scrollHeight;mic.classList.add("on");OS="listen";asst(true);capYou("");
+    const mt=["audio/webm;codecs=opus","audio/webm","audio/mp4"].find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported(m))||"";
+    let mr;try{mr=new MediaRecorder(MS,mt?{mimeType:mt}:{});}catch(e){HELPW=false;live.remove();return listen();}
+    const parts=[];mr.ondataavailable=e=>{if(e.data&&e.data.size)parts.push(e.data);};
+    let started=false,quietSince=0,t0=performance.now(),above=0;const TH=.045;
+    const iv=setInterval(()=>{if(!convo){stop(true);return;}an.getByteTimeDomainData(abuf);let sm=0;for(const v of abuf){const x=(v-128)/128;sm+=x*x;}const r=Math.sqrt(sm/abuf.length),now=performance.now();
+      if(r>TH){above++;if(above>=3&&!started){started=true;capYou("…");}quietSince=0;}else{above=0;if(started&&!quietSince)quietSince=now;}
+      if(started&&quietSince&&now-quietSince>900)stop(false);else if(!started&&now-t0>7000)stop(true);else if(now-t0>20000)stop(false);},50);
+    let done=false;function stop(empty){if(done)return;done=true;clearInterval(iv);mic.classList.remove("on");wrec=null;
+      mr.onstop=async()=>{if(empty||!started){heard("",live);return;}OS="think";live.textContent="🎧 …";
+        try{const blob=new Blob(parts,{type:mr.mimeType||"audio/webm"});const r=await fetch(HELPER+"/stt",{method:"POST",headers:{"Content-Type":blob.type},body:blob});const j=await r.json();
+          if(j.lang&&j.lang!==LANG&&j.text){LANG=j.lang;try{localStorage.setItem("hxLang",LANG);}catch(_){}VO=null;voices();lb.textContent=LANG==="es"?"ES":"EN";}
+          if(j.text)capYou(fixWords(j.text));heard(j.text||"",live);}catch(e){live.textContent="(Whisper didn't answer, using Chrome listening)";HELPW=false;listen();}};
+      try{mr.stop();}catch(e){heard("",live);}}
+    wrec=mr;mr.start();}
+  function listen(){if(HELPW&&GH)return listenW();if(!convo||rec)return;
+    rec=new SR();rec.lang=LANG==="es"?"es-US":"en-US";rec.interimResults=true;rec.maxAlternatives=5;let fin="";
     const live=mk("p","y","🎙️ Listening…");log.append(live);T.scrollTop=T.scrollHeight;mic.classList.add("on");OS="listen";micLevel();asst(true);
-    rec.onresult=e=>{let t="";for(const r of e.results)t+=r[0].transcript;fin=t;live.textContent="🎙️ "+t;capYou(t);};
+    rec.onresult=e=>{let t="";for(const r of e.results)t+=(r.isFinal?bestAlt(r):r[0].transcript);fin=t;live.textContent="🎙️ "+fixWords(t);capYou(fixWords(t));};
     rec.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed"||e.error==="audio-capture"){live.remove();try{localStorage.setItem("hxMicBlocked","1");}catch(_){}endConvo();dict();}
       else if(e.error==="no-speech"){live.remove();}else live.textContent="I didn't catch that.";};
-    rec.onend=()=>{rec=null;mic.classList.remove("on");const q=fin.trim();
-      if(!q){OS="idle";if(convo)asst(false);if(live.isConnected)live.remove();if(convo){convo=false;log.append(mk("p","a","(Stopped listening. Click 🎙️ or press M to talk again.)"));T.scrollTop=T.scrollHeight;}return;}
-      live.remove();if(BYE.test(q)&&q.split(/\s+/).length<=7){convo=false;log.append(mk("p","y","You: "+q));HIST=[];say(LANG==="es"?"Adiós Stick, hablamos luego.":"Bye Stick, talk soon.",closeApp);return;}
-      if(STOP.test(q)){convo=false;log.append(mk("p","y","You: "+q));capAns(LANG==="es"?"Aquí estoy si me necesitas.":"Okay, I'm here if you need me.");say(LANG==="es"?"Aquí estoy si me necesitas.":"Okay, I'm here if you need me.",()=>asst(false));return;}ask(q);};
+    rec.onend=()=>{rec=null;mic.classList.remove("on");heard(fin.trim(),live);};
     try{rec.start();}catch(e){rec=null;mic.classList.remove("on");}}
+  try{ping();}catch(e){}
   mic.onclick=()=>{if(T.hidden)ping();T.hidden=false;
     let blocked=false;try{blocked=localStorage.getItem("hxMicBlocked")==="1";}catch(e){}
     if(!SR||blocked){dict();return;}
