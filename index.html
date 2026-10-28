@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v73";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v74";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3298,11 +3298,16 @@ body.hxA #hxTalk{display:none!important}
   const lb=mk("button",null,"EN");lb.type="button";lb.title="English / Español";lb.style.cssText="margin-right:6px;border:1px solid #38bdf8;border-radius:6px;background:#082f49;color:#e0f2fe;font:700 11px system-ui;padding:3px 7px;cursor:pointer";
   lb.onclick=()=>{const t=setLang(LANG==="es"?"en":"es");say(t);};hd.insertBefore(lb,vsel);setTimeout(()=>{lb.textContent=LANG==="es"?"ES":"EN";},0);
   let MACSAY=false;try{const _c=speechSynthesis.cancel.bind(speechSynthesis);speechSynthesis.cancel=()=>{_c();if(MACSAY){MACSAY=false;try{fetch("http://127.0.0.1:8765/hush",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"});}catch(e){}}};}catch(e){}
-  const say=(t,done)=>{try{speechSynthesis.cancel();const tx=t.replace(/[*#_`>|]/g,"").replace(/\p{Extended_Pictographic}/gu,"").replace(/\s\.\.\.\s/g,". ");const u=new SpeechSynthesisUtterance(tx);if(VO)u.voice=VO;u.rate=1;u.pitch=1;OS="speak";boost=1;u.onboundary=()=>{boost=1;};
+  let SAYID=0;
+  const say=(t,done)=>{try{speechSynthesis.cancel();const my=++SAYID;const tx=t.replace(/[*#_`>|]/g,"").replace(/\p{Extended_Pictographic}/gu,"").replace(/\s\.\.\.\s/g,". ");
+    const parts=(tx.match(/[^.!?]+[.!?]*\s*/g)||[tx]).reduce((a,p)=>{const l=a[a.length-1];if(l!==undefined&&(l+p).length<170)a[a.length-1]=l+p;else a.push(p);return a;},[]).map(x=>x.trim()).filter(Boolean);
     let fired=false,started=false;const fin=()=>{if(!fired){fired=true;MACSAY=false;OS="idle";done&&done();}};
-    const mac=()=>{if(started||fired)return;started=true;let ok=false;try{ok=(typeof HELP!=="undefined"&&HELP);}catch(e){}if(!ok){fin();return;}try{speechSynthesis.cancel();}catch(e){}MACSAY=true;OS="speak";const H="http://127.0.0.1:8765",J={method:"POST",headers:{"Content-Type":"application/json"}};
+    const mac=()=>{if(started||fired||my!==SAYID)return;started=true;let ok=false;try{ok=(typeof HELP!=="undefined"&&HELP);}catch(e){}if(!ok){fin();return;}try{speechSynthesis.cancel();}catch(e){}MACSAY=true;OS="speak";const H="http://127.0.0.1:8765",J={method:"POST",headers:{"Content-Type":"application/json"}};
       fetch(H+"/say",{...J,body:JSON.stringify({text:tx,lang:(typeof LANG!=="undefined"?LANG:"en")})}).then(()=>{const poll=()=>{if(fired)return;fetch(H+"/saying",{...J,body:"{}"}).then(r=>r.json()).then(j=>{if(j.on&&!fired)setTimeout(poll,350);else fin();}).catch(fin);};setTimeout(poll,700);}).catch(fin);};
-    u.onstart=()=>{started=true;};u.onend=fin;u.onerror=()=>{if(!started)mac();else fin();};speechSynthesis.speak(u);setTimeout(()=>{if(!started)mac();},1500);}catch(e){done&&done();}};
+    const one=i=>{if(fired||my!==SAYID)return;if(i>=parts.length){fin();return;}const u=new SpeechSynthesisUtterance(parts[i]);if(VO)u.voice=VO;u.rate=1;u.pitch=1;OS="speak";boost=1;u.onboundary=()=>{boost=1;};
+      u.onstart=()=>{started=true;};u.onend=()=>{if(my===SAYID)one(i+1);};
+      u.onerror=e=>{if(my!==SAYID)return;const er=(e&&e.error)||"";if(!started)mac();else if(er==="interrupted"||er==="canceled")fin();else one(i+1);};speechSynthesis.speak(u);};
+    if(!parts.length){fin();return;}one(0);setTimeout(()=>{if(!started&&my===SAYID)mac();},1500);}catch(e){done&&done();}};
   const liveNow=()=>{const X=window.__HQX;if(!X)return{};let H={},I=[],F=[];try{H=X.h()||{};I=X.i()||[];F=X.f()||[];}catch(e){}
     const td=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",timeZone:"America/Chicago"});
     const fixedToday=I.filter(x=>/DONE|COMPLETED/i.test(x.status||"")&&String(x.doneAt||"").startsWith(td)).map(x=>(x.plain||x.title||x.id)+(x.doneNote?" → FIXED: "+x.doneNote:" → FIXED"));
@@ -3383,14 +3388,23 @@ body.hxA #hxTalk{display:none!important}
   const histText=()=>HIST.length?"\nCONVERSATION SO FAR (oldest first):\n"+HIST.slice(-6).map(h=>"Stick: "+h.q+"\n"+(TALKTO?TALKTO.name:"You")+": "+h.a).join("\n")+"\n":"";
   // ✋ #2 INTERRUPT (Oct 28): while it talks, it keeps listening; if Stick starts talking it stops and takes the new question
   const words=x=>x.toLowerCase().replace(/[^a-záéíóúñü0-9' ]/g," ").split(/\s+/).filter(Boolean);
-  const isEcho=(x,t)=>{const W=words(x),T=new Set(words(t));if(!W.length)return true;return W.filter(w=>T.has(w)).length/W.length>=.6;};
+  const isEcho=(x,t)=>{const W=words(x),T=new Set(words(t));if(!W.length)return true;return W.filter(w=>T.has(w)).length/W.length>=.45;};
   function sayB(t){try{capAns(t);}catch(e){}HIST.push({q:LASTQ,a:t});if(HIST.length>12)HIST.shift();
-    if(!convo||!SR){say(t,again);return;}
-    let intr=false,speaking=true,br=null,fin="";
-    const startBarge=()=>{if(!speaking||intr)return;try{br=new SR();br.lang=LANG==="es"?"es-US":"en-US";br.interimResults=true;
+    if(!convo){say(t,again);return;}
+    let intr=false,speaking=true,br=null,fin="",loudAt=-1e9;
+    const stopTalk=q=>{if(intr)return;intr=true;speaking=false;try{speechSynthesis.cancel();}catch(_){}try{br&&br.abort();}catch(_){}
+      if(q){ask(fixWords(q));}else{mic.classList.add("on");setTimeout(()=>{mic.classList.remove("on");listen();},150);}};
+    // 1) MIC LOUDNESS: its own voice leaking into the mic sets a moving baseline; Stick talking is much louder -> stop and listen
+    micLevel().then(()=>{if(!an)return;const win=[];let hot=0;const iv=setInterval(()=>{if(!speaking||intr){clearInterval(iv);return;}
+      an.getByteTimeDomainData(abuf);let sm=0;for(const v of abuf){const x=(v-128)/128;sm+=x*x;}const r=Math.sqrt(sm/abuf.length);
+      const srt=win.slice().sort((a,c)=>a-c),b=srt.length?srt[Math.floor(srt.length*.8)]:0,th=Math.max(.06,b*2.6);
+      if(win.length>=12&&r>th){hot++;loudAt=performance.now();}else{hot=Math.max(0,hot-1);win.push(r);if(win.length>40)win.shift();}
+      if(hot>=8)stopTalk("");},50);});
+    // 2) Chrome word-listening: only counts when the mic was really loud just now (so it can't stop on its own voice)
+    const startBarge=()=>{if(!SR||!speaking||intr)return;try{br=new SR();br.lang=LANG==="es"?"es-US":"en-US";br.interimResults=true;
       br.onresult=e=>{let x="";for(const r of e.results)x+=r[0].transcript;fin=x;
-        if(!intr&&words(x).length>=2&&!isEcho(x,t)){intr=true;speaking=false;try{speechSynthesis.cancel();}catch(_){}mic.classList.add("on");}};
-      br.onerror=()=>{};br.onend=()=>{br=null;if(intr){mic.classList.remove("on");const q=fixWords(fin.trim());if(q)ask(q);else again();}else if(speaking)setTimeout(startBarge,150);};
+        if(!intr&&words(x).length>=2&&!isEcho(x,t)&&(performance.now()-loudAt<1500||!an)&&(an||words(x).length>=3)){intr=true;speaking=false;try{speechSynthesis.cancel();}catch(_){}mic.classList.add("on");}};
+      br.onerror=()=>{};br.onend=()=>{br=null;if(intr&&fin){mic.classList.remove("on");const q=fixWords(fin.trim());if(q)ask(q);else again();}else if(speaking)setTimeout(startBarge,150);};
       br.start();}catch(e){br=null;}};
     say(t,()=>{speaking=false;if(intr)return;try{br&&br.abort();}catch(_){}setTimeout(again,br?250:0);});
     setTimeout(startBarge,700);}   // small delay so it doesn't hear its own first words
