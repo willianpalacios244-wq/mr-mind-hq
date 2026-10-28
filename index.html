@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v66";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v67";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3186,6 +3186,13 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
 #hxAsst .ans{min-height:30px;max-width:min(820px,88vw);text-align:center;font:500 clamp(18px,2.2vw,26px)/1.4 -apple-system,system-ui,sans-serif;color:#f8fafc;text-shadow:0 2px 18px rgba(0,0,0,.6)}
 #hxAsst .hint{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-size:12px;color:rgba(148,163,184,.75)}
 #hxAsst .x{position:absolute;top:14px;right:18px;background:none;border:0;color:#94a3b8;font-size:22px;cursor:pointer}
+body.hxA #hxTalk{display:none!important}
+#hxAsst.mini{inset:auto;left:24px;bottom:130px;width:360px;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;gap:6px;pointer-events:none}
+#hxAsst.mini .hud,#hxAsst.mini .top,#hxAsst.mini .hint,#hxAsst.mini .x{display:none}
+#hxAsst.mini canvas.siri{width:150px;height:150px;pointer-events:auto;cursor:pointer;filter:drop-shadow(0 6px 22px rgba(0,0,0,.6))}
+#hxAsst.mini .you{font-size:12px;min-height:0}
+#hxAsst.mini .ans{font-size:14px;line-height:1.4;min-height:0;background:rgba(2,6,23,.82);border:1px solid rgba(56,189,248,.35);padding:8px 12px;border-radius:12px;max-width:340px}
+#hxAsst.mini .ans:empty{display:none}
 #hxMic.on{animation:hxPulse 1s ease-in-out infinite;background:radial-gradient(circle,#f97316,#7c2d12);border-color:#fb923c}
 @keyframes hxPulse{50%{box-shadow:0 0 34px #f97316}}
 #hxTalk{position:fixed;right:84px;top:232px;z-index:8000;width:min(380px,calc(100vw - 44px));max-height:50vh;overflow:auto;background:#0b1220ee;color:#e2e8f0;border:1px solid #38bdf8;border-radius:14px;padding:12px 14px;font:14px/1.45 system-ui;box-shadow:0 10px 40px rgba(0,0,0,.5)}
@@ -3322,7 +3329,8 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     let best=null;W.forEach(w=>{const nm=(w.name||"").toLowerCase(),lk=(w.look||w.id||"").toLowerCase();const keys=[nm,...(al[lk]||[]),...(nm.split(/\s+/).filter(x=>x.length>3))];if(keys.some(k=>k&&n.includes(k)))best=best||w;});return best;}
   function setLang(l){LANG=l;try{localStorage.setItem("hxLang",l);}catch(e){}VO=null;voices();lb.textContent=l==="es"?"ES":"EN";return l==="es"?"Listo, ahora hablamos en español.":"Okay, back to English.";}
   function nav(q){const n=" "+q.toLowerCase().replace(/[.,!?]/g," ").replace(/\s+/g," ")+" ",U=window.__HQX&&window.__HQX.ui;if(!U)return null;
-    const has=(...w)=>w.some(x=>n.includes(x)),go=(f,t)=>{try{f();}catch(e){}return t;};
+    const has=(...w)=>w.some(x=>n.includes(x)),go=(f,t)=>{try{f();}catch(e){}try{setMini(true);}catch(e){}return t;};
+    if(has(" full screen"," come back"," big screen"," pantalla completa"," regresa al centro"," back to you")&&q.split(/\s+/).length<=5){setMini(false);return LANG==="es"?"Aquí estoy.":"I'm here.";}
     // language switch
     // English listening often hears "habla en español" as "I blend Espanol" etc. -> any "spanish"/"espa..." word switches (short phrases only)
     const short=q.split(/\s+/).length<=6;
@@ -3331,14 +3339,14 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     const ES=LANG==="es",T2=(en,es)=>ES?es:en;
     const open1=(f,t)=>go(()=>{U.close();setTimeout(f,120);},t);   // only one window at a time (Stick, Oct 28)
     if(TALKTO&&has(" back to mr mind"," back to mister mind"," stop talking to"," talk to mr mind"," talk to mister mind"," done talking"," regresa"," volver con"," con mr mind"," con mister mind")){const w=TALKTO;TALKTO=null;md.textContent="";mode();return T2("Okay, back to me. "+w.name+" is back at work.","Listo, de vuelta conmigo. "+w.name+" regresó a trabajar.");}
-    if(has(" close "," close it"," close that"," close the window"," close everything"," hide it"," cierra"," cerrar"," ciérralo")&&q.split(/\s+/).length<=5)return go(U.close,T2("Closed.","Cerrado."));
+    if(has(" close "," close it"," close that"," close the window"," close everything"," hide it"," cierra"," cerrar"," ciérralo")&&q.split(/\s+/).length<=5){try{U.close();}catch(e){}setMini(false);return T2("Closed.","Cerrado.");}
     if(has(" spider"," attic"," araña"," arana"," ático"," atico"))return go(()=>{U.close();U.floor(3);setTimeout(U.spider,450);},T2("Going up to the attic to see the Spider.","Subiendo al ático a ver a la Araña."));
     if(has(" my floor"," my office"," floor two"," floor 2"," second floor"," upstairs"," mi piso"," mi oficina"," segundo piso"," arriba"))return go(()=>{U.close();U.floor(2);},T2("Here's your floor.","Aquí está tu piso."));
     if(has(" floor one"," floor 1"," first floor"," downstairs"," team floor"," workers floor"," primer piso"," abajo"," piso uno"))return go(()=>{U.close();U.floor(1);},T2("Here's the team floor.","Aquí está el piso del equipo."));
     const fo=n.match(/ (?:open|show me|show|abre|abrir|muéstrame|muestrame) (?:the |my |la |el |mi )?(?:folder|carpeta) (?:for |of |de |del |de la )?(.+?) ?$/)||n.match(/ (?:open|abre|show me|show|pull up|let me see) (?:the |my |la |el |mi )?(.+?) (?:folder|carpeta) ?$/);
-    if(fo&&GH){const name=fo[1].trim();fetch(HELPER+"/do",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"open_folder",text:name})}).then(r=>r.json()).then(j=>{const m=mk("p","a",j.text||"");log.append(m);say(j.text||"");T.scrollTop=T.scrollHeight;}).catch(()=>{});return T2("Opening the "+name+" folder…","Abriendo la carpeta "+name+"…");}
+    if(fo&&GH){setMini(true);const name=fo[1].trim();fetch(HELPER+"/do",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"open_folder",text:name})}).then(r=>r.json()).then(j=>{const m=mk("p","a",j.text||"");log.append(m);say(j.text||"");T.scrollTop=T.scrollHeight;}).catch(()=>{});return T2("Opening the "+name+" folder…","Abriendo la carpeta "+name+"…");}
     const talk=n.match(/ (?:talk|speak|chat) (?:to|with) (.+)$/)||n.match(/^ ?(?:ask|let me talk to|i want to talk to|habla con|hablar con|quiero hablar con|pásame a|pasame a) (.+)$/);
-    if(talk){const w=findWorker(talk[1]);if(w){TALKTO=w;HIST=[];U.close();setTimeout(()=>{try{U.worker(w.id);}catch(e){}},120);md.textContent="🗣️ "+T2("talking to ","hablando con ")+w.name;return T2(w.name+" here. What do you need?",w.name+" aquí. ¿Qué necesitas?");}}
+    if(talk){const w=findWorker(talk[1]);if(w){TALKTO=w;HIST=[];U.close();setMini(true);setTimeout(()=>{try{U.worker(w.id);}catch(e){}},120);md.textContent="🗣️ "+T2("talking to ","hablando con ")+w.name;return T2(w.name+" here. What do you need?",w.name+" aquí. ¿Qué necesitas?");}}
     if(has(" workers"," my team"," the team"," my agents"," all agents"," team "," mi equipo"," el equipo"," trabajadores"," mis agentes"))return go(()=>{U.close();U.floor(1);setTimeout(U.team,300);},T2("Here's your team.","Aquí está tu equipo."));
     if(has(" show ", " open ", " let me see ", " see ", " pull up ", " go to ", " muéstrame"," muestrame"," abre "," enséñame"," ensename"," quiero ver"," ver mis"," ver mi"," ver los"," ver el")){
       const w=findWorker(n);if(w)return open1(()=>U.worker(w.id),T2("Here's ","Aquí está ")+w.name+".");
@@ -3379,27 +3387,36 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   const yo=mk("div","you",""),an2=mk("div","ans",""),hint=mk("div","hint","Talk any time · say “stop” to pause · “bye” to close · Esc"),ax=mk("button","x","✕");ax.type="button";
   AS.append(hud,top,sir,yo,an2,hint,ax);document.body.append(AS);
   ax.onclick=()=>{endConvo();try{speechSynthesis.cancel();}catch(e){}};AS.addEventListener("click",e=>{if(e.target===AS){endConvo();try{speechSynthesis.cancel();}catch(_){}}});
-  function asst(on){AS.classList.toggle("on",!!on);if(on){yo.textContent="";an2.textContent="";}}
+  function asst(on){AS.classList.toggle("on",!!on);document.body.classList.toggle("hxA",!!on);if(on){yo.textContent="";an2.textContent="";}else AS.classList.remove("mini");}
+  // Stick (Oct 28): when a voice command opens or moves something, the assistant shrinks to a small orb in the corner so he can see it
+  function setMini(m){AS.classList.toggle("mini",!!m);}
+  sir.addEventListener("click",e=>{if(AS.classList.contains("mini")){e.stopPropagation();setMini(false);}});
   const capYou=t=>{yo.textContent=t?("“"+t+"”"):"";},capAns=t=>{an2.textContent=t||"";};
-  // Siri-like orb: glowing fluid blobs (pink, cyan, purple, blue; orange-gold when it talks) mixed with light, inside a glass sphere
-  const BL=[{c:[255,45,149],sp:.9,ph:0},{c:[0,229,255],sp:1.1,ph:2},{c:[124,58,237],sp:.7,ph:4},{c:[59,130,246],sp:1.3,ph:1},{c:[16,185,129],sp:.8,ph:3}];
-  const SPK=[[249,115,22],[251,191,36],[244,63,94],[236,72,153],[168,85,247]];
-  let sl=0;
+  // 🧠 MR. MIND CORE (Oct 28, our own design): a glowing energy core inside a rotating 3D "neural net" sphere.
+  // Points + links breathe with the voice; colors: cyan listening, violet thinking, amber/magenta answering, soft teal idle.
+  const NP=110,PTS=[],LINKS=[];for(let i=0;i<NP;i++){const y=1-(i/(NP-1))*2,r=Math.sqrt(1-y*y),th=i*2.399963;PTS.push([Math.cos(th)*r,y,Math.sin(th)*r]);}
+  for(let a=0;a<NP;a++)for(let b=a+1;b<NP;b++){const d=Math.hypot(PTS[a][0]-PTS[b][0],PTS[a][1]-PTS[b][1],PTS[a][2]-PTS[b][2]);if(d<.36)LINKS.push([a,b]);}
+  const PAL={idle:[[45,212,191],[56,189,248]],listen:[[34,211,238],[59,130,246]],think:[[168,85,247],[99,102,241]],speak:[[251,146,60],[236,72,153]]};
+  let pc=[[45,212,191],[56,189,248]],sl=0;
   function drawSiri(ts){requestAnimationFrame(drawSiri);if(!AS.classList.contains("on"))return;const t=ts/1000,g=sir.getContext("2d"),W=sir.width,cx=W/2,cy=W/2;
-    sl+=((lvl||0)-sl)*.2;const R=W*.27*(1+sl*.28);g.clearRect(0,0,W,W);
-    // outer aura
-    const au=g.createRadialGradient(cx,cy,R*.6,cx,cy,R*1.9);au.addColorStop(0,"rgba(99,102,241,.35)");au.addColorStop(1,"rgba(99,102,241,0)");g.fillStyle=au;g.beginPath();g.arc(cx,cy,R*1.9,0,7);g.fill();
-    g.save();g.beginPath();g.arc(cx,cy,R,0,7);g.clip();g.fillStyle="rgba(10,8,40,.9)";g.fillRect(0,0,W,W);g.globalCompositeOperation="lighter";
-    BL.forEach((b,i)=>{const col=OS==="speak"?SPK[i]:OS==="think"?[168,85,247]:b.c;const a=t*b.sp+b.ph,rr=R*(.62+.22*Math.sin(t*1.7+i)+sl*.35);
-      const x=cx+Math.cos(a)*R*(.3+.12*Math.sin(t+i)),y=cy+Math.sin(a*1.2)*R*(.3+.12*Math.cos(t*.8+i));
-      const gr=g.createRadialGradient(x,y,0,x,y,rr);gr.addColorStop(0,`rgba(${col},.95)`);gr.addColorStop(.55,`rgba(${col},.55)`);gr.addColorStop(1,`rgba(${col},0)`);g.fillStyle=gr;g.beginPath();g.arc(x,y,rr,0,7);g.fill();});
-    g.globalCompositeOperation="source-over";
-    // glass shine
-    const sh=g.createRadialGradient(cx-R*.35,cy-R*.45,0,cx-R*.35,cy-R*.45,R*.9);sh.addColorStop(0,"rgba(255,255,255,.35)");sh.addColorStop(.4,"rgba(255,255,255,.06)");sh.addColorStop(1,"rgba(255,255,255,0)");g.fillStyle=sh;g.fillRect(0,0,W,W);g.restore();
-    g.lineWidth=3;g.strokeStyle="rgba(255,255,255,.18)";g.beginPath();g.arc(cx,cy,R,0,7);g.stroke();
-    // Siri waveform under the orb
-    const wy=cy+R*1.38;["rgba(236,72,153,.85)","rgba(34,211,238,.85)","rgba(167,139,250,.85)"].forEach((c,k)=>{g.beginPath();g.lineWidth=4;g.strokeStyle=c;
-      for(let x=-R*1.3;x<=R*1.3;x+=6){const env=Math.cos(x/(R*1.3)*Math.PI/2)**2,yv=Math.sin(x/38+t*(5+k)+k*2)*env*(6+sl*70)*(1-k*.2);g.lineTo(cx+x,wy+yv);}g.stroke();});}
+    sl+=((lvl||0)-sl)*.2;const tp=PAL[OS]||PAL.idle;pc=pc.map((c,k)=>c.map((v,i)=>v+(tp[k][i]-v)*.06));const C1=pc[0].map(Math.round),C2=pc[1].map(Math.round);
+    const R=W*.3*(1+sl*.18),spin=OS==="think"?1.6:.35;g.clearRect(0,0,W,W);
+    // aura
+    const au=g.createRadialGradient(cx,cy,R*.2,cx,cy,R*1.6);au.addColorStop(0,`rgba(${C2},.28)`);au.addColorStop(1,`rgba(${C2},0)`);g.fillStyle=au;g.beginPath();g.arc(cx,cy,R*1.6,0,7);g.fill();
+    // rotate + project the net
+    const ay=t*spin,ax=.45+Math.sin(t*.3)*.25,cyA=Math.cos(ay),syA=Math.sin(ay),cxA=Math.cos(ax),sxA=Math.sin(ax);
+    const P=PTS.map((p,i)=>{const n=1+sl*.55*Math.sin(t*6+i*1.7)+.03*Math.sin(t*2+i);let x=p[0]*n,y=p[1]*n,z=p[2]*n;
+      const x1=x*cyA+z*syA,z1=-x*syA+z*cyA,y1=y*cxA-z1*sxA,z2=y*sxA+z1*cxA,s=1/(1.9-z2*.6);return [cx+x1*R*s*1.25,cy+y1*R*s*1.25,z2];});
+    g.lineWidth=1.6;LINKS.forEach(([a,b])=>{const z=(P[a][2]+P[b][2])/2,al=.08+(z+1)*.22;g.strokeStyle=`rgba(${C1},${al.toFixed(3)})`;g.beginPath();g.moveTo(P[a][0],P[a][1]);g.lineTo(P[b][0],P[b][1]);g.stroke();});
+    P.forEach((q,i)=>{const z=q[2],r=2+(z+1)*2.2+sl*3*((i%7)===0);g.fillStyle=`rgba(${(i%5)?C1:C2},${(.35+(z+1)*.32).toFixed(3)})`;g.beginPath();g.arc(q[0],q[1],r,0,7);g.fill();});
+    // energy core
+    const cr=R*(.34+sl*.22+.03*Math.sin(t*3));const co=g.createRadialGradient(cx,cy,0,cx,cy,cr*1.8);co.addColorStop(0,"rgba(255,255,255,.95)");co.addColorStop(.25,`rgba(${C1},.9)`);co.addColorStop(.6,`rgba(${C2},.35)`);co.addColorStop(1,`rgba(${C2},0)`);
+    g.fillStyle=co;g.beginPath();g.arc(cx,cy,cr*1.8,0,7);g.fill();
+    // segmented outer ring (spins faster while thinking) + level arc
+    const segs=48;for(let k=0;k<segs;k++){const a0=k/segs*Math.PI*2+t*(OS==="think"?1.2:.25),on=(k%3)!==0;g.strokeStyle=`rgba(${C1},${on?.55:.15})`;g.lineWidth=5;g.beginPath();g.arc(cx,cy,R*1.32,a0,a0+Math.PI*2/segs*.6);g.stroke();}
+    g.strokeStyle=`rgba(${C2},.9)`;g.lineWidth=6;g.lineCap="round";g.beginPath();g.arc(cx,cy,R*1.42,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.min(1,.08+sl*1.2));g.stroke();g.lineCap="butt";
+    // voice bars under it
+    const by=cy+R*1.6,nb=29;for(let k=0;k<nb;k++){const d=Math.abs(k-(nb-1)/2)/((nb-1)/2),h=6+(1-d)*(10+sl*90)*(.55+.45*Math.abs(Math.sin(t*7+k*.9)));g.fillStyle=`rgba(${k%2?C1:C2},${(.85-d*.5).toFixed(2)})`;g.fillRect(cx+(k-(nb-1)/2)*16-4,by-h/2,8,h);}}
   requestAnimationFrame(drawSiri);
   // HUD lines (Jarvis feel): rotating rings + ticks around the orb
   function drawHud(ts){requestAnimationFrame(drawHud);if(!AS.classList.contains("on"))return;const W=hud.width=innerWidth,H=hud.height=innerHeight,g=hud.getContext("2d"),t=ts/1000,cx=W/2,cy=H/2-60,R=Math.min(W,H)*.33;
