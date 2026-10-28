@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v62";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v63";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3252,12 +3252,14 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   let LANG="en";try{LANG=localStorage.getItem("hxLang")||"en";}catch(e){}
   let VO=null;const vsel=document.createElement("select");vsel.title="Voice";vsel.setAttribute("aria-label","Voice");vsel.style.cssText="max-width:150px;background:#020617;color:#e2e8f0;border:1px solid #334155;border-radius:6px;font:12px system-ui;margin-left:auto;margin-right:6px";
   const rank=v=>(/premium|enhanced|natural|neural/i.test(v.name)?0:/google us english|google español|samantha|ava|zoe|evan|nathan|aria|jenny|guy|paulina|m[oó]nica|jorge|juan/i.test(v.name)?1:2)+(/^(en-US|es-US|es-MX)$/.test(v.lang)?0:.5);
-  function voices(){let L=[];try{L=speechSynthesis.getVoices().filter(v=>(LANG==="es"?/^es/i:/^en/i).test(v.lang));}catch(e){}if(!L.length)return;L.sort((a,b)=>rank(a)-rank(b));
+  function voices(){let L=[];try{L=speechSynthesis.getVoices().filter(v=>(LANG==="es"?/^es/i:/^en/i).test(v.lang));}catch(e){}if(!L.length){if(LANG==="es")vsel.replaceChildren(Object.assign(document.createElement("option"),{textContent:"(no Spanish voice - download one)"}));return;}L.sort((a,b)=>rank(a)-rank(b));
     let saved="";try{saved=localStorage.getItem(LANG==="es"?"hxVoiceEs":"hxVoice")||"";}catch(e){}VO=L.find(v=>v.name===saved)||L[0];
     vsel.replaceChildren(...L.slice(0,25).map(v=>{const o=document.createElement("option");o.value=v.name;o.textContent=v.name.replace(/ \(.*?\)$/,"")+(/premium|enhanced|natural|neural/i.test(v.name)?" ★":"");o.selected=v===VO;return o;}));}
   try{voices();speechSynthesis.onvoiceschanged=voices;}catch(e){}
   vsel.onchange=()=>{try{VO=speechSynthesis.getVoices().find(v=>v.name===vsel.value)||VO;localStorage.setItem(LANG==="es"?"hxVoiceEs":"hxVoice",vsel.value);}catch(e){}say(LANG==="es"?"Hola Stick, esta es mi nueva voz.":"Hi Stick, this is my new voice.");};
   hd.insertBefore(vsel,cx);
+  const lb=mk("button",null,"EN");lb.type="button";lb.title="English / Español";lb.style.cssText="margin-right:6px;border:1px solid #38bdf8;border-radius:6px;background:#082f49;color:#e0f2fe;font:700 11px system-ui;padding:3px 7px;cursor:pointer";
+  lb.onclick=()=>{const t=setLang(LANG==="es"?"en":"es");say(t);};hd.insertBefore(lb,vsel);setTimeout(()=>{lb.textContent=LANG==="es"?"ES":"EN";},0);
   const say=(t,done)=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[*#_`>|]/g,"").replace(/\p{Extended_Pictographic}/gu,"").replace(/\s\.\.\.\s/g,". "));if(VO)u.voice=VO;u.rate=1;u.pitch=1;
     let fired=false;const fin=()=>{if(!fired){fired=true;done&&done();}};u.onend=fin;u.onerror=fin;speechSynthesis.speak(u);}catch(e){done&&done();}};
   const ctx=()=>{const X=window.__HQX;if(!X)return"";const strip=h=>String(h||"").replace(/<style[\s\S]*?<\/style>/g,"").replace(/<[^>]+>/g," ").replace(/\s+/g," ");
@@ -3289,11 +3291,14 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     const c=n.replace(/[^a-z]/g,"");if(/sub(je|he|che|jay|jeff)|souphe|sohef/.test(c)){const sj=W.find(w=>/subjefe/i.test(w.name||w.id||""));if(sj)return sj;}
     if(/audiolibro|audio libro/.test(n)){const a=W.find(w=>/audio/i.test(w.name||""));if(a)return a;}if(/escuela|tarea/.test(n)){const a=W.find(w=>/school/i.test(w.name||""));if(a)return a;}
     let best=null;W.forEach(w=>{const nm=(w.name||"").toLowerCase(),lk=(w.look||w.id||"").toLowerCase();const keys=[nm,...(al[lk]||[]),...(nm.split(/\s+/).filter(x=>x.length>3))];if(keys.some(k=>k&&n.includes(k)))best=best||w;});return best;}
+  function setLang(l){LANG=l;try{localStorage.setItem("hxLang",l);}catch(e){}VO=null;voices();lb.textContent=l==="es"?"ES":"EN";return l==="es"?"Listo, ahora hablamos en español.":"Okay, back to English.";}
   function nav(q){const n=" "+q.toLowerCase().replace(/[.,!?]/g," ").replace(/\s+/g," ")+" ",U=window.__HQX&&window.__HQX.ui;if(!U)return null;
     const has=(...w)=>w.some(x=>n.includes(x)),go=(f,t)=>{try{f();}catch(e){}return t;};
     // language switch
-    if(has(" en español"," en espanol"," habla español"," habla espanol"," in spanish"," speak spanish")){LANG="es";try{localStorage.setItem("hxLang","es");}catch(e){}voices();return "Listo, ahora hablamos en español.";}
-    if(has(" in english"," en inglés"," en ingles"," speak english"," habla inglés"," habla ingles")){LANG="en";try{localStorage.setItem("hxLang","en");}catch(e){}voices();return "Okay, back to English.";}
+    // English listening often hears "habla en español" as "I blend Espanol" etc. -> any "spanish"/"espa..." word switches (short phrases only)
+    const short=q.split(/\s+/).length<=6;
+    if(short&&LANG!=="es"&&(/spanish|espa[nñ]ol|espanol|spaniel|espanyol/i.test(q)))return setLang("es");
+    if(short&&LANG!=="en"&&(/english|ingl[eé]s|ingles/i.test(q)))return setLang("en");
     const ES=LANG==="es",T2=(en,es)=>ES?es:en;
     const open1=(f,t)=>go(()=>{U.close();setTimeout(f,120);},t);   // only one window at a time (Stick, Oct 28)
     if(TALKTO&&has(" back to mr mind"," back to mister mind"," stop talking to"," talk to mr mind"," talk to mister mind"," done talking"," regresa"," volver con"," con mr mind"," con mister mind")){const w=TALKTO;TALKTO=null;md.textContent="";mode();return T2("Okay, back to me. "+w.name+" is back at work.","Listo, de vuelta conmigo. "+w.name+" regresó a trabajar.");}
