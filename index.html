@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v54";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v55";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3254,13 +3254,21 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     if(has("fix"))return{text:F.filter(x=>/WAIT/i.test(x.status||"")).length?"Fixes waiting for your OK: "+F.filter(x=>/WAIT/i.test(x.status||"")).map(x=>x.title||x.id).join(" ... "):(sec("🔧 Fixes")||"No fixes are waiting for you.")};
     if(has("hello","hi ","hey","good morning","good afternoon","how are"))return{text:"Hey Stick. "+(H.headline||"All good here.")};
     return{text:"That one needs the main chat. I copied your question: tap Open Talk now and paste it.",say:"That one needs the main chat. I copied your question, just paste it.",talk:true};}
+  const HELPER="http://127.0.0.1:8765";let HELP=null;const md=mk("small",null,"");md.style.cssText="color:#94a3b8;margin-left:8px;font-size:11px";hd.firstChild.after(md);
+  function mode(){md.textContent=GH?(HELP?"🟢 smart (Mac helper)":"⚪ basic (Mac helper off)"):"🟢 smart (Claude)";}
+  async function ping(){if(!GH){mode();return;}try{const ac=new AbortController();setTimeout(()=>ac.abort(),2500);const r=await fetch(HELPER+"/health",{signal:ac.signal});const j=await r.json();HELP=!!(r.ok&&j.ok);}catch(e){HELP=false;}mode();}
   let busy=false;
   async function ask(q){q=(q||"").trim();if(!q||busy)return;busy=true;T.hidden=false;
     const y=mk("p","y","You: "+q),a=mk("p","a","…");log.append(y,a);T.scrollTop=T.scrollHeight;
     const S=window.__HQX&&window.__HQX.s();
-    if(GH||!S){const t=local(q);a.textContent=t.text;say(t.say||t.text,again);if(t.talk){const b=mk("button",null,"💬 Open Talk now");b.type="button";b.style.cssText="margin:4px 0 8px;padding:6px 12px;border-radius:999px;border:1px solid #38bdf8;background:#082f49;color:#e0f2fe;cursor:pointer";b.onclick=()=>{try{navigator.clipboard.writeText(q).catch(()=>{});}catch(e){}window.open(TALK,"_blank");};a.after(b);try{navigator.clipboard.writeText(q).catch(()=>{});}catch(e){}}busy=false;T.scrollTop=T.scrollHeight;return;}
     const now=new Date().toLocaleString("en-US",{timeZone:"America/Chicago"});
     const prompt="You are Mr. Mind, Stick Rivera's boss AI agent (Liguori Publications: Redemptio books, audiobooks, his agents; he also studies at Jefferson College). He is TALKING to you out loud, so answer in 1-3 short spoken sentences, plain words, no lists, no emoji. Use ONLY the data below; if it isn't there, say you don't see it in HQ and he can ask the main chat. Never read passwords or codes. Now (Chicago): "+now+"\n\n"+ctx()+"\n\nStick says: "+q;
+    // Option D (Oct 28): computer app -> the voice helper on Stick's Mac (Claude Code with his own login). If it's off: basic answers.
+    if(GH||!S){if(HELP!==false){try{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),95000);a.textContent="🧠 thinking…";
+        const r=await fetch(HELPER+"/ask",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt}),signal:ac.signal});clearTimeout(tm);
+        const j=await r.json().catch(()=>({}));if(r.ok&&j.text){HELP=true;mode();a.textContent=j.text;say(j.text,again);busy=false;T.scrollTop=T.scrollHeight;return;}
+        if(j.error)log.append(mk("p","y","(helper: "+j.error+")"));}catch(e){HELP=false;mode();}}
+      const t=local(q);a.textContent=t.text;say(t.say||t.text,again);if(t.talk){const b=mk("button",null,"💬 Open Talk now");b.type="button";b.style.cssText="margin:4px 0 8px;padding:6px 12px;border-radius:999px;border:1px solid #38bdf8;background:#082f49;color:#e0f2fe;cursor:pointer";b.onclick=()=>{try{navigator.clipboard.writeText(q).catch(()=>{});}catch(e){}window.open(TALK,"_blank");};a.after(b);try{navigator.clipboard.writeText(q).catch(()=>{});}catch(e){}}busy=false;T.scrollTop=T.scrollHeight;return;}
     try{const r=await S(prompt,{cache:false,modelTier:"quick",onText:({text})=>{a.textContent=text;T.scrollTop=T.scrollHeight;}});a.textContent=r.text||a.textContent;say(a.textContent,again);}
     catch(e){a.textContent=e&&e.code==="not_granted"?"I need your OK to use Claude on this page. Allow it and try again.":e&&e.code==="rate_limited"?"Too many questions at once, give me a second.":"I couldn't answer just now.";convo=false;}
     busy=false;}
@@ -3283,7 +3291,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
       if(!q){if(live.isConnected)live.remove();if(convo){convo=false;log.append(mk("p","a","(Stopped listening. Click 🎙️ or press M to talk again.)"));T.scrollTop=T.scrollHeight;}return;}
       live.remove();if(STOP.test(q)){convo=false;log.append(mk("p","y","You: "+q));say("Okay, I'm here if you need me.");return;}ask(q);};
     try{rec.start();}catch(e){rec=null;mic.classList.remove("on");}}
-  mic.onclick=()=>{T.hidden=false;
+  mic.onclick=()=>{if(T.hidden)ping();T.hidden=false;
     let blocked=false;try{blocked=localStorage.getItem("hxMicBlocked")==="1";}catch(e){}
     if(!SR||blocked){dict();return;}
     if(convo||rec){endConvo();try{speechSynthesis.cancel();}catch(e){}return;}
