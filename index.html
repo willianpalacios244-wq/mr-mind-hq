@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v60";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v61";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3123,7 +3123,7 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
       db.doc("layout/main").onSnapshot(d=>{if(drag)return;if(d.exists){const v=JSON.parse(JSON.stringify(d.data()));if(v.v===3)layout={v:3,items:v.items||null,desks:v.desks||{},bedroomV:v.bedroomV||0,...(v.hallo?{hallo:v.hallo}:{}),...(v.hud?{hud:v.hud}:{})};else if(v.desks)layout={v:3,items:null,desks:Object.fromEntries(Object.entries(v.desks).filter(([k])=>k!=="open"))};syncHome();}ensureBedroom();placeTags();},()=>{});
     } else $("sub").textContent="Open this page in Claude while signed in to see your team.";
     sample=await claude.use("sample");
-    window.__HQX={s:()=>sample,h:()=>hq,w:()=>workers,f:()=>fixes,i:()=>issues,r:()=>(typeof RPT!=="undefined"?RPT:null)};
+    window.__HQX={s:()=>sample,h:()=>hq,w:()=>workers,f:()=>fixes,i:()=>issues,r:()=>(typeof RPT!=="undefined"?RPT:null),ui:{floor:n=>setView(n),worker:id=>showWorker(id),spider:()=>showSpider(),team:()=>showTeam(),tasks:()=>showTasks(),reports:()=>showReports(),needs:()=>showNeeds(),fixes:()=>showFixes(),books:()=>showBooksWin(),audio:()=>showAudioWin(),problems:()=>showProblems(),upgrades:()=>showUpgrades(),settings:()=>showSettings(),brain:()=>showBrainChat(),scout:()=>showScout(),home:()=>goHome(),close:()=>{try{closeCard();}catch(e){}document.querySelectorAll(".win").forEach(w=>{if(w.id!=="hxTalk")w.hidden=true;});}}};
     mcp=await claude.use("mcp");
     if(mcp){
       mcp.watchTool(SERVER,"list_triggers",{limit:50},ev=>{
@@ -3280,6 +3280,36 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   function mode(){md.textContent=GH?(HELP?"🟢 smart (Mac helper)":"⚪ basic (Mac helper off)"):"🟢 smart (Claude)";}
   async function ping(){if(!GH){mode();return;}try{const ac=new AbortController();setTimeout(()=>ac.abort(),2500);const r=await fetch(HELPER+"/health",{signal:ac.signal});const j=await r.json();HELP=!!(r.ok&&j.ok);}catch(e){HELP=false;}mode();}
   let busy=false;
+
+  // ---------- 🧭 VOICE NAVIGATION + TALK TO A WORKER (Stick, Oct 28) ----------
+  let TALKTO=null;   // a worker Stick is talking to by voice (null = Mr. Mind)
+  function findWorker(n){const W=(window.__HQX&&window.__HQX.w())||[];const al={mrmind:["mr mind","mister mind","boss","jefe"],subjefe:["subjefe","sub jefe","sub chief","subhead","sub hefe"],audio:["audiobook","audio book","audio"],checkin:["check-in","check in","checkin","daily"],school:["school"],scout:["scout","web scout"]};
+    let best=null;W.forEach(w=>{const nm=(w.name||"").toLowerCase(),lk=(w.look||w.id||"").toLowerCase();const keys=[nm,...(al[lk]||[]),...(nm.split(/\s+/).filter(x=>x.length>3))];if(keys.some(k=>k&&n.includes(k)))best=best||w;});return best;}
+  function nav(q){const n=" "+q.toLowerCase().replace(/[.,!?]/g," ").replace(/\s+/g," ")+" ",U=window.__HQX&&window.__HQX.ui;if(!U)return null;
+    const has=(...w)=>w.some(x=>n.includes(x)),go=(f,t)=>{try{f();}catch(e){}return t;};
+    if(TALKTO&&has(" back to mr mind"," back to mister mind"," stop talking to"," talk to mr mind"," talk to mister mind"," done talking")){const w=TALKTO;TALKTO=null;md.textContent="";mode();return "Okay, back to me. "+w.name+" is back at work.";}
+    if(has(" close "," close it"," close that"," close the window"," close everything"," hide it")&&q.split(/\s+/).length<=5)return go(U.close,"Closed.");
+    if(has(" spider"," attic"))return go(()=>{U.floor(3);setTimeout(U.spider,450);},"Going up to the attic to see the Spider.");
+    if(has(" my floor"," my office"," floor two"," floor 2"," second floor"," upstairs"))return go(()=>U.floor(2),"Here's your floor.");
+    if(has(" floor one"," floor 1"," first floor"," downstairs"," team floor"," workers floor"))return go(()=>U.floor(1),"Here's the team floor.");
+    const talk=n.match(/ (?:talk|speak|chat) (?:to|with) (.+)$/)||n.match(/^ ?(?:ask|let me talk to|i want to talk to) (.+)$/);
+    if(talk){const w=findWorker(talk[1]);if(w){TALKTO=w;try{U.worker(w.id);}catch(e){}md.textContent="🗣️ talking to "+w.name;return w.name+" here. What do you need?";}}
+    if(has(" workers"," my team"," the team"," my agents"," all agents"))return go(U.team,"Here's your team.");
+    if(has(" show ", " open ", " let me see ", " see ", " pull up ", " go to ")){
+      const w=findWorker(n);if(w)return go(()=>U.worker(w.id),"Here's "+w.name+".");
+      if(has(" task"))return go(U.tasks,"Here are your tasks.");
+      if(has(" report"))return go(U.reports,"Here are your reports.");
+      if(has(" fix"))return go(U.fixes,"Here are the fixes waiting for you.");
+      if(has(" problem"," issue"))return go(U.problems,"Here are the problems.");
+      if(has(" audiobook"," audio book"))return go(U.audio,"Here are your audiobooks.");
+      if(has(" book"))return go(U.books,"Here are your books.");
+      if(has(" need"))return go(U.needs,"Here's what needs you.");
+      if(has(" upgrade"," level"," reward"))return go(U.upgrades,"Here are your upgrades.");
+      if(has(" setting"))return go(U.settings,"Here are the settings.");
+      if(has(" brain"," chat"))return go(U.brain,"Here's the brain chat.");
+      if(has(" scout"," news"))return go(U.scout,"Here's the web scout.");
+      if(has(" home"," my desk"))return go(U.home,"Going to your desk.");}
+    return null;}
   let PEND=null;
   async function ask(q){q=(q||"").trim();if(!q||busy)return;busy=true;T.hidden=false;
     const y=mk("p","y","You: "+q),a=mk("p","a","…");log.append(y,a);T.scrollTop=T.scrollHeight;
@@ -3289,10 +3319,12 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
         catch(e){a.textContent="I couldn't reach the Mac helper, so nothing changed.";}}
       else a.textContent="Okay, I didn't change anything.";
       say(a.textContent,again);busy=false;return;}
+    {const nv=nav(q);if(nv){a.textContent=nv;say(nv,again);busy=false;T.scrollTop=T.scrollHeight;return;}}
     if(/^(lock( hq| it| the screen)?|lock up)[.!]?$/i.test(q)){a.textContent="Locking HQ.";say("Locking HQ.");busy=false;endConvo();try{$("hxLk").click();}catch(e){}return;}
     const S=window.__HQX&&window.__HQX.s();
     const now=new Date().toLocaleString("en-US",{timeZone:"America/Chicago"});
-    const prompt="You are Mr. Mind, Stick Rivera's boss AI agent (Liguori Publications: Redemptio books, audiobooks, his agents; he also studies at Jefferson College). He is TALKING to you out loud, so answer in 1-3 short spoken sentences, plain words, no lists, no emoji. Use ONLY the data below; if it isn't there, say you don't see it in HQ and he can ask the main chat. Never read passwords or codes. Now (Chicago): "+now+"\n\n"+ctx()+"\n\nStick says: "+q;
+    const who=TALKTO?("You are "+TALKTO.name+", one of Stick Rivera's AI worker agents (your job: "+(TALKTO.role||"")+"; last run: "+(TALKTO.lastRun||"?")+", result: "+(TALKTO.lastResult||"?")+"). Talk in first person as "+TALKTO.name+", warm and short. Mr. Mind is your boss."):"";
+    const prompt=(who?who+" ":"")+"You are Mr. Mind, Stick Rivera's boss AI agent (Liguori Publications: Redemptio books, audiobooks, his agents; he also studies at Jefferson College). He is TALKING to you out loud, so answer in 1-3 short spoken sentences, plain words, no lists, no emoji. Use ONLY the data below; if it isn't there, say you don't see it in HQ and he can ask the main chat. Never read passwords or codes. Now (Chicago): "+now+"\n\n"+ctx()+"\n\nStick says: "+q;
     const promptH=prompt.replace("Use ONLY the data below; if it isn't there, say you don't see it in HQ and he can ask the main chat.","Use the data below. If you need more, you may READ files in his folders (Desktop/Mr. Mind, Books that Need AudioRecording, Books that Need to Go on Redemptio, School Work) - keep it quick; never open app_secrets. ACTIONS: if he asks to approve or decline a fix, add a reminder, or mark a reminder done, do NOT say it is done: ask ONE short confirm question (like 'Approve fix 23, are you sure?') and put on the LAST line exactly: ACTION: {\"type\":\"approve_fix\",\"id\":\"23\"} (types: approve_fix, decline_fix with id; add_reminder, done_reminder with text). Anything else that changes things (run agents, move or delete files, emails): say he needs the main chat.");
     // Option D (Oct 28): computer app -> the voice helper on Stick's Mac (Claude Code with his own login). If it's off: basic answers.
     if(GH||!S){if(HELP!==false){try{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),95000);a.textContent="🧠 thinking…";
