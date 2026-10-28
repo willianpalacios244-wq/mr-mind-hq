@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v57";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v58";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3206,7 +3206,9 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     L.append(R,msg,pf,v);document.body.append(L);
     let stream=null,done=false;
     const unlock=()=>{if(done)return;done=true;L.classList.add("ok");RB.textContent="ACCESS\nGRANTED";msg.textContent="Welcome back, Stick.";pf.remove();
-      try{const u=new SpeechSynthesisUtterance("Welcome back, Stick.");speechSynthesis.speak(u);}catch(e){}
+      const SRok=(window.SpeechRecognition||window.webkitSpeechRecognition)&&(()=>{try{return localStorage.getItem("hxMicBlocked")!=="1";}catch(e){return true;}})();
+      const go=()=>{try{window.__hxTalkStart&&window.__hxTalkStart();}catch(e){}};
+      try{const u=new SpeechSynthesisUtterance(SRok?"Welcome back, Stick. What do you need?":"Welcome back, Stick.");try{if(window.__hxVoice&&window.__hxVoice())u.voice=window.__hxVoice();}catch(e){}if(SRok){u.onend=()=>setTimeout(go,250);u.onerror=go;}speechSynthesis.speak(u);}catch(e){if(SRok)setTimeout(go,1500);}
       try{sessionStorage.setItem("hxOpen","1");}catch(e){}
       if(stream)stream.getTracks().forEach(t=>t.stop());
       setTimeout(()=>{L.classList.add("out");setTimeout(()=>L.remove(),700);},1100);};
@@ -3302,6 +3304,12 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   // Stop: say "stop" / "bye" / "that's all" / "thank you", click 🎙️ again, press Esc, or close the panel.
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,convo=false;
   const STOP=/^(stop|bye|goodbye|that'?s all|that is all|thanks?( you)?|thank you( that'?s it)?|never ?mind|nothing|cancel|i'?m done|done)[.!]?$/i;
+  // "bye" / "okay we're done for now" (Stick, Oct 28) -> close the app (computer app: Mac helper quits it), else lock HQ
+  const BYE=/\b(bye|goodbye|good bye|see you|good night|we'?re done|we are done|done for (now|today)|that'?s all for (now|today)|close (the )?app|shut (it )?down)\b/i;
+  async function closeApp(){endConvo();T.hidden=true;try{window.close();}catch(e){}
+    await new Promise(r=>setTimeout(r,400));
+    if(GH){try{await fetch(HELPER+"/close",{method:"POST"});return;}catch(e){}}
+    try{$("hxLk").click();}catch(e){}}
   const dict=()=>{log.append(mk("p","a","🎙️ Your Mac can listen for me: click the box below, start Dictation (🌐/Fn twice on the Mac keyboard, or the Dictation shortcut you set), talk, then press Enter. I'll answer out loud."));T.scrollTop=T.scrollHeight;inp.focus();};
   function again(){if(convo&&!T.hidden)setTimeout(listen,350);}
   function endConvo(){convo=false;if(rec){try{rec.abort();}catch(e){}}rec=null;mic.classList.remove("on");}
@@ -3314,7 +3322,8 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
       else if(e.error==="no-speech"){live.remove();}else live.textContent="I didn't catch that.";};
     rec.onend=()=>{rec=null;mic.classList.remove("on");const q=fin.trim();
       if(!q){if(live.isConnected)live.remove();if(convo){convo=false;log.append(mk("p","a","(Stopped listening. Click 🎙️ or press M to talk again.)"));T.scrollTop=T.scrollHeight;}return;}
-      live.remove();if(STOP.test(q)){convo=false;log.append(mk("p","y","You: "+q));say("Okay, I'm here if you need me.");return;}ask(q);};
+      live.remove();if(BYE.test(q)&&q.split(/\s+/).length<=7){convo=false;log.append(mk("p","y","You: "+q));say("Bye Stick, talk soon.",closeApp);return;}
+      if(STOP.test(q)){convo=false;log.append(mk("p","y","You: "+q));say("Okay, I'm here if you need me.");return;}ask(q);};
     try{rec.start();}catch(e){rec=null;mic.classList.remove("on");}}
   mic.onclick=()=>{if(T.hidden)ping();T.hidden=false;
     let blocked=false;try{blocked=localStorage.getItem("hxMicBlocked")==="1";}catch(e){}
@@ -3326,5 +3335,6 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
     if(e.key==="Escape"&&(convo||rec)){endConvo();try{speechSynthesis.cancel();}catch(_){}return;}
     if(!typing&&!e.metaKey&&!e.ctrlKey&&!e.altKey&&(e.key==="m"||e.key==="M")){e.preventDefault();mic.click();}});
   mic.title="Talk to Mr. Mind (press M)";
+  window.__hxTalkStart=()=>{if(!convo&&!rec)mic.click();};window.__hxVoice=()=>VO;
 })();
 </script></body></html>
