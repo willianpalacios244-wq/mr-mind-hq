@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v70";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v71";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3299,17 +3299,24 @@ body.hxA #hxTalk{display:none!important}
   lb.onclick=()=>{const t=setLang(LANG==="es"?"en":"es");say(t);};hd.insertBefore(lb,vsel);setTimeout(()=>{lb.textContent=LANG==="es"?"ES":"EN";},0);
   const say=(t,done)=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[*#_`>|]/g,"").replace(/\p{Extended_Pictographic}/gu,"").replace(/\s\.\.\.\s/g,". "));if(VO)u.voice=VO;u.rate=1;u.pitch=1;OS="speak";boost=1;u.onboundary=()=>{boost=1;};
     let fired=false;const fin=()=>{if(!fired){fired=true;OS="idle";done&&done();}};u.onend=fin;u.onerror=fin;speechSynthesis.speak(u);}catch(e){done&&done();}};
+  const liveNow=()=>{const X=window.__HQX;if(!X)return{};let H={},I=[],F=[];try{H=X.h()||{};I=X.i()||[];F=X.f()||[];}catch(e){}
+    const td=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",timeZone:"America/Chicago"});
+    const fixedToday=I.filter(x=>/DONE|COMPLETED/i.test(x.status||"")&&String(x.doneAt||"").startsWith(td)).map(x=>(x.plain||x.title||x.id)+(x.doneNote?" → FIXED: "+x.doneNote:" → FIXED"));
+    const open=I.filter(x=>!/DONE|COMPLETED/i.test(x.status||"")).map(x=>x.plain||x.title||x.id);
+    return{headline:H.headline||"",needsYou:(H.needsYou||[]).map(x=>typeof x==="string"?x:(x&&x.t)||"").filter(Boolean),fixedToday,stillOpen:open,fixesWaiting:F.filter(x=>/WAIT/i.test(x.status||"")).map(x=>x.title||x.id),reportTime:H.lastReport||""};};
   const ctx=()=>{const X=window.__HQX;if(!X)return"";const strip=h=>String(h||"").replace(/<style[\s\S]*?<\/style>/g,"").replace(/<[^>]+>/g," ").replace(/\s+/g," ");
     let r="";try{const R=X.r();if(R&&R.items&&R.items[0])r=strip(R.items[0].title)+": "+strip(R.items[0].html).slice(0,7000);}catch(e){}
     let h="";try{h=JSON.stringify({hq:X.h(),workers:(X.w()||[]).map(w=>({name:w.name,role:w.role,lastRun:w.lastRun,lastResult:w.lastResult})),fixesWaiting:(X.f()||[]).filter(x=>/WAIT/i.test(x.status||"")).map(x=>x.title||x.id),openIssues:(X.i()||[]).filter(x=>!/DONE|COMPLETED/i.test(x.status||"")).map(x=>x.title||x.id)}).slice(0,9000);}catch(e){}
-    return "LATEST REPORT: "+r+"\nHQ DATA: "+h;};
+    let L="";try{L=JSON.stringify(liveNow()).slice(0,5000);}catch(e){}
+    return "LIVE NOW (newest data — ALWAYS trust this over the report): "+L+"\nRULE: the LATEST REPORT below is older. Anything in LIVE NOW fixedToday is FINISHED — never say it is still a problem or still waiting. Only stillOpen, needsYou and fixesWaiting are open. If they are empty, say nothing is open.\nHQ DATA: "+h+"\nLATEST REPORT (older, background only): "+r;};
   const TALK="https://claude.ai/code/session_017tdmRTmeXbR7NHMLcKBegE";
   const strip=h=>String(h||"").replace(/<style[\s\S]*?<\/style>/g,"").replace(/<br\s*\/?>|<\/(p|li|h\d|tr|div)>/gi,". ").replace(/<[^>]+>/g," ").replace(/&amp;/g,"&").replace(/&nbsp;/g," ").replace(/\s+/g," ").replace(/(\.\s*){2,}/g,". ").trim();
   function local(q){const X=window.__HQX,n=q.toLowerCase();let H={},R=null,F=[];try{H=(X&&X.h())||{};R=X&&X.r();F=(X&&X.f())||[];}catch(e){}
     const rep=R&&R.items&&R.items[0],RT=rep?strip(rep.html):"";
     const sec=(...keys)=>{for(const k of keys){const i=RT.indexOf(k);if(i>=0){let t=RT.slice(i,i+700);const stops=["🔴","🧑‍💼","🎧","📚","🎓","🕷️","🔧","✔️","⏸","✅ Closed"].map(x=>t.indexOf(x,k.length+1)).filter(x=>x>0);if(stops.length)t=t.slice(0,Math.min(...stops));return t.trim();}}return "";};
     const has=(...w)=>w.some(x=>n.includes(x));
-    if(has("report","summary","what's new","whats new","update"))return{text:rep?(rep.title+". "+RT.slice(0,900)):"I don't have a report in the app yet."};
+    if(has("update","what's new","whats new","summary")&&!has("report")){const L=liveNow();let t=L.headline?L.headline.replace(/[🧠·]/g," ").replace(/\s+/g," ").trim()+". ":"";if(L.fixedToday.length)t+="Fixed today: "+L.fixedToday.length+" problem"+(L.fixedToday.length>1?"s":"")+", all done. ";t+=L.stillOpen.length?"Still open: "+L.stillOpen.join(" ... ")+". ":"No open problems. ";t+=L.needsYou.length?"What needs you: "+L.needsYou.join(" ... "):"Nothing needs you right now.";return{text:t};}
+    if(has("report"))return{text:rep?("From the "+rep.title+" (written earlier, things may be fixed since). "+RT.slice(0,900)):"I don't have a report in the app yet."};
     if(has("need me","needs me","needs you","need you","urgent","important","to do","todo","what do i")){const L=H.needsYou||[];return{text:L.length?"Here's what needs you: "+L.join(" ... "):"Nothing needs you right now. "+(H.headline||"")};}
     if(has("school","due","homework","exam","test","class","canvas","bio","phl"))return{text:sec("🎓 School","School")||"I don't see school items in the latest report."};
     if(has("audio","recording","chapter","d'arcy","darcy","murdy","rolheiser"))return{text:sec("🎧 Audiobooks","Audiobooks")||"I don't see audiobook news in the latest report."};
