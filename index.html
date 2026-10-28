@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v52";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
+<!doctype html><html><head><meta charset=utf8><meta name="theme-color" content="#141130"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mr. Mind"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><script>window.__HQV="v53";/* Mr. Mind app connector: runs the HQ page outside Claude. Data = encrypted data/status.json published by Mr. Mind.
    Layout/theme edits on this phone are saved on this phone; approvals and problem changes are sent to Mr. Mind by email. */
 (()=>{
   const VAPID="BDu6YrEBe-xnHLMPR-seYqRWsCVn-KV8dtAiQ4yR0OQT2FV9l7oUUycME6zg1LEffByFxP5iv7XRxBKxXeedhaA",ME="willianpalacios244@gmail.com";
@@ -3224,17 +3224,31 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   // ---------- 🎙️ TALK ----------
   const mic=mk("button",null,"🎙️");mic.id="hxMic";mic.type="button";mic.title="Talk to Mr. Mind";mic.setAttribute("aria-label","Talk to Mr. Mind");
   const T=mk("div");T.id="hxTalk";T.hidden=true;const hd=mk("div","row");hd.append(mk("b",null,"🧠 Mr. Mind (voice)"));const cx=mk("button",null,"✕");cx.type="button";cx.onclick=()=>{T.hidden=true;try{speechSynthesis.cancel();}catch(e){}};hd.append(cx);
-  const log=mk("div"),f=mk("form"),inp=mk("input");inp.placeholder="…or type here";f.append(inp);T.append(hd,log,f);document.body.append(T);if(!GH)document.body.append(mic);   // the GitHub app can't reach Claude, so no voice button there
+  const log=mk("div"),f=mk("form"),inp=mk("input");inp.placeholder="Type, or press 🌐/Fn twice to talk";f.append(inp);T.append(hd,log,f);document.body.append(T,mic);   // GitHub app: answers from HQ data on the page (no Claude there), anything else -> Talk now
   const say=t=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[*#_`>|]/g,"").replace(/\p{Extended_Pictographic}/gu,""));u.rate=1.02;speechSynthesis.speak(u);}catch(e){}};
   const ctx=()=>{const X=window.__HQX;if(!X)return"";const strip=h=>String(h||"").replace(/<style[\s\S]*?<\/style>/g,"").replace(/<[^>]+>/g," ").replace(/\s+/g," ");
     let r="";try{const R=X.r();if(R&&R.items&&R.items[0])r=strip(R.items[0].title)+": "+strip(R.items[0].html).slice(0,7000);}catch(e){}
     let h="";try{h=JSON.stringify({hq:X.h(),workers:(X.w()||[]).map(w=>({name:w.name,role:w.role,lastRun:w.lastRun,lastResult:w.lastResult})),fixesWaiting:(X.f()||[]).filter(x=>/WAIT/i.test(x.status||"")).map(x=>x.title||x.id),openIssues:(X.i()||[]).filter(x=>!/DONE|COMPLETED/i.test(x.status||"")).map(x=>x.title||x.id)}).slice(0,9000);}catch(e){}
     return "LATEST REPORT: "+r+"\nHQ DATA: "+h;};
+  const TALK="https://claude.ai/code/session_017tdmRTmeXbR7NHMLcKBegE";
+  const strip=h=>String(h||"").replace(/<style[\s\S]*?<\/style>/g,"").replace(/<br\s*\/?>|<\/(p|li|h\d|tr|div)>/gi,". ").replace(/<[^>]+>/g," ").replace(/&amp;/g,"&").replace(/&nbsp;/g," ").replace(/\s+/g," ").replace(/(\.\s*){2,}/g,". ").trim();
+  function local(q){const X=window.__HQX,n=q.toLowerCase();let H={},R=null,F=[];try{H=(X&&X.h())||{};R=X&&X.r();F=(X&&X.f())||[];}catch(e){}
+    const rep=R&&R.items&&R.items[0],RT=rep?strip(rep.html):"";
+    const sec=(...keys)=>{for(const k of keys){const i=RT.indexOf(k);if(i>=0){let t=RT.slice(i,i+700);const stops=["🔴","🧑‍💼","🎧","📚","🎓","🕷️","🔧","✔️","⏸","✅ Closed"].map(x=>t.indexOf(x,k.length+1)).filter(x=>x>0);if(stops.length)t=t.slice(0,Math.min(...stops));return t.trim();}}return "";};
+    const has=(...w)=>w.some(x=>n.includes(x));
+    if(has("report","summary","what's new","whats new","update"))return{text:rep?(rep.title+". "+RT.slice(0,900)):"I don't have a report in the app yet."};
+    if(has("need me","needs me","needs you","need you","urgent","important","to do","todo","what do i")){const L=H.needsYou||[];return{text:L.length?"Here's what needs you: "+L.join(" ... "):"Nothing needs you right now. "+(H.headline||"")};}
+    if(has("school","due","homework","exam","test","class","canvas","bio","phl"))return{text:sec("🎓 School","School")||"I don't see school items in the latest report."};
+    if(has("audio","recording","chapter","d'arcy","darcy","murdy","rolheiser"))return{text:sec("🎧 Audiobooks","Audiobooks")||"I don't see audiobook news in the latest report."};
+    if(has("book","redemptio","november","subjefe","month"))return{text:(H.booksTotal?"Books total: "+H.booksTotal+". ":"")+(sec("📚 SubJefe","SubJefe")||"")};
+    if(has("fix"))return{text:F.filter(x=>/WAIT/i.test(x.status||"")).length?"Fixes waiting for your OK: "+F.filter(x=>/WAIT/i.test(x.status||"")).map(x=>x.title||x.id).join(" ... "):(sec("🔧 Fixes")||"No fixes are waiting for you.")};
+    if(has("hello","hi ","hey","good morning","good afternoon","how are"))return{text:"Hey Stick. "+(H.headline||"All good here.")};
+    return{text:"That one needs the main chat. I copied your question: tap Open Talk now and paste it.",say:"That one needs the main chat. I copied your question, just paste it.",talk:true};}
   let busy=false;
   async function ask(q){q=(q||"").trim();if(!q||busy)return;busy=true;T.hidden=false;
     const y=mk("p","y","You: "+q),a=mk("p","a","…");log.append(y,a);T.scrollTop=T.scrollHeight;
     const S=window.__HQX&&window.__HQX.s();
-    if(!S){a.textContent="Voice answers need this page open in Claude while signed in.";busy=false;return;}
+    if(GH||!S){const t=local(q);a.textContent=t.text;say(t.say||t.text);if(t.talk){const b=mk("button",null,"💬 Open Talk now");b.type="button";b.style.cssText="margin:4px 0 8px;padding:6px 12px;border-radius:999px;border:1px solid #38bdf8;background:#082f49;color:#e0f2fe;cursor:pointer";b.onclick=()=>{try{navigator.clipboard.writeText(q).catch(()=>{});}catch(e){}window.open(TALK,"_blank");};a.after(b);try{navigator.clipboard.writeText(q).catch(()=>{});}catch(e){}}busy=false;T.scrollTop=T.scrollHeight;return;}
     const now=new Date().toLocaleString("en-US",{timeZone:"America/Chicago"});
     const prompt="You are Mr. Mind, Stick Rivera's boss AI agent (Liguori Publications: Redemptio books, audiobooks, his agents; he also studies at Jefferson College). He is TALKING to you out loud, so answer in 1-3 short spoken sentences, plain words, no lists, no emoji. Use ONLY the data below; if it isn't there, say you don't see it in HQ and he can ask the main chat. Never read passwords or codes. Now (Chicago): "+now+"\n\n"+ctx()+"\n\nStick says: "+q;
     try{const r=await S(prompt,{cache:false,modelTier:"quick",onText:({text})=>{a.textContent=text;T.scrollTop=T.scrollHeight;}});a.textContent=r.text||a.textContent;say(a.textContent);}
@@ -3243,12 +3257,14 @@ body.winmode #card,body.winmode #rlBox{position:fixed!important;transform:none!i
   f.onsubmit=e=>{e.preventDefault();const q=inp.value;inp.value="";ask(q);};
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
   mic.onclick=()=>{T.hidden=false;
-    if(!SR){if(!log.childNodes.length)log.append(mk("p","a","This browser can't listen. Type your question below and I'll answer out loud."));inp.focus();return;}
+    const dict=()=>{log.append(mk("p","a","🎙️ Your Mac can listen for me: click the box below, press the 🌐 / Fn key twice, talk, then press Enter. I'll answer out loud."));T.scrollTop=T.scrollHeight;inp.focus();};
+    let blocked=false;try{blocked=localStorage.getItem("hxMicBlocked")==="1";}catch(e){}
+    if(!SR||blocked){dict();return;}
     if(rec){rec.stop();return;}
     rec=new SR();rec.lang="en-US";rec.interimResults=true;rec.maxAlternatives=1;let fin="";
     const live=mk("p","y","🎙️ Listening…");log.append(live);T.scrollTop=T.scrollHeight;mic.classList.add("on");
     rec.onresult=e=>{let t="";for(const r of e.results)t+=r[0].transcript;fin=t;live.textContent="🎙️ "+t;};
-    rec.onerror=e=>{live.textContent=e.error==="not-allowed"||e.error==="service-not-allowed"?"The microphone isn't allowed here. Type your question below.":"I didn't catch that. Try again.";};
+    rec.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed"||e.error==="audio-capture"){live.remove();try{localStorage.setItem("hxMicBlocked","1");}catch(_){}dict();}else live.textContent="I didn't catch that. Try again.";};
     rec.onend=()=>{mic.classList.remove("on");rec=null;if(fin){live.remove();ask(fin);}};
     try{rec.start();}catch(e){mic.classList.remove("on");rec=null;}};
 })();
